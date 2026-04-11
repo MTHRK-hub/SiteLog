@@ -146,10 +146,8 @@
             '<td class="hdr-title" colspan="4"><span class="header-title">' + escHtml(title) + "</span></td>" +
           "</tr>" +
           '<tr class="hdr-row">' +
-            '<td class="hdr-left">'  + navHtml   + "</td>" +
-            '<td class="hdr-center"></td>' +
-            '<td class="hdr-center"></td>' +
-            '<td class="hdr-right">' + extraHtml + "</td>" +
+            '<td class="hdr-left" colspan="2">'  + navHtml   + "</td>" +
+            '<td class="hdr-right" colspan="2">' + extraHtml + "</td>" +
           "</tr>" +
         "</tbody></table>";
 
