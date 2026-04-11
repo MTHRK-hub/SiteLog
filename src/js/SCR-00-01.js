@@ -113,15 +113,16 @@
     }
 
     /*
-     * ヘッダ構成 (3行 × 3列)
+     * ヘッダ構成 (3行 × 4列)
      *
-     *   ┌──────────────┬─────────────────┬──────────────┐
-     *   │ ① ユーザー名 │  ③ 画面ID (小)  │ ② ログアウト │  行1
-     *   ├──────────────┴─────────────────┴──────────────┤
-     *   │           ④ 画面名 (大, colspan=3)             │  行2
-     *   ├──────────────┬─────────────────┬──────────────┤
-     *   │ ⑤ 戻るボタン │                 │ ⑥ 追加ボタン │  行3
-     *   └──────────────┴─────────────────┴──────────────┘
+     *   col1(25%) | col2(25%) | col3(25%) | col4(25%)
+     *   ┌─────────┬───────────────────────┬──────────┐
+     *   │① ユーザ │③ 画面ID(小, colspan=2)│② ログアウ│  行1
+     *   ├─────────┴───────────────────────┴──────────┤
+     *   │      ④ 画面名(大, colspan=4)               │  行2
+     *   ├─────────┬───────────┬───────────┬──────────┤
+     *   │⑤ 戻るボ │           │           │⑥ 追加ボタ│  行3
+     *   └─────────┴───────────┴───────────┴──────────┘
      */
     var header = document.createElement("header");
     header.className = "hdr-wrap";
@@ -130,23 +131,25 @@
         '<colgroup>' +
           '<col class="col-side">' +
           '<col class="col-center">' +
+          '<col class="col-center">' +
           '<col class="col-side">' +
         '</colgroup>' +
         '<tbody>' +
           '<tr class="hdr-row">' +
-            '<td class="hdr-left">'   + userHtml   + "</td>" +
-            '<td class="hdr-center">' +
+            '<td class="hdr-left">'              + userHtml   + "</td>" +
+            '<td class="hdr-center" colspan="2">' +
               (screenId ? '<span class="header-screen-id">' + escHtml(screenId) + "</span>" : "") +
             "</td>" +
-            '<td class="hdr-right">'  + logoutHtml + "</td>" +
+            '<td class="hdr-right">'             + logoutHtml + "</td>" +
           "</tr>" +
           '<tr class="hdr-row hdr-row-title">' +
-            '<td class="hdr-title" colspan="3"><span class="header-title">' + escHtml(title) + "</span></td>" +
+            '<td class="hdr-title" colspan="4"><span class="header-title">' + escHtml(title) + "</span></td>" +
           "</tr>" +
           '<tr class="hdr-row">' +
-            '<td class="hdr-left">'   + navHtml   + "</td>" +
+            '<td class="hdr-left">'  + navHtml   + "</td>" +
             '<td class="hdr-center"></td>' +
-            '<td class="hdr-right">'  + extraHtml + "</td>" +
+            '<td class="hdr-center"></td>' +
+            '<td class="hdr-right">' + extraHtml + "</td>" +
           "</tr>" +
         "</tbody></table>";
 

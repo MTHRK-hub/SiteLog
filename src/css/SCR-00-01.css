@@ -35,9 +35,9 @@
   font-size: inherit;
 }
 
-/* colgroup で列幅を明示 */
-.header-table .col-side   { width: 30%; }
-.header-table .col-center { width: 40%; }
+/* colgroup で列幅を明示 (4列均等) */
+.header-table .col-side   { width: 25%; }
+.header-table .col-center { width: 25%; }
 
 /* 行1・行3: 均等高さ */
 .hdr-row {
