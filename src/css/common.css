@@ -1,14 +1,15 @@
 :root {
-  --bg: #eef3ff;
-  --surface: #ffffff;
-  --surface-alt: #f7f9ff;
-  --text: #1a2440;
-  --muted: #60708f;
-  --accent: #2f67ff;
-  --accent-hover: #1f56ef;
-  --danger: #d5304f;
+  --bg: #0e3583;
+  --surface: #3c1414;
+  --surface-alt: #1f4c5b;
+  --surface-raised: #1f4c5b;
+  --text: #fbfbfb;
+  --muted: #ffffff;
+  --accent: #3d9eff;
+  --accent-hover: #5aadff;
+  --danger: #f07178;
   --radius: 12px;
-  --shadow: 0 8px 24px rgba(23, 38, 89, 0.12);
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
   --touch-min: 44px;
 }
 
@@ -29,7 +30,7 @@ body {
   min-height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: var(--text);
-  background: linear-gradient(180deg, #f3f7ff 0%, #e8efff 100%);
+  background: radial-gradient(ellipse 120% 80% at 50% -20%, #1e2840 0%, var(--bg) 55%);
 }
 
 body {
@@ -47,7 +48,7 @@ body {
 
 .card {
   background: var(--surface);
-  border: 1px solid #d8e2ff;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: calc(var(--radius) + 4px);
   box-shadow: var(--shadow);
   padding: 20px;
@@ -84,7 +85,7 @@ body {
   row-gap: 4px;
   margin-bottom: 18px;
   padding-bottom: 14px;
-  border-bottom: 1px solid #e2e8fb;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .top-user {
@@ -156,12 +157,12 @@ body {
 }
 
 .btn-secondary {
-  background: #e9efff;
+  background: var(--surface-raised);
   color: var(--text);
 }
 
 .btn-secondary:hover {
-  background: #dce7ff;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .btn-ghost {
@@ -173,7 +174,7 @@ body {
 
 .btn-ghost:hover {
   color: var(--text);
-  background: #f0f4ff;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* ==========
@@ -189,9 +190,8 @@ body {
 
 .table-wrap {
   overflow-x: auto;
-  border: 1px solid #d8e2ff;
+  border: 2px solid rgb(11, 19, 108);
   border-radius: var(--radius);
-  background: #fff;
 }
 
 table {
@@ -204,13 +204,13 @@ th,
 td {
   padding: 10px 12px;
   text-align: left;
-  border-top: 1px solid #ebf0ff;
+  border-top: 2px solid rgb(44, 42, 176);
   white-space: nowrap;
 }
 
 thead th {
   border-top: none;
-  background: #f3f6ff;
+  background: var(--bg);
   color: var(--muted);
   font-weight: 600;
 }
@@ -219,16 +219,16 @@ thead th {
   min-height: 36px;
   padding: 6px 10px;
   border-radius: 9px;
-  border: 1px solid #c8d7ff;
-  background: #edf3ff;
-  color: #244bbf;
+  border: none;
+  background: var(--surface-raised);
+  color: var(--accent);
   cursor: pointer;
   font-weight: 600;
   font-size: 0.85rem;
 }
 
 .btn-detail:hover {
-  background: #dfeaff;
+  background: rgba(61, 158, 255, 0.15);
 }
 
 .detail-rows {

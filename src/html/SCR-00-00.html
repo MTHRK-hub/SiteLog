@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>現場記録簿</title>
+  <style>
+    /*
+     * フレームページ (SCR-00-00)
+     *
+     * sample/フレームイメージ.png に準拠:
+     *   ① ヘッダ領域 (スクロール不可) ← 各コンテンツページの .top-bar
+     *   ② 各画面領域 (スクロール可)   ← 各コンテンツページの本文
+     *
+     * iframe が全画面を占有し、各コンテンツページを読み込む。
+     * ① / ② の分離はコンテンツページ内の CSS レイアウトで実現される。
+     */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0e3583;
+    }
+    #app-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- ① ヘッダ + ② 各画面 を iframe 内に表示 -->
+  <iframe
+    id="app-frame"
+    src="./SCR-01-01.html"
+    name="main"
+    title="現場記録簿"
+  ></iframe>
+</body>
+</html>

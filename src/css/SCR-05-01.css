@@ -10,8 +10,8 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: #e6f4ea;
-  color: #2e7d32;
+  background: rgba(61, 158, 255, 0.15);
+  color: var(--accent);
   font-size: 2rem;
   font-weight: 700;
   display: flex;

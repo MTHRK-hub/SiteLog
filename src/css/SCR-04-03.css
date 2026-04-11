@@ -15,11 +15,11 @@
 .site-form-page textarea {
   width: 100%;
   min-height: var(--touch-min);
-  border: 1px solid #d4def8;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius);
   padding: 10px 12px;
   font-size: 1rem;
-  background: #ffffff;
+  background: var(--bg);
   color: var(--text);
 }
 
