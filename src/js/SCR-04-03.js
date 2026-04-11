@@ -2,8 +2,7 @@
   const c = window.SiteLogCommon;
   if (!c.requireLogin()) return;
 
-  c.fillUserNames();
-  c.bindLogoutButtons();
+  c.updateParentHeader({ screenId: "SCR-04-03", title: "現場記録登録", showUser: true });
 
   const form = document.getElementById("site-create-form");
   const errorEl = document.getElementById("site-create-error");

@@ -3,10 +3,15 @@
   // 画面HTML分割のため、一覧→詳細の受け渡しは sessionStorage に保存して遷移する
   if (!c.requireLogin()) return;
 
-  c.fillUserNames();
-  c.bindLogoutButtons();
-  c.bindNavButton("[data-action='menu']", "menu");
-  c.bindNavButton("#btn-friend-create", "friendCreate");
+  c.updateParentHeader({
+    screenId: "SCR-03-01",
+    title: "友達一覧",
+    back: "menu",
+    showUser: true,
+    extraId: "btn-friend-create",
+    extraLabel: "新規登録",
+    extraScreen: "friendCreate"
+  });
 
   const status = document.getElementById("friend-load-status");
   const body = document.getElementById("friend-list-body");

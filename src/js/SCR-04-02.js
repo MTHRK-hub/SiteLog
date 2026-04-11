@@ -2,13 +2,8 @@
   const c = window.SiteLogCommon;
   if (!c.requireLogin()) return;
 
-  c.fillUserNames();
-  c.bindLogoutButtons();
-  c.bindNavButton("[data-action='site-list']", "siteList");
-
   const content = document.getElementById("site-detail-content");
   const btnDelete = document.getElementById("btn-site-delete");
-  const btnEdit = document.getElementById("btn-site-edit");
   const dialog = document.getElementById("delete-dialog");
   const deleteError = document.getElementById("delete-error");
 
@@ -19,11 +14,30 @@
   const log = found ? found.row : rows[index];
 
   if (!log) {
+    c.updateParentHeader({
+      screenId: "SCR-04-02",
+      title: "現場記録詳細",
+      back: "site-list",
+      showUser: true,
+      extraId: "btn-site-edit",
+      extraLabel: "編集",
+      extraScreen: "siteEdit",
+      extraEnabled: false
+    });
     content.innerHTML = "<div class='detail-row'><dt>情報</dt><dd>対象データがありません。一覧に戻ってください。</dd></div>";
-    btnEdit.disabled = true;
     btnDelete.disabled = true;
     return;
   }
+
+  c.updateParentHeader({
+    screenId: "SCR-04-02",
+    title: "現場記録詳細",
+    back: "site-list",
+    showUser: true,
+    extraId: "btn-site-edit",
+    extraLabel: "編集",
+    extraScreen: "siteEdit"
+  });
 
   content.innerHTML =
     "<div class='detail-row'><dt>日付</dt><dd>" + c.escapeHtml(c.formatDate(log["日付"])) + "</dd></div>" +
@@ -31,12 +45,6 @@
     "<div class='detail-row'><dt>出会った相手</dt><dd>" + c.escapeHtml(log["出会った相手"]) + "</dd></div>" +
     "<div class='detail-row'><dt>メモ</dt><dd>" + c.escapeHtml(log["メモ"]) + "</dd></div>" +
     "<div class='detail-row'><dt>ToDo</dt><dd>" + c.escapeHtml(log["ToDo"]) + "</dd></div>";
-
-  // 編集ボタン
-  btnEdit.addEventListener("click", function () {
-    c.setSelectedSiteLogId(c.getSiteLogId(log, index));
-    c.navigate("siteEdit");
-  });
 
   // 削除ボタン: 確認ダイアログを表示
   btnDelete.addEventListener("click", function () {

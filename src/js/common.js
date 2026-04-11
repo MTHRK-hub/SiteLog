@@ -510,6 +510,32 @@
     return readJson(STORAGE_KEYS.completionInfo, {});
   }
 
+  // =========================
+  // ヘッダフレーム更新
+  // =========================
+  /**
+   * 親フレーム (SCR-00-00) の ① ヘッダフレームへヘッダ設定を送る。
+   * ヘッダフレームが未ロードの場合は 100ms 後にリトライする。
+   *
+   * config 仕様は SCR-00-01.js の window.updateHeader 参照。
+   * userName が未指定の場合は sessionStorage のログインユーザー名を自動補完する。
+   */
+  function updateParentHeader(config) {
+    var cfg = config || {};
+    if (!("userName" in cfg)) {
+      var user = getCurrentUser();
+      cfg.userName = user ? (user.name || "") : "";
+    }
+    var msg = { type: "updateHeader", config: cfg };
+    // 親フレーム (SCR-00-00) へ送信 → 親がヘッダフレームへ中継する
+    // file:// プロトコルでもpostMessageは動作する
+    window.parent.postMessage(msg, "*");
+    // ヘッダフレームがまだロード中の場合に備えて一度再送する
+    setTimeout(function () {
+      window.parent.postMessage(msg, "*");
+    }, 300);
+  }
+
   window.SiteLogCommon = {
     safeLoadSheetRows: safeLoadSheetRows,
     escapeHtml: escapeHtml,
@@ -545,6 +571,7 @@
     getSiteLogId: getSiteLogId,
     findSiteLogById: findSiteLogById,
     setCompletionInfo: setCompletionInfo,
-    getCompletionInfo: getCompletionInfo
+    getCompletionInfo: getCompletionInfo,
+    updateParentHeader: updateParentHeader
   };
 })();

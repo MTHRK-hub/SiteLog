@@ -1,5 +1,15 @@
 (function () {
   const c = window.SiteLogCommon;
+
+  // ヘッダのログアウトボタン経由で遷移した場合はセッションをクリアする
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("logout") === "1") {
+    c.setCurrentUser(null);
+  }
+
+  // ヘッダ更新: ログイン画面はユーザー名・ログアウト非表示
+  c.updateParentHeader({ screenId: "SCR-01-01", title: "現場記録簿", showUser: false });
+
   const loginForm = document.getElementById("login-form");
   const loginError = document.getElementById("login-error");
   const idInput = document.getElementById("login-id");
@@ -59,22 +69,10 @@
     loginError.textContent = "";
     idInput.value = "";
     passwordInput.value = "";
-    // ブラウザの仕様上、スクリプトで開いていないタブは閉じられないことが多い
-    try {
-      window.close();
-    } catch (_) {}
-
-    // 閉じられない場合のフォールバック（疑似的に「閉じる」）
-    setTimeout(function () {
-      try {
-        document.open();
-        document.write("<!doctype html><title>終了</title><meta name='viewport' content='width=device-width, initial-scale=1'><body style='font-family:system-ui; padding:16px'>終了しました。このタブを閉じてください。</body>");
-        document.close();
-      } catch (_) {
-        try {
-          window.location.href = "about:blank";
-        } catch (_) {}
-      }
-    }, 50);
+    // フレームページ（SCR-00-00）ごとウィンドウを閉じる
+    // コンテンツフレーム内から window.top.close() を呼ぶと
+    // ページ遷移後にブラウザがブロックするケースがあるため、
+    // 親フレーム（SCR-00-00）へメッセージを送りトップウィンドウ側で close() を実行する
+    window.parent.postMessage({ type: "closeApp" }, "*");
   });
 })();

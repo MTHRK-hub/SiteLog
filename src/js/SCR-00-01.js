@@ -1,83 +1,177 @@
 (function () {
   /**
-   * 共通ヘッダビルダー (SCR-00-01)
+   * 共通ヘッダ (SCR-00-01) - ヘッダフレーム専用
    *
-   * 各HTMLファイルに以下のプレースホルダを置き、このスクリプトが
-   * 実行時にヘッダHTMLを組み立てて差し替える。
+   * SCR-00-00.html の ① ヘッダ領域 iframe 内で動作する。
+   * file:// プロトコルではフレーム間の直接 JS アクセスがブロックされるため、
+   * postMessage 経由で SCR-00-00.html (親) からメッセージを受け取る。
    *
-   * <div id="site-header"
-   *      data-title="画面タイトル"
-   *      data-title-class="追加クラス名"
-   *      data-back="menu|friend-list|site-list"
-   *      data-show-user="true"
-   *      data-extra-id="ボタンID"
-   *      data-extra-label="ボタンラベル">
-   * </div>
+   * 受信メッセージ:
+   *   { type: "updateHeader", config: { ... } }
    *
-   * data-back:
-   *   "menu"        → 「メニューに戻る」ボタン → SCR-02-01
-   *   "friend-list" → 「一覧に戻る」ボタン     → SCR-03-01
-   *   "site-list"   → 「一覧に戻る」ボタン     → SCR-04-01
-   *   (空 / 未設定)  → 左下エリアなし
+   * 送信メッセージ (→ 親 SCR-00-00 へ):
+   *   { type: "navigate", screen: "screenKey" }
+   *   { type: "logout" }
    *
-   * data-show-user: "true" のとき、ユーザー名とログアウトボタンを表示
-   * data-title-class: <h1> に追加するクラス名（例: js-completion-title）
-   * data-extra-id / data-extra-label: 右下に追加するページ固有ボタン
+   * config 仕様:
+   *   screenId    : string  - 画面ID (例: "SCR-01-01")
+   *   title       : string  - 画面名
+   *   back        : string  - "menu" | "friend-list" | "site-list" | "" (空=非表示)
+   *   showUser    : boolean - ユーザー名・ログアウトボタンを表示するか
+   *   userName    : string  - 表示するユーザー名
+   *   extraId     : string  - 右下ボタンの id 属性
+   *   extraLabel  : string  - 右下ボタンのラベル
+   *   extraScreen : string  - 右下ボタン押下時の遷移先画面キー
+   *   extraEnabled: boolean - 右下ボタンの有効/無効 (省略時 true)
    *
-   * レイアウト（ヘッダイメージ.png に準拠）:
-   *   ┌──────────────┬──────────────┬──────────────┐
-   *   │ ① ユーザー名 │              │ ④ ログアウト  │
-   *   │              │  ③ 画面名    │              │
-   *   │ ② 戻るボタン │              │ ⑤ 追加ボタン  │
-   *   └──────────────┴──────────────┴──────────────┘
+   * レイアウト (sample/ヘッダイメージ.png に準拠):
+   *   ┌──────────────┬─────────────────┬──────────────┐
+   *   │ ① ユーザー名 │  ③ 画面ID (小)  │ ⑤ ログアウト │
+   *   │              │  ④ 画面名 (大)  │              │
+   *   │ ② 戻るボタン │                 │ ⑥ 追加ボタン │
+   *   └──────────────┴─────────────────┴──────────────┘
    */
 
-  var placeholder = document.getElementById("site-header");
-  if (!placeholder) return;
+  var root = document.getElementById("header-root");
+  var currentConfig = {};
 
-  var title      = placeholder.getAttribute("data-title")       || "";
-  var titleClass = placeholder.getAttribute("data-title-class") || "";
-  var back       = placeholder.getAttribute("data-back")        || "";
-  var showUser   = placeholder.getAttribute("data-show-user") === "true";
-  var extraId    = placeholder.getAttribute("data-extra-id")    || "";
-  var extraLabel = placeholder.getAttribute("data-extra-label") || "";
+  // ===========================
+  // postMessage 受信
+  // ===========================
+  window.addEventListener("message", function (event) {
+    var data = event.data;
+    if (data && data.type === "updateHeader") {
+      currentConfig = data.config || {};
+      render();
+    }
+  });
 
-  // 上段左: ユーザー名
-  var userHtml = showUser
-    ? '<span class="user-name js-user-name"></span>'
-    : "";
-
-  // 上段右: ログアウトボタン
-  var logoutHtml = showUser
-    ? '<button type="button" class="btn btn-ghost" data-action="logout">ログアウト</button>'
-    : "";
-
-  // 下段左: 戻るボタン
-  var navHtml = "";
-  if (back === "menu") {
-    navHtml = '<button type="button" class="btn btn-secondary" data-action="menu">メニューに戻る</button>';
-  } else if (back === "friend-list") {
-    navHtml = '<button type="button" class="btn btn-secondary" data-action="friend-list">一覧に戻る</button>';
-  } else if (back === "site-list") {
-    navHtml = '<button type="button" class="btn btn-secondary" data-action="site-list">一覧に戻る</button>';
+  // ===========================
+  // 親フレームへ遷移依頼
+  // ===========================
+  function navigateMain(screen) {
+    window.parent.postMessage({ type: "navigate", screen: screen }, "*");
   }
 
-  // 下段右: ページ固有ボタン（新規登録・編集など）
-  var extraHtml = (extraId && extraLabel)
-    ? '<button type="button" class="btn btn-secondary" id="' + extraId + '">' + extraLabel + '</button>'
-    : "";
+  function escHtml(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
 
-  // <h1> クラス
-  var h1Class = "top-title" + (titleClass ? " " + titleClass : "");
+  // ===========================
+  // レンダリング
+  // ===========================
+  function render() {
+    var cfg = currentConfig;
+    var screenId     = cfg.screenId     || "";
+    var title        = cfg.title        || "";
+    var back         = cfg.back         || "";
+    var showUser     = !!cfg.showUser;
+    var userName     = cfg.userName     || "";
+    var extraId      = cfg.extraId      || "";
+    var extraLabel   = cfg.extraLabel   || "";
+    var extraScreen  = cfg.extraScreen  || "";
+    var extraEnabled = cfg.extraEnabled !== false;
 
-  var header = document.createElement("header");
-  header.className = "top-bar";
-  header.innerHTML =
-    '<div class="top-user">'   + userHtml   + '</div>' +
-    '<h1 class="' + h1Class + '">' + title + '</h1>' +
-    '<div class="top-logout">' + logoutHtml + '</div>' +
-    '<div class="top-nav">'    + navHtml    + '</div>' +
-    '<div class="top-extra">'  + extraHtml  + '</div>';
+    // 上段左: ユーザー名
+    var userHtml = showUser
+      ? '<span class="user-name js-user-name">' + escHtml(userName) + "</span>"
+      : "";
 
-  placeholder.parentNode.replaceChild(header, placeholder);
+    // 上段右: ログアウトボタン
+    var logoutHtml = showUser
+      ? '<button type="button" class="btn btn-ghost" id="hdr-btn-logout">ログアウト</button>'
+      : "";
+
+    // 中央: 画面ID (上) + 画面名 (下)
+    var centerHtml =
+      (screenId
+        ? '<span class="header-screen-id">' + escHtml(screenId) + "</span>"
+        : "") +
+      escHtml(title);
+
+    // 下段左: 戻るボタン
+    var navHtml = "";
+    if (back === "menu") {
+      navHtml = '<button type="button" class="btn btn-secondary" id="hdr-btn-nav">メニューに戻る</button>';
+    } else if (back === "friend-list") {
+      navHtml = '<button type="button" class="btn btn-secondary" id="hdr-btn-nav">一覧に戻る</button>';
+    } else if (back === "site-list") {
+      navHtml = '<button type="button" class="btn btn-secondary" id="hdr-btn-nav">一覧に戻る</button>';
+    }
+
+    // 下段右: ページ固有ボタン (新規登録・編集など)
+    var extraHtml = "";
+    if (extraId && extraLabel) {
+      extraHtml =
+        '<button type="button" class="btn btn-secondary" id="' + escHtml(extraId) + '"' +
+        (extraEnabled ? "" : " disabled") + ">" +
+        escHtml(extraLabel) + "</button>";
+    }
+
+    var header = document.createElement("header");
+    header.className = "hdr-wrap";
+    header.innerHTML =
+      '<table class="header-table"><tbody>' +
+        '<tr>' +
+          '<td class="hdr-left">'   + userHtml   + "</td>" +
+          '<td class="hdr-center" rowspan="2"><h1 class="top-title">' + centerHtml + "</h1></td>" +
+          '<td class="hdr-right">'  + logoutHtml + "</td>" +
+        "</tr>" +
+        '<tr>' +
+          '<td class="hdr-left">'   + navHtml    + "</td>" +
+          '<td class="hdr-right">'  + extraHtml  + "</td>" +
+        "</tr>" +
+      "</tbody></table>";
+
+    root.innerHTML = "";
+    root.appendChild(header);
+
+    bindButtons(back, extraId, extraScreen);
+  }
+
+  // ===========================
+  // ボタンイベント設定
+  // ===========================
+  function bindButtons(back, extraId, extraScreen) {
+    // ログアウト
+    var logoutBtn = document.getElementById("hdr-btn-logout");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", function () {
+        if (window.confirm("ログアウトしますか？")) {
+          window.parent.postMessage({ type: "logout" }, "*");
+        }
+      });
+    }
+
+    // 戻るボタン
+    var navBtn = document.getElementById("hdr-btn-nav");
+    if (navBtn) {
+      var backScreen =
+        back === "menu"        ? "menu"       :
+        back === "friend-list" ? "friendList" :
+        back === "site-list"   ? "siteList"   : "";
+      if (backScreen) {
+        navBtn.addEventListener("click", function () {
+          navigateMain(backScreen);
+        });
+      }
+    }
+
+    // 右下ページ固有ボタン
+    if (extraId && extraScreen) {
+      var extraBtn = document.getElementById(extraId);
+      if (extraBtn) {
+        extraBtn.addEventListener("click", function () {
+          navigateMain(extraScreen);
+        });
+      }
+    }
+  }
+
+  // 初期表示 (空ヘッダ)
+  render();
 })();

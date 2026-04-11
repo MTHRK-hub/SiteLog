@@ -2,11 +2,6 @@
   const c = window.SiteLogCommon;
   if (!c.requireLogin()) return;
 
-  c.fillUserNames();
-  c.bindLogoutButtons();
-  c.bindNavButton("[data-action='friend-list']", "friendList");
-  c.bindNavButton("#btn-friend-edit", "friendEdit");
-
   const content = document.getElementById("friend-detail-content");
   const btnDelete = document.getElementById("btn-friend-delete");
   const dialog = document.getElementById("delete-dialog");
@@ -20,11 +15,30 @@
   const friend = found ? found.row : friends[index];
 
   if (!friend) {
+    c.updateParentHeader({
+      screenId: "SCR-03-02",
+      title: "友達詳細",
+      back: "friend-list",
+      showUser: true,
+      extraId: "btn-friend-edit",
+      extraLabel: "編集",
+      extraScreen: "friendEdit",
+      extraEnabled: false
+    });
     content.innerHTML = "<div class='detail-row'><dt>情報</dt><dd>対象データがありません。一覧に戻ってください。</dd></div>";
-    document.getElementById("btn-friend-edit").disabled = true;
     btnDelete.disabled = true;
     return;
   }
+
+  c.updateParentHeader({
+    screenId: "SCR-03-02",
+    title: "友達詳細",
+    back: "friend-list",
+    showUser: true,
+    extraId: "btn-friend-edit",
+    extraLabel: "編集",
+    extraScreen: "friendEdit"
+  });
 
   content.innerHTML =
     "<div class='detail-row'><dt>名前</dt><dd>" + c.escapeHtml(friend["名前"]) + "</dd></div>" +

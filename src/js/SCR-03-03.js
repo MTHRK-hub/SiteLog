@@ -2,8 +2,7 @@
   const c = window.SiteLogCommon;
   if (!c.requireLogin()) return;
 
-  c.fillUserNames();
-  c.bindLogoutButtons();
+  c.updateParentHeader({ screenId: "SCR-03-03", title: "友達登録", showUser: true });
 
   const form = document.getElementById("friend-create-form");
   const errorEl = document.getElementById("friend-create-error");

@@ -1,12 +1,97 @@
 /*
- * SCR-00-01 共通ヘッダ スタイル
- *
- * ヘッダの主要スタイル（.top-bar / .top-user / .top-logout /
- * .top-nav / .top-extra / .top-title / .user-name）は common.css で定義済み。
- * このファイルはヘッダ固有の追加スタイルを記述する。
+ * SCR-00-01 共通ヘッダ スタイル (table レイアウト版)
  */
 
-/* 名前リンク（友達一覧・現場記録一覧の行クリック） */
+/* ===========================
+   ヘッダ外枠
+   =========================== */
+.hdr-wrap {
+  padding: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  /* iframe の高さ・幅全体を使う */
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* ===========================
+   ヘッダテーブル
+   =========================== */
+.header-table {
+  width: 100%;
+  height: 100%;          /* iframe 全高に広げる */
+  border-collapse: collapse;
+  table-layout: fixed;
+  /* common.css の table スタイルを上書き */
+  border: none;
+  font-size: inherit;
+}
+
+/* common.css の td スタイルをヘッダ内でリセット */
+.header-table td {
+  border: none;
+  border-top: none;
+  background: transparent;
+  white-space: nowrap;
+  padding: 4px 8px;
+  vertical-align: middle;
+}
+
+/* 左列: ユーザー名 (上段) / 戻るボタン (下段) */
+.hdr-left {
+  width: 30%;
+  text-align: left;
+}
+
+/* 中央列: 画面ID + 画面名 (2行結合・縦横中央) */
+.hdr-center {
+  width: 40%;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* 右列: ログアウト (上段) / 追加ボタン (下段) */
+.hdr-right {
+  width: 30%;
+  text-align: right;
+}
+
+/* ===========================
+   ヘッダ内タイトル
+   =========================== */
+.top-title {
+  margin: 0;
+  font-size: clamp(1rem, 4vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* 画面ID (③: 画面名の上・半分サイズ) */
+.header-screen-id {
+  display: block;
+  font-size: 0.5em;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+/* ===========================
+   ヘッダ内ユーザー名
+   =========================== */
+.user-name {
+  font-size: 0.85rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  max-width: 100%;
+}
+
+/* ===========================
+   名前リンク（友達一覧・現場記録一覧の行クリック）
+   =========================== */
 .name-link {
   background: none;
   border: none;

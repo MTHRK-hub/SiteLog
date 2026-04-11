@@ -2,8 +2,7 @@
   const c = window.SiteLogCommon;
   if (!c.requireLogin()) return;
 
-  c.fillUserNames();
-  c.bindLogoutButtons();
+  c.updateParentHeader({ screenId: "SCR-03-04", title: "友達編集", showUser: true });
 
   const form = document.getElementById("friend-edit-form");
   const errorEl = document.getElementById("friend-edit-error");

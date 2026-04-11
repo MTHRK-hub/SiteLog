@@ -1,9 +1,3 @@
-.site-list-page .table-header-bar {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 8px;
-}
-
 /* テーブル行の色分け（ヘッダ行はそのまま） */
 .site-list-page tbody tr:nth-child(odd) {
   background: rgb(54, 32, 22);

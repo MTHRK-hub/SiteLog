@@ -2,10 +2,16 @@
   const c = window.SiteLogCommon;
   if (!c.requireLogin()) return;
 
-  c.fillUserNames();
-  c.bindLogoutButtons();
-  c.bindNavButton("[data-action='menu']", "menu");
-  c.bindNavButton("#btn-site-create", "siteCreate");
+  // 新規登録ボタンはヘッダ (SCR-00-01) に定義
+  c.updateParentHeader({
+    screenId: "SCR-04-01",
+    title: "現場記録一覧",
+    back: "menu",
+    showUser: true,
+    extraId: "btn-site-create",
+    extraLabel: "新規登録",
+    extraScreen: "siteCreate"
+  });
 
   const status = document.getElementById("site-load-status");
   const body = document.getElementById("site-list-body");

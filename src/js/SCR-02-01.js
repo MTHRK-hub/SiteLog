@@ -2,8 +2,7 @@
   const c = window.SiteLogCommon;
   if (!c.requireLogin()) return;
 
-  c.fillUserNames();
-  c.bindLogoutButtons();
+  c.updateParentHeader({ screenId: "SCR-02-01", title: "メニュー", showUser: true });
 
   document.getElementById("link-friend-list").addEventListener("click", function () {
     c.navigate("friendList");
