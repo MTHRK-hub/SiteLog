@@ -10,6 +10,15 @@
   const selectedId = c.getSelectedFriendId();
   const found = c.findFriendById(rows, selectedId);
 
+  // 生年月日入力時に年齢差を非活性にする
+  const ageDiffInput = document.getElementById("input-age-diff");
+  const birthDateInput = document.getElementById("input-birthdate");
+  function syncAgeDiffState() {
+    ageDiffInput.disabled = !!birthDateInput.value;
+    if (birthDateInput.value) ageDiffInput.value = "";
+  }
+  birthDateInput.addEventListener("input", syncAgeDiffState);
+
   if (!found) {
     errorEl.textContent = "編集対象データがありません。";
     form.querySelectorAll("input, textarea, button").forEach(function (el) {
@@ -19,7 +28,9 @@
     const friend = found.row;
     form.elements["名前"].value = friend["名前"] || "";
     form.elements["LINE名"].value = friend["LINE名"] || "";
-    form.elements["年齢"].value = friend["年齢"] || "";
+    form.elements["生年月日"].value = friend["生年月日"] || "";
+    form.elements["年齢差"].value = friend["年齢差"] || "";
+    syncAgeDiffState();
     form.elements["性別"].value = friend["性別"] || "";
     form.elements["職業"].value = friend["職業"] || "";
     form.elements["出会った日"].value = friend["出会った日"] || "";
@@ -40,17 +51,21 @@
       errorEl.textContent = "";
 
       const fd = new FormData(form);
+      const currentUser = c.getCurrentUser();
       const updated = {
         id: c.getFriendId(friend, found.index),
         "名前": String(fd.get("名前") || "").trim(),
         "LINE名": String(fd.get("LINE名") || "").trim(),
-        "年齢": String(fd.get("年齢") || "").trim(),
+        "年齢差": ageDiffInput.disabled ? "" : String(fd.get("年齢差") || "").trim(),
+        "生年月日": String(fd.get("生年月日") || "").trim(),
         "性別": String(fd.get("性別") || "").trim(),
         "職業": String(fd.get("職業") || "").trim(),
         "出会った日": String(fd.get("出会った日") || "").trim(),
         "出会った場所": String(fd.get("出会った場所") || "").trim(),
         "相手の情報": String(fd.get("相手の情報") || "").trim(),
-        "今後の予定": String(fd.get("今後の予定") || "").trim()
+        "今後の予定": String(fd.get("今後の予定") || "").trim(),
+        "ユーザーID": currentUser ? String(currentUser.id || "") : "",
+        "最終更新日": new Date().toISOString().slice(0, 10)
       };
 
       if (!updated["名前"] || !updated["LINE名"]) {

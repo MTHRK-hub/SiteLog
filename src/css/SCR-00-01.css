@@ -36,8 +36,8 @@
 }
 
 /* colgroup で列幅を明示 (1,4列目:30% / 2,3列目:20%) */
-.header-table .col-side   { width: 38%; }
-.header-table .col-center { width: 12%; }
+.header-table .col-side   { width: 35%; }
+.header-table .col-center { width: 15%; }
 
 /* 行1・行3: 均等高さ */
 .hdr-row {
@@ -100,16 +100,6 @@
   font-size: clamp(1.35rem, 3vw, 1.2rem);
   font-weight: 700;
   letter-spacing: 0.02em;
-}
-
-/* ===========================
-   行3ボタン（⑤⑥）のサイズ調整
-   common.css の .btn より小さく
-   =========================== */
-.header-table .btn-secondary {
-  min-height: 30px;
-  padding: 4px 10px;
-  font-size: 0.78rem;
 }
 
 /* ===========================

@@ -16,6 +16,8 @@
   const status = document.getElementById("friend-load-status");
   const body = document.getElementById("friend-list-body");
 
+  const loginUser = c.getCurrentUser();
+
   function render(rows) {
     body.innerHTML = "";
     rows.forEach(function (f, index) {
@@ -23,7 +25,7 @@
       tr.innerHTML =
         "<td><button type='button' class='name-link' data-friend-index='" + index + "'>" + c.escapeHtml(f["名前"]) + "</button></td>" +
         "<td>" + c.escapeHtml(f["LINE名"]) + "</td>" +
-        "<td>" + c.escapeHtml(f["年齢"]) + "</td>" +
+        "<td>" + c.escapeHtml(c.calcAge(f, loginUser)) + "</td>" +
         "<td>" + c.escapeHtml(f["性別"]) + "</td>" +
         "<td>" + c.escapeHtml(f["職業"]) + "</td>";
       body.appendChild(tr);
@@ -42,6 +44,23 @@
   (async function init() {
     // 表示のたびに最新を取りたいので、一覧画面遷移時に読み込む
     status.textContent = "友達データを読み込み中...";
+
+    // birthDate未設定（ログイン後に列追加などでセッションが古い場合）はシートから再取得
+    if (!loginUser.birthDate) {
+      const userResult = await c.safeLoadSheetRows("users");
+      if (userResult.ok) {
+        const userId = loginUser.id ? String(loginUser.id) : "";
+        const userRow = userResult.rows.find(function (r) {
+          return String(r["ユーザーID"] || "").trim() === userId;
+        });
+        if (userRow && userRow["生年月日"]) {
+          loginUser.birthDate = String(userRow["生年月日"]).trim();
+          loginUser.isAdmin = String(userRow["管理者フラグ"] || "") === "1";
+          c.setCurrentUser(loginUser);
+        }
+      }
+    }
+
     const result = await c.safeLoadSheetRows("friends");
     if (!result.ok) {
       status.textContent = result.message;

@@ -124,7 +124,7 @@
             const cells = r && r.c ? r.c : [];
             headers.forEach(function (h, idx) {
               const cell = cells[idx];
-              item[h] = cell && cell.v != null ? String(cell.v).trim() : "";
+              item[h] = cell && cell.v != null ? normalizeGvizValue_(cell.v) : "";
             });
             return item;
           }).filter(function (item) {
@@ -265,6 +265,13 @@
   }
 
   // =========================
+  // パスワード変更
+  // =========================
+  async function updatePassword(payload) {
+    await callWriteApi("updatePassword", payload);
+  }
+
+  // =========================
   // 友達 書き込み
   // =========================
   async function appendFriend(record) {
@@ -295,6 +302,41 @@
   }
 
   // =========================
+  // 日付ユーティリティ
+  // =========================
+
+  // gviz API は日付を "Date(year,month,day)" 形式（month は 0 始まり）で返す。
+  // これを "YYYY-MM-DD" に正規化してから格納する。
+  function normalizeGvizValue_(v) {
+    const s = String(v);
+    const m = /^Date\((\d+),(\d+),(\d+)\)$/.exec(s);
+    if (m) {
+      const y = m[1];
+      const mo = String(parseInt(m[2], 10) + 1).padStart(2, "0");
+      const d = String(parseInt(m[3], 10)).padStart(2, "0");
+      return y + "-" + mo + "-" + d;
+    }
+    return s.trim();
+  }
+
+  // 日付文字列を Date オブジェクトに変換する。
+  // 対応フォーマット: "YYYY-MM-DD", "YYYY/MM/DD", "Date(year,month,day)"
+  function parseAnyDate_(dateStr) {
+    if (!dateStr) return null;
+    const s = String(dateStr).trim();
+    // gviz形式（念のため未変換値が来た場合も吸収）
+    const gviz = /^Date\((\d+),(\d+),(\d+)\)$/.exec(s);
+    if (gviz) {
+      const d = new Date(parseInt(gviz[1], 10), parseInt(gviz[2], 10), parseInt(gviz[3], 10), 12, 0, 0);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+    // YYYY/MM/DD または YYYY-MM-DD
+    const normalized = s.replace(/\//g, "-");
+    const d = new Date(normalized.includes("T") ? normalized : normalized + "T12:00:00");
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+
+  // =========================
   // ユーティリティ
   // =========================
   function escapeHtml(value) {
@@ -305,12 +347,46 @@
 
   function formatDate(dateStr) {
     if (!dateStr) return "";
-    const d = new Date(dateStr.includes("T") ? dateStr : dateStr + "T12:00:00");
-    if (Number.isNaN(d.getTime())) return dateStr;
+    const d = parseAnyDate_(dateStr);
+    if (!d) return dateStr;
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
     return y + "/" + m + "/" + day;
+  }
+
+  // 生年月日文字列から現在の年齢（整数）を返す。無効な場合は null
+  function calcAgeFromBirthDate(dateStr) {
+    const birth = parseAnyDate_(dateStr);
+    if (!birth) return null;
+    const now = new Date();
+    let age = now.getFullYear() - birth.getFullYear();
+    const dm = now.getMonth() - birth.getMonth();
+    if (dm < 0 || (dm === 0 && now.getDate() < birth.getDate())) age--;
+    return age;
+  }
+
+  /**
+   * 友達データの「年齢」を算出して文字列で返す。
+   *  1. friend["生年月日"] が入力済み → そこから算出
+   *  2. friend["年齢差"] が入力済み かつ loginUser.birthDate がある → ログインユーザーの年齢 ＋ 年齢差
+   *  3. それ以外 → ""
+   */
+  function calcAge(friend, loginUser) {
+    const birth = friend && friend["生年月日"] ? String(friend["生年月日"]).trim() : "";
+    if (birth) {
+      const age = calcAgeFromBirthDate(birth);
+      return age !== null ? String(age) : "";
+    }
+    const diffRaw = friend && friend["年齢差"] != null ? String(friend["年齢差"]).trim() : "";
+    if (diffRaw !== "" && loginUser && loginUser.birthDate) {
+      const userAge = calcAgeFromBirthDate(loginUser.birthDate);
+      const diff = parseInt(diffRaw, 10);
+      if (userAge !== null && !Number.isNaN(diff)) {
+        return String(userAge + diff);
+      }
+    }
+    return "";
   }
 
   function normalizeAuthValue(value) {
@@ -401,7 +477,9 @@
     siteDetail: "SCR-04-02.html",
     siteCreate: "SCR-04-03.html",
     siteEdit: "SCR-04-04.html",
-    completion: "SCR-05-01.html"
+    completion: "SCR-05-01.html",
+    passwordChange: "SCR-06-01.html",
+    userCreate: "SCR-07-01.html"
   };
 
   function navigate(screen) {
@@ -538,6 +616,8 @@
 
   window.SiteLogCommon = {
     safeLoadSheetRows: safeLoadSheetRows,
+    updatePassword: updatePassword,
+    calcAge: calcAge,
     escapeHtml: escapeHtml,
     formatDate: formatDate,
     normalizeAuthValue: normalizeAuthValue,

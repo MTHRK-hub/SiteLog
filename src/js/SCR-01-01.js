@@ -60,7 +60,9 @@
 
     c.setCurrentUser({
       id: matched["ユーザーID"],
-      name: matched["ユーザー名"] || matched["ユーザーID"]
+      name: matched["ユーザー名"] || matched["ユーザーID"],
+      birthDate: matched["生年月日"] || "",
+      isAdmin: matched["管理者フラグ"] === "1"
     });
     c.navigate("menu");
   });

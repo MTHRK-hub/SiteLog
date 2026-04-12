@@ -15,6 +15,15 @@
     return String(maxId + 1);
   }
 
+  // 生年月日入力時に年齢差を非活性にする
+  const ageDiffInput = document.getElementById("input-age-diff");
+  const birthDateInput = document.getElementById("input-birthdate");
+  function syncAgeDiffState() {
+    ageDiffInput.disabled = !!birthDateInput.value;
+    if (birthDateInput.value) ageDiffInput.value = "";
+  }
+  birthDateInput.addEventListener("input", syncAgeDiffState);
+
   const confirmDialog = document.getElementById("confirm-dialog");
   const btnConfirmOk = document.getElementById("btn-confirm-ok");
   const btnConfirmCancel = document.getElementById("btn-confirm-cancel");
@@ -29,18 +38,21 @@
 
     const rows = c.getFriends();
     const fd = new FormData(form);
+    const currentUser = c.getCurrentUser();
     const record = {
       id: nextId(rows),
       "名前": String(fd.get("名前") || "").trim(),
       "LINE名": String(fd.get("LINE名") || "").trim(),
-      "年齢差": String(fd.get("年齢") || "").trim(),
-      "生年月日": "",
+      "年齢差": ageDiffInput.disabled ? "" : String(fd.get("年齢差") || "").trim(),
+      "生年月日": String(fd.get("生年月日") || "").trim(),
       "性別": String(fd.get("性別") || "").trim(),
       "職業": String(fd.get("職業") || "").trim(),
       "出会った日": String(fd.get("出会った日") || "").trim(),
       "出会った場所": String(fd.get("出会った場所") || "").trim(),
       "相手の情報": String(fd.get("相手の情報") || "").trim(),
-      "今後の予定": String(fd.get("今後の予定") || "").trim()
+      "今後の予定": String(fd.get("今後の予定") || "").trim(),
+      "ユーザーID": currentUser ? String(currentUser.id || "") : "",
+      "最終更新日": new Date().toISOString().slice(0, 10)
     };
 
     if (!record["名前"] || !record["LINE名"]) {

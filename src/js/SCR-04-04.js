@@ -36,13 +36,16 @@
       errorEl.textContent = "";
 
       const fd = new FormData(form);
+      const currentUser = c.getCurrentUser();
       const updated = {
         id: c.getSiteLogId(log, found.index),
         "日付": String(fd.get("日付") || "").trim(),
         "項目": String(fd.get("項目") || "").trim(),
         "出会った相手": String(fd.get("出会った相手") || "").trim(),
         "メモ": String(fd.get("メモ") || "").trim(),
-        "ToDo": String(fd.get("ToDo") || "").trim()
+        "ToDo": String(fd.get("ToDo") || "").trim(),
+        "ユーザーID": currentUser ? String(currentUser.id || "") : "",
+        "最終更新日": new Date().toISOString().slice(0, 10)
       };
 
       if (!updated["日付"]) {
