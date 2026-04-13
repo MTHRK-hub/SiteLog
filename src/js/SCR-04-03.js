@@ -15,6 +15,17 @@
     return String(maxId + 1);
   }
 
+  // 項目が MTG/その他 の場合は「出会った相手」を非活性にする
+  const selectItem = document.getElementById("select-item");
+  const inputPartner = document.getElementById("input-partner");
+  function syncPartnerState() {
+    const v = selectItem.value;
+    const disable = (v === "MTG" || v === "その他");
+    inputPartner.disabled = disable;
+    if (disable) inputPartner.value = "";
+  }
+  selectItem.addEventListener("change", syncPartnerState);
+
   const confirmDialog = document.getElementById("confirm-dialog");
   const btnConfirmOk = document.getElementById("btn-confirm-ok");
   const btnConfirmCancel = document.getElementById("btn-confirm-cancel");
@@ -38,7 +49,7 @@
       "メモ": String(fd.get("メモ") || "").trim(),
       "ToDo": String(fd.get("ToDo") || "").trim(),
       "ユーザーID": currentUser ? String(currentUser.id || "") : "",
-      "最終更新日": new Date().toISOString().slice(0, 10)
+      "最終更新日時": new Date().toISOString().slice(0, 19).replace("T", " ")
     };
 
     if (!record["日付"]) {
@@ -51,7 +62,7 @@
     btnConfirmOk.onclick = async function () {
       confirmDialog.setAttribute("hidden", "");
       try {
-        await c.appendSiteLog(record);
+        await c.appendSiteLog(c.encryptSiteLogRecord(record));
         rows.push(record);
         c.setSiteLogs(rows);
         c.setCompletionInfo({

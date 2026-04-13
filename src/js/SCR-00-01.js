@@ -101,6 +101,8 @@
       navHtml = '<button type="button" class="btn btn-secondary" id="hdr-btn-nav">一覧に戻る</button>';
     } else if (back === "site-list") {
       navHtml = '<button type="button" class="btn btn-secondary" id="hdr-btn-nav">一覧に戻る</button>';
+    } else if (back === "user-list") {
+      navHtml = '<button type="button" class="btn btn-secondary" id="hdr-btn-nav">一覧に戻る</button>';
     }
 
     // 下段右: ページ固有ボタン (新規登録・編集など)
@@ -177,7 +179,8 @@
       var backScreen =
         back === "menu"        ? "menu"       :
         back === "friend-list" ? "friendList" :
-        back === "site-list"   ? "siteList"   : "";
+        back === "site-list"   ? "siteList"   :
+        back === "user-list"   ? "userCreate" : "";
       if (backScreen) {
         navBtn.addEventListener("click", function () {
           navigateMain(backScreen);

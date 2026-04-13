@@ -24,7 +24,6 @@
       const tr = document.createElement("tr");
       tr.innerHTML =
         "<td><button type='button' class='name-link' data-friend-index='" + index + "'>" + c.escapeHtml(f["名前"]) + "</button></td>" +
-        "<td>" + c.escapeHtml(f["LINE名"]) + "</td>" +
         "<td>" + c.escapeHtml(c.calcAge(f, loginUser)) + "</td>" +
         "<td>" + c.escapeHtml(f["性別"]) + "</td>" +
         "<td>" + c.escapeHtml(f["職業"]) + "</td>";
@@ -67,8 +66,13 @@
       render([]);
       return;
     }
-    c.setFriends(result.rows);
-    status.textContent = "友達データ " + result.rows.length + "件を表示中";
-    render(result.rows);
+    const decryptedRows = result.rows.map(function (r) { return c.decryptFriendRecord(r); });
+    c.setFriends(decryptedRows);
+    const loginUserId = loginUser.id ? String(loginUser.id) : "";
+    const filtered = decryptedRows.filter(function (r) {
+      return String(r["ユーザーID"] || "").trim() === loginUserId;
+    });
+    status.textContent = "友達データ " + filtered.length + "件を表示中";
+    render(filtered);
   })();
 })();

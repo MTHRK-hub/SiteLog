@@ -44,8 +44,14 @@
       render([]);
       return;
     }
-    c.setSiteLogs(result.rows);
-    status.textContent = "現場記録データ " + result.rows.length + "件を表示中";
-    render(result.rows);
+    const decryptedRows = result.rows.map(function (r) { return c.decryptSiteLogRecord(r); });
+    c.setSiteLogs(decryptedRows);
+    const loginUser = c.getCurrentUser();
+    const loginUserId = loginUser ? String(loginUser.id || "") : "";
+    const filtered = decryptedRows.filter(function (r) {
+      return String(r["ユーザーID"] || "").trim() === loginUserId;
+    });
+    status.textContent = "現場記録データ " + filtered.length + "件を表示中";
+    render(filtered);
   })();
 })();

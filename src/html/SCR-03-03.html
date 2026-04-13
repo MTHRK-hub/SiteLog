@@ -16,7 +16,14 @@
         <label>LINE名<input name="LINE名" required /></label>
         <label>年齢差<input name="年齢差" type="number" id="input-age-diff" /></label>
         <label>生年月日<input name="生年月日" type="date" id="input-birthdate" /></label>
-        <label>性別<input name="性別" /></label>
+        <fieldset class="radio-fieldset">
+          <legend class="radio-legend">性別</legend>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="性別" value="男" />男</label>
+            <label class="radio-label"><input type="radio" name="性別" value="女" />女</label>
+            <label class="radio-label"><input type="radio" name="性別" value="その他" />その他</label>
+          </div>
+        </fieldset>
         <label>職業<input name="職業" /></label>
         <label>出会った日<input name="出会った日" type="date" /></label>
         <label>出会った場所<input name="出会った場所" /></label>

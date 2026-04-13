@@ -17,9 +17,24 @@
     });
   } else {
     const log = found.row;
+
+    // 項目が MTG/その他 の場合は「出会った相手」を非活性にする
+    const selectItem = document.getElementById("select-item");
+    const inputPartner = document.getElementById("input-partner");
+    function syncPartnerState() {
+      const v = selectItem.value;
+      const disable = (v === "MTG" || v === "その他");
+      inputPartner.disabled = disable;
+      if (disable) inputPartner.value = "";
+    }
+    selectItem.addEventListener("change", syncPartnerState);
+
     form.elements["日付"].value = log["日付"] || "";
     form.elements["項目"].value = log["項目"] || "";
-    form.elements["出会った相手"].value = log["出会った相手"] || "";
+    syncPartnerState();
+    if (!inputPartner.disabled) {
+      inputPartner.value = log["出会った相手"] || "";
+    }
     form.elements["メモ"].value = log["メモ"] || "";
     form.elements["ToDo"].value = log["ToDo"] || "";
 
@@ -45,7 +60,7 @@
         "メモ": String(fd.get("メモ") || "").trim(),
         "ToDo": String(fd.get("ToDo") || "").trim(),
         "ユーザーID": currentUser ? String(currentUser.id || "") : "",
-        "最終更新日": new Date().toISOString().slice(0, 10)
+        "最終更新日時": new Date().toISOString().slice(0, 19).replace("T", " ")
       };
 
       if (!updated["日付"]) {
@@ -58,7 +73,7 @@
       btnConfirmOk.onclick = async function () {
         confirmDialog.setAttribute("hidden", "");
         try {
-          await c.updateSiteLog(updated);
+          await c.updateSiteLog(c.encryptSiteLogRecord(updated));
           rows[found.index] = updated;
           c.setSiteLogs(rows);
           c.setSelectedSiteLogId(updated.id);

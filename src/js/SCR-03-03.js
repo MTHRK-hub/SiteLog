@@ -52,11 +52,11 @@
       "相手の情報": String(fd.get("相手の情報") || "").trim(),
       "今後の予定": String(fd.get("今後の予定") || "").trim(),
       "ユーザーID": currentUser ? String(currentUser.id || "") : "",
-      "最終更新日": new Date().toISOString().slice(0, 10)
+      "最終更新日時": new Date().toISOString().slice(0, 19).replace("T", " ")
     };
 
-    if (!record["名前"] || !record["LINE名"]) {
-      errorEl.textContent = "名前とLINE名は必須です。";
+    if (!record["名前"]) {
+      errorEl.textContent = "名前は必須です。";
       return;
     }
 
@@ -65,7 +65,7 @@
     btnConfirmOk.onclick = async function () {
       confirmDialog.setAttribute("hidden", "");
       try {
-        await c.appendFriend(record);
+        await c.appendFriend(c.encryptFriendRecord(record));
         rows.push(record);
         c.setFriends(rows);
         c.setSelectedFriendId(record.id);

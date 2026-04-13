@@ -31,7 +31,10 @@
     form.elements["生年月日"].value = friend["生年月日"] || "";
     form.elements["年齢差"].value = friend["年齢差"] || "";
     syncAgeDiffState();
-    form.elements["性別"].value = friend["性別"] || "";
+    const genderValue = friend["性別"] || "";
+    form.querySelectorAll('input[name="性別"]').forEach(function (r) {
+      r.checked = (r.value === genderValue);
+    });
     form.elements["職業"].value = friend["職業"] || "";
     form.elements["出会った日"].value = friend["出会った日"] || "";
     form.elements["出会った場所"].value = friend["出会った場所"] || "";
@@ -65,11 +68,11 @@
         "相手の情報": String(fd.get("相手の情報") || "").trim(),
         "今後の予定": String(fd.get("今後の予定") || "").trim(),
         "ユーザーID": currentUser ? String(currentUser.id || "") : "",
-        "最終更新日": new Date().toISOString().slice(0, 10)
+        "最終更新日時": new Date().toISOString().slice(0, 19).replace("T", " ")
       };
 
-      if (!updated["名前"] || !updated["LINE名"]) {
-        errorEl.textContent = "名前とLINE名は必須です。";
+      if (!updated["名前"]) {
+        errorEl.textContent = "名前は必須です。";
         return;
       }
 
@@ -78,7 +81,7 @@
       btnConfirmOk.onclick = async function () {
         confirmDialog.setAttribute("hidden", "");
         try {
-          await c.updateFriend(updated);
+          await c.updateFriend(c.encryptFriendRecord(updated));
           rows[found.index] = updated;
           c.setFriends(rows);
           c.setSelectedFriendId(updated.id);

@@ -124,7 +124,16 @@
             const cells = r && r.c ? r.c : [];
             headers.forEach(function (h, idx) {
               const cell = cells[idx];
-              item[h] = cell && cell.v != null ? normalizeGvizValue_(cell.v) : "";
+              if (cell && cell.v != null) {
+                item[h] = normalizeGvizValue_(cell.v);
+              } else if (cell && cell.f != null) {
+                // 日付型カラムに文字列（暗号化済みデータ等）が入った場合、
+                // gviz が cell.v を null にすることがある。
+                // cell.f（フォーマット済み文字列）で補完する。
+                item[h] = String(cell.f).trim();
+              } else {
+                item[h] = "";
+              }
             });
             return item;
           }).filter(function (item) {
@@ -265,10 +274,98 @@
   }
 
   // =========================
+  // 暗号化 / 復号化
+  // =========================
+  // XOR + 16進数文字列による可逆変換。
+  // 暗号化済みデータには "ENC:" プレフィックスを付与する。
+  // btoa/atob/escape/unescape を使用しないため、
+  // 文字コード範囲・UTF-8妥当性に依存しない確実な実装。
+  var _CIPHER_KEY = "SiteLogKey2024";
+  var _ENC_PREFIX = "ENC:";
+
+  function encrypt(text) {
+    if (text == null || text === "") return text;
+    var str = String(text);
+    // 既に暗号化済みの場合はそのまま返す
+    if (str.indexOf(_ENC_PREFIX) === 0) return str;
+    var hex = "";
+    for (var i = 0; i < str.length; i++) {
+      var code = str.charCodeAt(i) ^ _CIPHER_KEY.charCodeAt(i % _CIPHER_KEY.length);
+      hex += ("0000" + code.toString(16)).slice(-4);
+    }
+    return _ENC_PREFIX + hex;
+  }
+
+  function decrypt(encoded) {
+    if (encoded == null || encoded === "") return encoded;
+    var s = String(encoded);
+    // "ENC:" プレフィックスがなければ未暗号化データとしてそのまま返す
+    if (s.indexOf(_ENC_PREFIX) !== 0) return s;
+    try {
+      var hex = s.slice(_ENC_PREFIX.length);
+      if (hex.length % 4 !== 0) return s; // 不正な長さ
+      var str = "";
+      for (var i = 0; i < hex.length; i += 4) {
+        var code = parseInt(hex.slice(i, i + 4), 16) ^ _CIPHER_KEY.charCodeAt((i / 4) % _CIPHER_KEY.length);
+        str += String.fromCharCode(code);
+      }
+      return str;
+    } catch (_) {
+      return s; // 復号化失敗時は元の値を返す
+    }
+  }
+
+  var FRIEND_ENCRYPT_FIELDS = ["名前", "LINE名", "年齢差", "生年月日", "性別", "職業", "出会った日", "出会った場所", "相手の情報", "今後の予定"];
+  var SITELOG_ENCRYPT_FIELDS = ["日付", "項目", "出会った相手", "メモ", "ToDo"];
+
+  function encryptRecord(record, fields) {
+    var out = {};
+    Object.keys(record).forEach(function (k) {
+      out[k] = fields.indexOf(k) >= 0 ? encrypt(record[k]) : record[k];
+    });
+    return out;
+  }
+
+  function decryptRecord(record, fields) {
+    var out = {};
+    Object.keys(record).forEach(function (k) {
+      out[k] = fields.indexOf(k) >= 0 ? decrypt(record[k]) : record[k];
+    });
+    return out;
+  }
+
+  function encryptFriendRecord(record) {
+    return encryptRecord(record, FRIEND_ENCRYPT_FIELDS);
+  }
+
+  function decryptFriendRecord(record) {
+    return decryptRecord(record, FRIEND_ENCRYPT_FIELDS);
+  }
+
+  function encryptSiteLogRecord(record) {
+    return encryptRecord(record, SITELOG_ENCRYPT_FIELDS);
+  }
+
+  function decryptSiteLogRecord(record) {
+    return decryptRecord(record, SITELOG_ENCRYPT_FIELDS);
+  }
+
+  // =========================
   // パスワード変更
   // =========================
   async function updatePassword(payload) {
     await callWriteApi("updatePassword", payload);
+  }
+
+  // =========================
+  // ユーザー管理
+  // =========================
+  async function appendUser(record) {
+    await callWriteApi("appendUser", record);
+  }
+
+  async function deleteUser(id) {
+    await callWriteApi("deleteUser", { id: id });
   }
 
   // =========================
@@ -477,9 +574,10 @@
     siteDetail: "SCR-04-02.html",
     siteCreate: "SCR-04-03.html",
     siteEdit: "SCR-04-04.html",
-    completion: "SCR-05-01.html",
-    passwordChange: "SCR-06-01.html",
-    userCreate: "SCR-07-01.html"
+    completion: "SCR-99-01.html",
+    passwordChange: "SCR-A1-01.html",
+    userCreate: "SCR-A2-01.html",
+    userRegister: "SCR-A2-02.html"
   };
 
   function navigate(screen) {
@@ -616,6 +714,14 @@
 
   window.SiteLogCommon = {
     safeLoadSheetRows: safeLoadSheetRows,
+    encrypt: encrypt,
+    decrypt: decrypt,
+    encryptFriendRecord: encryptFriendRecord,
+    decryptFriendRecord: decryptFriendRecord,
+    encryptSiteLogRecord: encryptSiteLogRecord,
+    decryptSiteLogRecord: decryptSiteLogRecord,
+    appendUser: appendUser,
+    deleteUser: deleteUser,
     updatePassword: updatePassword,
     calcAge: calcAge,
     escapeHtml: escapeHtml,

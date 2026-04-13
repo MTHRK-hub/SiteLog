@@ -39,10 +39,11 @@
     extraScreen: "siteEdit"
   });
 
+  const hidePartner = (log["項目"] === "MTG" || log["項目"] === "その他");
   content.innerHTML =
     "<div class='detail-row'><dt>日付</dt><dd>" + c.escapeHtml(c.formatDate(log["日付"])) + "</dd></div>" +
     "<div class='detail-row'><dt>項目</dt><dd>" + c.escapeHtml(log["項目"]) + "</dd></div>" +
-    "<div class='detail-row'><dt>出会った相手</dt><dd>" + c.escapeHtml(log["出会った相手"]) + "</dd></div>" +
+    (hidePartner ? "" : "<div class='detail-row'><dt>出会った相手</dt><dd>" + c.escapeHtml(log["出会った相手"]) + "</dd></div>") +
     "<div class='detail-row'><dt>メモ</dt><dd>" + c.escapeHtml(log["メモ"]) + "</dd></div>" +
     "<div class='detail-row'><dt>ToDo</dt><dd>" + c.escapeHtml(log["ToDo"]) + "</dd></div>";
 

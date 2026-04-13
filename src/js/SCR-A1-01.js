@@ -2,7 +2,7 @@
   const c = window.SiteLogCommon;
   if (!c.requireLogin()) return;
 
-  c.updateParentHeader({ screenId: "SCR-06-01", title: "パスワード変更", back: "menu", showUser: true });
+  c.updateParentHeader({ screenId: "SCR-A1-01", title: "パスワード変更", back: "menu", showUser: true });
 
   const currentUser = c.getCurrentUser();
 
