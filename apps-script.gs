@@ -60,6 +60,18 @@ const SITELOG_HEADERS = [
 ];
 
 // ============================
+// 原稿情報 設定
+// ============================
+const MANUSCRIPT_SHEET_NAME = "原稿情報";
+const MANUSCRIPT_HEADERS = [
+  "id",
+  "タイトル",
+  "原稿",
+  "ユーザーID",
+  "最終更新日時"
+];
+
+// ============================
 // エントリーポイント
 // ============================
 function doGet() {
@@ -122,6 +134,20 @@ function doPost(e) {
     }
     if (action === "deleteSiteLog") {
       deleteSiteLog_(payload);
+      return jsonOk_({ message: "deleted" });
+    }
+
+    // 原稿情報操作
+    if (action === "appendManuscript") {
+      appendManuscript_(payload);
+      return jsonOk_({ message: "appended" });
+    }
+    if (action === "updateManuscript") {
+      updateManuscript_(payload);
+      return jsonOk_({ message: "updated" });
+    }
+    if (action === "deleteManuscript") {
+      deleteManuscript_(payload);
       return jsonOk_({ message: "deleted" });
     }
 
@@ -331,6 +357,56 @@ function updateSiteLog_(record) {
 function deleteSiteLog_(payload) {
   const sheet = getSheet_(SITELOG_SHEET_NAME);
   ensureHeader_(sheet, SITELOG_HEADERS);
+
+  const id = normalize_(payload.id);
+  if (!id) throw new Error("id is required");
+
+  const rowIndex = findRowById_(sheet, id);
+  if (rowIndex < 0) throw new Error("target id not found: " + id);
+
+  sheet.deleteRow(rowIndex);
+}
+
+// ============================
+// 原稿情報 操作
+// ============================
+function appendManuscript_(record) {
+  const sheet = getSheet_(MANUSCRIPT_SHEET_NAME);
+  ensureHeader_(sheet, MANUSCRIPT_HEADERS);
+
+  const id = normalize_(record.id);
+  if (!id) throw new Error("id is required");
+  if (!normalize_(record["タイトル"])) {
+    throw new Error("タイトル is required");
+  }
+
+  const ids = getExistingIds_(sheet);
+  if (ids.has(id)) throw new Error("id already exists: " + id);
+
+  record["最終更新日時"] = currentTimestamp_();
+  sheet.appendRow(toRow_(record, MANUSCRIPT_HEADERS));
+}
+
+function updateManuscript_(record) {
+  const sheet = getSheet_(MANUSCRIPT_SHEET_NAME);
+  ensureHeader_(sheet, MANUSCRIPT_HEADERS);
+
+  const id = normalize_(record.id);
+  if (!id) throw new Error("id is required");
+  if (!normalize_(record["タイトル"])) {
+    throw new Error("タイトル is required");
+  }
+
+  const rowIndex = findRowById_(sheet, id);
+  if (rowIndex < 0) throw new Error("target id not found: " + id);
+
+  record["最終更新日時"] = currentTimestamp_();
+  sheet.getRange(rowIndex, 1, 1, MANUSCRIPT_HEADERS.length).setValues([toRow_(record, MANUSCRIPT_HEADERS)]);
+}
+
+function deleteManuscript_(payload) {
+  const sheet = getSheet_(MANUSCRIPT_SHEET_NAME);
+  ensureHeader_(sheet, MANUSCRIPT_HEADERS);
 
   const id = normalize_(payload.id);
   if (!id) throw new Error("id is required");

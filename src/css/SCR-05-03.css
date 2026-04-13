@@ -1,16 +1,17 @@
-.password-change-page .form-grid {
+.manuscript-form-page .form-grid {
   display: grid;
   gap: 12px;
 }
 
-.password-change-page label {
+.manuscript-form-page label {
   display: grid;
   gap: 6px;
   color: var(--muted);
   font-size: 0.9rem;
 }
 
-.password-change-page input {
+.manuscript-form-page input,
+.manuscript-form-page textarea {
   width: 100%;
   min-height: var(--touch-min);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -21,12 +22,13 @@
   color: var(--text);
 }
 
-.password-change-page input:focus {
-  outline: none;
-  border-color: var(--accent);
+.manuscript-form-page textarea {
+  min-height: 200px;
+  resize: vertical;
 }
 
-.form-actions-single {
-  display: grid;
-  gap: 10px;
+.manuscript-form-page input:focus,
+.manuscript-form-page textarea:focus {
+  outline: none;
+  border-color: var(--accent);
 }

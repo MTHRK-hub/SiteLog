@@ -6,7 +6,8 @@
   const SHEETS = {
     users: { gid: "0", name: "ユーザーデータ" },
     friends: { gid: "1058818904", name: "友達情報" },
-    siteLogs: { gid: "241811860", name: "現場記録情報" }
+    siteLogs: { gid: "241811860", name: "現場記録情報" },
+    manuscripts: { gid: "784637613", name: "原稿情報" }
   };
   // 書き込みAPIのURL（window.SITELOG_WEBAPP_URL または window.SITELOG_FRIENDS_WEBAPP_URL を設定）
   const WRITE_API_URL = (window.SITELOG_WEBAPP_URL || window.SITELOG_FRIENDS_WEBAPP_URL || "");
@@ -15,10 +16,12 @@
     loginUser: "siteLog-login-user",
     friends: "siteLog-friends-data",
     siteLogs: "siteLog-siteLogs-data",
+    manuscripts: "siteLog-manuscripts-data",
     selectedFriend: "siteLog-selected-friend-index",
     selectedFriendId: "siteLog-selected-friend-id",
     selectedSiteLog: "siteLog-selected-siteLog-index",
     selectedSiteLogId: "siteLog-selected-siteLog-id",
+    selectedManuscriptId: "siteLog-selected-manuscript-id",
     completionInfo: "siteLog-completion-info"
   };
 
@@ -183,12 +186,18 @@
       if (key === "siteLogs" && (!("日付" in first) || !("項目" in first))) {
         return "取得は成功しましたが、現場記録情報のヘッダ名が一致しません。";
       }
+      if (key === "manuscripts" && !("タイトル" in first)) {
+        return "取得は成功しましたが、原稿情報のヘッダ名が一致しません。";
+      }
     }
     if (key === "users") {
       return "ユーザーデータを取得できません。シート共有設定を確認してください。";
     }
     if (key === "friends") {
       return "友達情報を取得できません。シート共有設定を確認してください。";
+    }
+    if (key === "manuscripts") {
+      return "原稿情報を取得できません。シート共有設定を確認してください。";
     }
     return "現場記録情報を取得できません。シート共有設定を確認してください。";
   }
@@ -399,6 +408,21 @@
   }
 
   // =========================
+  // 原稿 書き込み
+  // =========================
+  async function appendManuscript(record) {
+    await callWriteApi("appendManuscript", record);
+  }
+
+  async function updateManuscript(record) {
+    await callWriteApi("updateManuscript", record);
+  }
+
+  async function deleteManuscript(id) {
+    await callWriteApi("deleteManuscript", { id: id });
+  }
+
+  // =========================
   // 日付ユーティリティ
   // =========================
 
@@ -574,6 +598,10 @@
     siteDetail: "SCR-04-02.html",
     siteCreate: "SCR-04-03.html",
     siteEdit: "SCR-04-04.html",
+    manuscriptList: "SCR-05-01.html",
+    manuscriptDetail: "SCR-05-02.html",
+    manuscriptCreate: "SCR-05-03.html",
+    manuscriptEdit: "SCR-05-04.html",
     completion: "SCR-99-01.html",
     passwordChange: "SCR-A1-01.html",
     userCreate: "SCR-A2-01.html",
@@ -676,6 +704,42 @@
   }
 
   // =========================
+  // 原稿情報 ストレージ
+  // =========================
+  function setManuscripts(rows) {
+    writeJson(STORAGE_KEYS.manuscripts, rows || []);
+  }
+
+  function getManuscripts() {
+    return readJson(STORAGE_KEYS.manuscripts, []);
+  }
+
+  function setSelectedManuscriptId(id) {
+    sessionStorage.setItem(STORAGE_KEYS.selectedManuscriptId, String(id));
+  }
+
+  function getSelectedManuscriptId() {
+    const raw = sessionStorage.getItem(STORAGE_KEYS.selectedManuscriptId);
+    return raw == null ? "" : String(raw);
+  }
+
+  function getManuscriptId(manuscript, fallbackIndex) {
+    if (!manuscript) return "";
+    const raw = manuscript.id != null && String(manuscript.id).trim() !== "" ? manuscript.id : (fallbackIndex + 1);
+    return normalizeAuthValue(raw);
+  }
+
+  function findManuscriptById(rows, id) {
+    const normId = normalizeAuthValue(id);
+    if (!normId) return null;
+    const index = rows.findIndex(function (row, idx) {
+      return getManuscriptId(row, idx) === normId;
+    });
+    if (index < 0) return null;
+    return { index: index, row: rows[index] };
+  }
+
+  // =========================
   // 完了画面 情報
   // =========================
   function setCompletionInfo(info) {
@@ -733,6 +797,9 @@
     appendSiteLog: appendSiteLog,
     updateSiteLog: updateSiteLog,
     deleteSiteLog: deleteSiteLog,
+    appendManuscript: appendManuscript,
+    updateManuscript: updateManuscript,
+    deleteManuscript: deleteManuscript,
     getCurrentUser: getCurrentUser,
     setCurrentUser: setCurrentUser,
     requireLogin: requireLogin,
@@ -756,6 +823,12 @@
     getSelectedSiteLogId: getSelectedSiteLogId,
     getSiteLogId: getSiteLogId,
     findSiteLogById: findSiteLogById,
+    setManuscripts: setManuscripts,
+    getManuscripts: getManuscripts,
+    setSelectedManuscriptId: setSelectedManuscriptId,
+    getSelectedManuscriptId: getSelectedManuscriptId,
+    getManuscriptId: getManuscriptId,
+    findManuscriptById: findManuscriptById,
     setCompletionInfo: setCompletionInfo,
     getCompletionInfo: getCompletionInfo,
     updateParentHeader: updateParentHeader

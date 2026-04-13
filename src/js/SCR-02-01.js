@@ -13,6 +13,10 @@
     c.navigate("siteList");
   });
 
+  document.getElementById("link-manuscript-list").addEventListener("click", function () {
+    c.navigate("manuscriptList");
+  });
+
   document.getElementById("link-password-change").addEventListener("click", function () {
     c.navigate("passwordChange");
   });

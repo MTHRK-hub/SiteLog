@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>現場記録簿 - 原稿登録</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/SCR-00-01.css" />
+  <link rel="stylesheet" href="../css/SCR-05-03.css" />
+</head>
+<body class="manuscript-form-page">
+  <div class="app">
+    <div class="card">
+      <form id="manuscript-create-form" class="form-grid" novalidate>
+        <label>タイトル<input name="タイトル" required /></label>
+        <label>原稿<textarea name="原稿"></textarea></label>
+        <p id="manuscript-create-error" class="error-msg" role="alert"></p>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">登録</button>
+          <button type="button" class="btn btn-secondary" id="btn-create-cancel">キャンセル</button>
+        </div>
+      </form>
+      <div id="confirm-dialog" class="dialog-overlay" hidden>
+        <div class="dialog-box">
+          <p class="dialog-msg">登録しますか？</p>
+          <div class="dialog-actions">
+            <button type="button" class="btn btn-primary" id="btn-confirm-ok">はい</button>
+            <button type="button" class="btn btn-secondary" id="btn-confirm-cancel">キャンセル</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    window.SITELOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzslsgfnlEFzyDA6W4ysgPJYz8w2PDOG_bCZh5qCy7lQvnfyYa9rR-kkLZGGXENb81D/exec";
+  </script>
+  <script src="../js/common.js"></script>
+  <script src="../js/SCR-05-03.js"></script>
+</body>
+</html>
