@@ -11,7 +11,7 @@
 
   c.updateParentHeader({
     screenId: "SCR-A2-02",
-    title: "新規ユーザー登録",
+    title: "ユーザー登録",
     back: "user-list",
     showUser: true
   });
