@@ -72,6 +72,9 @@
     const filtered = decryptedRows.filter(function (r) {
       return String(r["ユーザーID"] || "").trim() === loginUserId;
     });
+    filtered.sort(function (a, b) {
+      return String(a["名前"] || "").localeCompare(String(b["名前"] || ""), "ja");
+    });
     status.textContent = "友達データ " + filtered.length + "件を表示中";
     render(filtered);
   })();

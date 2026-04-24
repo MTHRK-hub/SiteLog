@@ -51,6 +51,9 @@
     const filtered = decryptedRows.filter(function (r) {
       return String(r["ユーザーID"] || "").trim() === loginUserId;
     });
+    filtered.sort(function (a, b) {
+      return String(b["日付"] || "").localeCompare(String(a["日付"] || ""));
+    });
     status.textContent = "現場記録データ " + filtered.length + "件を表示中";
     render(filtered);
   })();

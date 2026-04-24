@@ -53,6 +53,9 @@
     const filtered = decryptedRows.filter(function (r) {
       return String(r["ユーザーID"] || "").trim() === loginUserId;
     });
+    filtered.sort(function (a, b) {
+      return String(a["タイトル"] || "").localeCompare(String(b["タイトル"] || ""), "ja");
+    });
     status.textContent = "メモデータ " + filtered.length + "件を表示中";
     render(filtered);
   })();
