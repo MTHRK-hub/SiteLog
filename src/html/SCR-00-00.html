@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>現場記録簿</title>
   <link rel="icon" href="../../img/アイコン.png" type="image/png" />
+  <link rel="stylesheet" href="../css/common.css" />
   <style>
     /*
      * フレームページ (SCR-00-00)
@@ -122,14 +123,17 @@
           // ブラウザにブロックされた場合のフォールバック:
           // 150ms 後もウィンドウが生きていれば、フレーム全体を終了画面に差し替える
           setTimeout(function () {
+            var footer = document.querySelector('.globe-footer');
             document.body.innerHTML =
               '<div style="font-family:system-ui;font-size:16px;padding:40px;text-align:center;color:#fff">' +
               '<p>アプリを終了しました。<br>このタブを閉じてください。</p>' +
               '</div>';
+            if (footer) document.body.appendChild(footer);
           }, 150);
         }
       });
     })();
   </script>
+  <script src="../js/footer.js"></script>
 </body>
 </html>

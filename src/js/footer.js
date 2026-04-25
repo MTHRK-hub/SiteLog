@@ -1,4 +1,34 @@
 (function () {
+  var footer = document.createElement('div');
+  footer.className = 'globe-footer';
+  footer.innerHTML =
+    '<div class="globe-stage" role="img" aria-label="地球儀">' +
+      '<div class="globe-whirl">' +
+        '<svg viewBox="0 0 200 200" aria-hidden="true">' +
+          '<g class="globe-ring-a">' +
+            '<circle cx="100" cy="100" r="96" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="170 432" stroke-linecap="round" opacity="0.9"/>' +
+            '<circle cx="100" cy="100" r="96" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="40 562" stroke-dashoffset="-220" stroke-linecap="round" opacity="0.55"/>' +
+          '</g>' +
+          '<g class="globe-ring-b">' +
+            '<circle cx="100" cy="100" r="86" fill="none" stroke="currentColor" stroke-width="0.75" stroke-dasharray="2 6" opacity="0.7"/>' +
+            '<circle cx="100" cy="100" r="86" fill="none" stroke="currentColor" stroke-width="1.25" stroke-dasharray="60 480" stroke-linecap="round" opacity="0.9"/>' +
+          '</g>' +
+          '<g class="globe-ring-c">' +
+            '<circle cx="100" cy="100" r="74" fill="none" stroke="currentColor" stroke-width="0.75" stroke-dasharray="120 340" stroke-linecap="round" opacity="0.8"/>' +
+          '</g>' +
+          '<g class="globe-spark">' +
+            '<circle cx="100" cy="18" r="1.6" fill="currentColor"/>' +
+            '<circle cx="182" cy="100" r="1.1" fill="currentColor" opacity="0.7"/>' +
+            '<circle cx="100" cy="182" r="0.9" fill="currentColor" opacity="0.5"/>' +
+          '</g>' +
+        '</svg>' +
+      '</div>' +
+      '<div class="globe-canvas-wrap">' +
+        '<canvas id="globe-canvas" width="240" height="240"></canvas>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(footer);
+
   var canvas = document.getElementById('globe-canvas');
   if (!canvas) return;
 
@@ -19,7 +49,7 @@
 
   function initGlobe() {
     var ctx = canvas.getContext('2d');
-    var SIZE = 60, DPR = window.devicePixelRatio || 2;
+    var SIZE = 120, DPR = window.devicePixelRatio || 2;
     canvas.width = SIZE * DPR;
     canvas.height = SIZE * DPR;
     ctx.scale(DPR, DPR);
