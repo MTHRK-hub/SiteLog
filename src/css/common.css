@@ -342,7 +342,7 @@ thead th {
 .globe-footer {
   display: flex;
   justify-content: center;
-  padding: 28px 0 20px;
+  padding: 5px 0 5px;
   opacity: 0.8;
 }
 
