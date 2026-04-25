@@ -335,3 +335,77 @@ thead th {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
+
+/* ==========
+   Globe footer
+   ========== */
+.globe-footer {
+  display: flex;
+  justify-content: center;
+  padding: 28px 0 20px;
+  opacity: 0.8;
+}
+
+.globe-stage {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.globe-whirl {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.globe-whirl svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.globe-ring-a { animation: globeSpinCW 3.6s linear infinite; transform-origin: 100px 100px; }
+.globe-ring-b { animation: globeSpinCCW 5.2s linear infinite; transform-origin: 100px 100px; }
+.globe-ring-c { animation: globeSpinCW 7.8s linear infinite; transform-origin: 100px 100px; }
+.globe-spark  { animation: globeSpinCW 2.4s linear infinite; transform-origin: 100px 100px; }
+
+@keyframes globeSpinCW  { to { transform: rotate(360deg); } }
+@keyframes globeSpinCCW { to { transform: rotate(-360deg); } }
+
+.globe-canvas-wrap {
+  width: 120px;
+  height: 120px;
+  position: relative;
+}
+
+.globe-canvas {
+  width: 120px;
+  height: 120px;
+  display: block;
+  border-radius: 50%;
+}
+
+.globe-canvas-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow:
+    inset -8px -10px 18px rgba(0, 0, 0, 0.4),
+    inset 6px 6px 14px rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.globe-canvas-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
