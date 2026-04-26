@@ -53,7 +53,7 @@
 .header-table td {
   border: none;
   background: transparent;
-  padding: 4px 10px;
+  padding: 3px 3px;
   white-space: nowrap;
   overflow: hidden;
 }
