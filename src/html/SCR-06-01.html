@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>現場記録簿 - 自主企画計画</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/SCR-00-01.css" />
+  <link rel="stylesheet" href="../css/SCR-06-01.css" />
+</head>
+<body class="project-plan-page">
+  <div class="app">
+    <div class="card">
+      <div class="project-controls">
+        <select id="month-filter" class="month-select"></select>
+        <button type="button" class="btn btn-secondary" id="btn-msg-setting" disabled>メッセージ設定</button>
+      </div>
+      <div class="project-msg-row">
+        <button type="button" class="btn btn-secondary" id="btn-msg-show" disabled>メッセージ表示</button>
+      </div>
+      <h3 class="section-title">企画一覧</h3>
+      <p class="info-text" id="project-load-status"></p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>年月</th>
+              <th>場所</th>
+              <th>内容</th>
+              <th>詳細</th>
+            </tr>
+          </thead>
+          <tbody id="project-list-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.SITELOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzslsgfnlEFzyDA6W4ysgPJYz8w2PDOG_bCZh5qCy7lQvnfyYa9rR-kkLZGGXENb81D/exec";
+  </script>
+  <script src="../js/common.js"></script>
+  <script src="../js/SCR-06-01.js"></script>
+</body>
+</html>

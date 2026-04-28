@@ -1,0 +1,39 @@
+/* コントロール行: 年月プルダウン(左) ＋ メッセージ設定ボタン(右) */
+.project-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.month-select {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-size: 0.95rem;
+  min-height: var(--touch-min);
+}
+
+.month-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* メッセージ表示ボタン行: 中央寄せ */
+.project-msg-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+/* テーブル行の色分け（ヘッダ行はそのまま） */
+.project-plan-page tbody tr:nth-child(odd) {
+  background: rgb(30, 40, 55);
+}
+
+.project-plan-page tbody tr:nth-child(even) {
+  background: rgb(22, 30, 42);
+}

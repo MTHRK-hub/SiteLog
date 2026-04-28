@@ -17,6 +17,10 @@
     c.navigate("manuscriptList");
   });
 
+  document.getElementById("link-project-plan").addEventListener("click", function () {
+    c.navigate("projectPlan");
+  });
+
   document.getElementById("link-password-change").addEventListener("click", function () {
     c.navigate("passwordChange");
   });

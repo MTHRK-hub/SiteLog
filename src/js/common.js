@@ -7,7 +7,8 @@
     users: { gid: "0", name: "ユーザーデータ" },
     friends: { gid: "1058818904", name: "友達情報" },
     siteLogs: { gid: "241811860", name: "現場記録情報" },
-    manuscripts: { gid: "784637613", name: "メモ情報" }
+    manuscripts: { gid: "784637613", name: "メモ情報" },
+    projects: { gid: "830834819", name: "企画情報" }
   };
   // 書き込みAPIのURL（window.SITELOG_WEBAPP_URL または window.SITELOG_FRIENDS_WEBAPP_URL を設定）
   const WRITE_API_URL = (window.SITELOG_WEBAPP_URL || window.SITELOG_FRIENDS_WEBAPP_URL || "");
@@ -189,6 +190,9 @@
       if (key === "manuscripts" && !("タイトル" in first)) {
         return "取得は成功しましたが、メモ情報のヘッダ名が一致しません。";
       }
+      if (key === "projects" && !("年月" in first)) {
+        return "取得は成功しましたが、企画情報のヘッダ名が一致しません。";
+      }
     }
     if (key === "users") {
       return "ユーザーデータを取得できません。シート共有設定を確認してください。";
@@ -198,6 +202,9 @@
     }
     if (key === "manuscripts") {
       return "メモ情報を取得できません。シート共有設定を確認してください。";
+    }
+    if (key === "projects") {
+      return "企画情報を取得できません。シート共有設定を確認してください。";
     }
     return "現場記録情報を取得できません。シート共有設定を確認してください。";
   }
@@ -621,7 +628,8 @@
     completion: "SCR-99-01.html",
     passwordChange: "SCR-A1-01.html",
     userCreate: "SCR-A2-01.html",
-    userRegister: "SCR-A2-02.html"
+    userRegister: "SCR-A2-02.html",
+    projectPlan: "SCR-06-01.html"
   };
 
   function navigate(screen) {
