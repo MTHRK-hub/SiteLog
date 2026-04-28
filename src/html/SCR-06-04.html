@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>現場記録簿 - 企画編集</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/SCR-00-01.css" />
+  <link rel="stylesheet" href="../css/SCR-06-03.css" />
+</head>
+<body class="project-form-page">
+  <div class="app">
+    <div class="card">
+      <form id="project-edit-form" class="form-grid" novalidate>
+        <label>日付<input type="date" name="日付" required /></label>
+        <label>時間
+          <div class="time-range">
+            <input type="time" name="時間From" />
+            <span class="time-separator">～</span>
+            <input type="time" name="時間To" />
+          </div>
+        </label>
+        <label>場所<input name="場所" /></label>
+        <label>内容<input name="内容" /></label>
+        <label>説明<textarea name="説明"></textarea></label>
+        <label>男性参加費<input name="男性参加費" /></label>
+        <label>女性参加費<input name="女性参加費" /></label>
+        <p id="project-edit-error" class="error-msg" role="alert"></p>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">更新</button>
+          <button type="button" class="btn btn-secondary" id="btn-edit-cancel">キャンセル</button>
+        </div>
+      </form>
+      <div id="confirm-dialog" class="dialog-overlay" hidden>
+        <div class="dialog-box">
+          <p class="dialog-msg">更新しますか？</p>
+          <div class="dialog-actions">
+            <button type="button" class="btn btn-primary" id="btn-confirm-ok">はい</button>
+            <button type="button" class="btn btn-secondary" id="btn-confirm-cancel">キャンセル</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.SITELOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzslsgfnlEFzyDA6W4ysgPJYz8w2PDOG_bCZh5qCy7lQvnfyYa9rR-kkLZGGXENb81D/exec";
+  </script>
+  <script src="../js/common.js"></script>
+  <script src="../js/SCR-06-04.js"></script>
+</body>
+</html>

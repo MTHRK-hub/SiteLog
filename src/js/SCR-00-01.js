@@ -106,7 +106,7 @@
     } else if (back === "manuscript-list") {
       navHtml = '<button type="button" class="btn btn-secondary" id="hdr-btn-nav">一覧に戻る</button>';
     } else if (back === "project-plan") {
-      navHtml = '<button type="button" class="btn btn-secondary" id="hdr-btn-nav">企画画面に戻る</button>';
+      navHtml = '<button type="button" class="btn btn-secondary" id="hdr-btn-nav">計画画面に戻る</button>';
     }
 
     // 下段右: ページ固有ボタン (新規登録・編集など)

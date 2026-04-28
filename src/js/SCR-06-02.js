@@ -30,7 +30,8 @@
     showUser: true,
     extraId: "btn-project-edit",
     extraLabel: "編集",
-    extraEnabled: false
+    extraScreen: "projectEdit",
+    extraEnabled: true
   });
 
   function row(label, value) {
@@ -38,12 +39,17 @@
       "</dt><dd>" + c.escapeHtml(value || "") + "</dd></div>";
   }
 
+  const maleVal = c.escapeHtml(project["男性参加費"] || "");
+  const femaleVal = c.escapeHtml(project["女性参加費"] || "");
+  const feeRow =
+    "<div class='detail-row'><dt>参加費</dt>" +
+    "<dd>男性：" + maleVal + "<br>女性：" + femaleVal + "</dd></div>";
+
   content.innerHTML =
     row("日付", c.formatDate(project["日付"])) +
     row("時間", project["時間"]) +
     row("場所", project["場所"]) +
     row("内容", project["内容"]) +
     row("説明", project["説明"]) +
-    row("参加費（男）", project["参加費（男）"]) +
-    row("参加費（女）", project["参加費（女）"]);
+    feeRow;
 })();

@@ -9,7 +9,8 @@
     showUser: true,
     extraId: "btn-project-create",
     extraLabel: "新規作成",
-    extraEnabled: false
+    extraScreen: "projectCreate",
+    extraEnabled: true
   });
 
   const status = document.getElementById("project-load-status");
@@ -92,11 +93,12 @@
       status.textContent = result.message || "企画情報を取得できませんでした。";
       return;
     }
-    allProjects = loginUserId
+    const filtered = loginUserId
       ? result.rows.filter(function (p) {
           return String(p["ユーザーID"] || "").trim() === loginUserId;
         })
       : result.rows;
+    allProjects = filtered.map(function (p) { return c.decryptProjectRecord(p); });
     c.setProjects(allProjects);
     renderTable(document.getElementById("month-filter").value);
   }

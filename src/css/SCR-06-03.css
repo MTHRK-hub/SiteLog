@@ -1,0 +1,49 @@
+.project-form-page .form-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.project-form-page label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.project-form-page input,
+.project-form-page textarea {
+  width: 100%;
+  min-height: var(--touch-min);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-size: 1rem;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.project-form-page textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.project-form-page input:focus,
+.project-form-page textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.project-form-page .time-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.project-form-page .time-range input {
+  flex: 1;
+}
+
+.project-form-page .time-separator {
+  color: var(--text);
+  flex-shrink: 0;
+}

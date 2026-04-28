@@ -73,6 +73,23 @@ const MANUSCRIPT_HEADERS = [
 ];
 
 // ============================
+// 企画情報 設定
+// ============================
+const PROJECT_SHEET_NAME = "企画情報";
+const PROJECT_HEADERS = [
+  "id",
+  "日付",
+  "時間",
+  "場所",
+  "内容",
+  "説明",
+  "男性参加費",
+  "女性参加費",
+  "ユーザーID",
+  "最終更新日時"
+];
+
+// ============================
 // エントリーポイント
 // ============================
 function doGet() {
@@ -136,6 +153,16 @@ function doPost(e) {
     if (action === "deleteSiteLog") {
       deleteSiteLog_(payload);
       return jsonOk_({ message: "deleted" });
+    }
+
+    // 企画情報操作
+    if (action === "appendProject") {
+      appendProject_(payload);
+      return jsonOk_({ message: "appended" });
+    }
+    if (action === "updateProject") {
+      updateProject_(payload);
+      return jsonOk_({ message: "updated" });
     }
 
     // メモ情報操作
@@ -410,6 +437,43 @@ function deleteManuscript_(payload) {
   if (rowIndex < 0) throw new Error("target id not found: " + id);
 
   sheet.deleteRow(rowIndex);
+}
+
+// ============================
+// 企画情報 操作
+// ============================
+function appendProject_(record) {
+  const sheet = getSheet_(PROJECT_SHEET_NAME);
+  ensureHeader_(sheet, PROJECT_HEADERS);
+
+  const id = normalize_(record.id);
+  if (!id) throw new Error("id is required");
+  if (!normalize_(record["日付"])) {
+    throw new Error("日付 is required");
+  }
+
+  const ids = getExistingIds_(sheet);
+  if (ids.has(id)) throw new Error("id already exists: " + id);
+
+  record["最終更新日時"] = currentTimestamp_();
+  sheet.appendRow(toRow_(record, PROJECT_HEADERS));
+}
+
+function updateProject_(record) {
+  const sheet = getSheet_(PROJECT_SHEET_NAME);
+  ensureHeader_(sheet, PROJECT_HEADERS);
+
+  const id = normalize_(record.id);
+  if (!id) throw new Error("id is required");
+  if (!normalize_(record["日付"])) {
+    throw new Error("日付 is required");
+  }
+
+  const rowIndex = findRowById_(sheet, id);
+  if (rowIndex < 0) throw new Error("target id not found: " + id);
+
+  record["最終更新日時"] = currentTimestamp_();
+  sheet.getRange(rowIndex, 1, 1, PROJECT_HEADERS.length).setValues([toRow_(record, PROJECT_HEADERS)]);
 }
 
 // ============================

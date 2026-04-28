@@ -336,6 +336,7 @@
   var FRIEND_ENCRYPT_FIELDS = ["名前", "LINE名", "年齢差", "生年月日", "性別", "職業", "出会った日", "出会った場所", "相手の情報", "今後の予定"];
   var SITELOG_ENCRYPT_FIELDS = ["日付", "項目", "出会った相手", "メモ", "ToDo"];
   var MANUSCRIPT_ENCRYPT_FIELDS = ["タイトル", "メモ"];
+  var PROJECT_ENCRYPT_FIELDS = ["日付", "時間", "場所", "内容", "説明", "男性参加費", "女性参加費"];
 
   function encryptRecord(record, fields) {
     var out = {};
@@ -375,6 +376,14 @@
 
   function decryptManuscriptRecord(record) {
     return decryptRecord(record, MANUSCRIPT_ENCRYPT_FIELDS);
+  }
+
+  function encryptProjectRecord(record) {
+    return encryptRecord(record, PROJECT_ENCRYPT_FIELDS);
+  }
+
+  function decryptProjectRecord(record) {
+    return decryptRecord(record, PROJECT_ENCRYPT_FIELDS);
   }
 
   // =========================
@@ -445,6 +454,17 @@
 
   async function deleteManuscript(id) {
     await callWriteApi("deleteManuscript", { id: id });
+  }
+
+  // =========================
+  // 企画情報 書き込み
+  // =========================
+  async function appendProject(record) {
+    await callWriteApi("appendProject", record);
+  }
+
+  async function updateProject(record) {
+    await callWriteApi("updateProject", record);
   }
 
   // =========================
@@ -632,7 +652,9 @@
     userCreate: "SCR-A2-01.html",
     userRegister: "SCR-A2-02.html",
     projectPlan: "SCR-06-01.html",
-    projectDetail: "SCR-06-02.html"
+    projectDetail: "SCR-06-02.html",
+    projectCreate: "SCR-06-03.html",
+    projectEdit: "SCR-06-04.html"
   };
 
   function navigate(screen) {
@@ -849,6 +871,8 @@
     decryptSiteLogRecord: decryptSiteLogRecord,
     encryptManuscriptRecord: encryptManuscriptRecord,
     decryptManuscriptRecord: decryptManuscriptRecord,
+    encryptProjectRecord: encryptProjectRecord,
+    decryptProjectRecord: decryptProjectRecord,
     appendUser: appendUser,
     deleteUser: deleteUser,
     updatePassword: updatePassword,
@@ -903,6 +927,8 @@
     setSelectedProjectId: setSelectedProjectId,
     getSelectedProjectId: getSelectedProjectId,
     getProjectId: getProjectId,
-    findProjectById: findProjectById
+    findProjectById: findProjectById,
+    appendProject: appendProject,
+    updateProject: updateProject
   };
 })();
