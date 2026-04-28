@@ -15,14 +15,17 @@
   const status = document.getElementById("project-load-status");
   const tbody = document.getElementById("project-list-body");
   let allProjects = [];
+  const loginUser = c.getCurrentUser();
+  const loginUserId = loginUser ? String(loginUser.id || "").trim() : "";
 
-  // 企画情報の「年月」を "YYYY-MM" 形式に正規化する
-  function normalizeYm(ym) {
-    const m1 = /^(\d{4})年(\d{1,2})月$/.exec(ym);
+  // 日付文字列から "YYYY-MM" を抽出する
+  function extractYm(dateStr) {
+    const s = String(dateStr || "").trim();
+    const m1 = /^(\d{4})[-\/](\d{1,2})/.exec(s);
     if (m1) return m1[1] + "-" + String(parseInt(m1[2], 10)).padStart(2, "0");
-    const m2 = /^(\d{4})[/-](\d{1,2})$/.exec(ym);
+    const m2 = /^(\d{4})年(\d{1,2})月/.exec(s);
     if (m2) return m2[1] + "-" + String(parseInt(m2[2], 10)).padStart(2, "0");
-    return ym;
+    return "";
   }
 
   // 年月プルダウンの選択肢を生成（空 + 現在から前後2ヶ月）
@@ -35,8 +38,7 @@
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, "0");
       const label = y + "年" + String(d.getMonth() + 1) + "月";
-      const value = y + "-" + m;
-      options.push({ label: label, value: value });
+      options.push({ label: label, value: y + "-" + m });
     }
     options.forEach(function (opt) {
       const el = document.createElement("option");
@@ -52,9 +54,11 @@
   function renderTable(filterMonth) {
     const rows = filterMonth
       ? allProjects.filter(function (p) {
-          return normalizeYm(String(p["年月"] || "").trim()) === filterMonth;
+          return extractYm(String(p["日付"] || "").trim()) === filterMonth;
         })
       : allProjects;
+
+    status.textContent = "企画データ " + rows.length + "件を表示中";
 
     if (!rows.length) {
       tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">データがありません</td></tr>';
@@ -62,13 +66,23 @@
     }
 
     tbody.innerHTML = rows.map(function (p) {
+      const origIndex = allProjects.indexOf(p);
+      const projectId = c.getProjectId(p, origIndex);
       return "<tr>" +
-        "<td>" + c.escapeHtml(p["年月"] || "") + "</td>" +
+        "<td>" + c.escapeHtml(c.formatDate(p["日付"] || "")) + "</td>" +
         "<td>" + c.escapeHtml(p["場所"] || "") + "</td>" +
         "<td>" + c.escapeHtml(p["内容"] || "") + "</td>" +
-        '<td><button type="button" class="btn btn-secondary btn-sm" disabled>詳細</button></td>' +
+        '<td><button type="button" class="btn btn-secondary btn-sm" data-project-id="' +
+          c.escapeHtml(projectId) + '">詳細</button></td>' +
         "</tr>";
     }).join("");
+
+    tbody.querySelectorAll("[data-project-id]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        c.setSelectedProjectId(btn.getAttribute("data-project-id"));
+        c.navigate("projectDetail");
+      });
+    });
   }
 
   async function loadProjects() {
@@ -78,9 +92,13 @@
       status.textContent = result.message || "企画情報を取得できませんでした。";
       return;
     }
-    allProjects = result.rows;
-    status.textContent = "";
-    renderTable("");
+    allProjects = loginUserId
+      ? result.rows.filter(function (p) {
+          return String(p["ユーザーID"] || "").trim() === loginUserId;
+        })
+      : result.rows;
+    c.setProjects(allProjects);
+    renderTable(document.getElementById("month-filter").value);
   }
 
   buildMonthOptions();

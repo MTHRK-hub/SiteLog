@@ -18,11 +18,13 @@
     friends: "siteLog-friends-data",
     siteLogs: "siteLog-siteLogs-data",
     manuscripts: "siteLog-manuscripts-data",
+    projects: "siteLog-projects-data",
     selectedFriend: "siteLog-selected-friend-index",
     selectedFriendId: "siteLog-selected-friend-id",
     selectedSiteLog: "siteLog-selected-siteLog-index",
     selectedSiteLogId: "siteLog-selected-siteLog-id",
     selectedManuscriptId: "siteLog-selected-manuscript-id",
+    selectedProjectId: "siteLog-selected-project-id",
     completionInfo: "siteLog-completion-info"
   };
 
@@ -190,7 +192,7 @@
       if (key === "manuscripts" && !("タイトル" in first)) {
         return "取得は成功しましたが、メモ情報のヘッダ名が一致しません。";
       }
-      if (key === "projects" && !("年月" in first)) {
+      if (key === "projects" && !("日付" in first)) {
         return "取得は成功しましたが、企画情報のヘッダ名が一致しません。";
       }
     }
@@ -629,7 +631,8 @@
     passwordChange: "SCR-A1-01.html",
     userCreate: "SCR-A2-01.html",
     userRegister: "SCR-A2-02.html",
-    projectPlan: "SCR-06-01.html"
+    projectPlan: "SCR-06-01.html",
+    projectDetail: "SCR-06-02.html"
   };
 
   function navigate(screen) {
@@ -764,6 +767,42 @@
   }
 
   // =========================
+  // 企画情報 ストレージ
+  // =========================
+  function setProjects(rows) {
+    writeJson(STORAGE_KEYS.projects, rows || []);
+  }
+
+  function getProjects() {
+    return readJson(STORAGE_KEYS.projects, []);
+  }
+
+  function setSelectedProjectId(id) {
+    sessionStorage.setItem(STORAGE_KEYS.selectedProjectId, String(id));
+  }
+
+  function getSelectedProjectId() {
+    const raw = sessionStorage.getItem(STORAGE_KEYS.selectedProjectId);
+    return raw == null ? "" : String(raw);
+  }
+
+  function getProjectId(project, fallbackIndex) {
+    if (!project) return "";
+    const raw = project.id != null && String(project.id).trim() !== "" ? project.id : (fallbackIndex + 1);
+    return normalizeAuthValue(raw);
+  }
+
+  function findProjectById(rows, id) {
+    const normId = normalizeAuthValue(id);
+    if (!normId) return null;
+    const index = rows.findIndex(function (row, idx) {
+      return getProjectId(row, idx) === normId;
+    });
+    if (index < 0) return null;
+    return { index: index, row: rows[index] };
+  }
+
+  // =========================
   // 完了画面 情報
   // =========================
   function setCompletionInfo(info) {
@@ -858,6 +897,12 @@
     findManuscriptById: findManuscriptById,
     setCompletionInfo: setCompletionInfo,
     getCompletionInfo: getCompletionInfo,
-    updateParentHeader: updateParentHeader
+    updateParentHeader: updateParentHeader,
+    setProjects: setProjects,
+    getProjects: getProjects,
+    setSelectedProjectId: setSelectedProjectId,
+    getSelectedProjectId: getSelectedProjectId,
+    getProjectId: getProjectId,
+    findProjectById: findProjectById
   };
 })();

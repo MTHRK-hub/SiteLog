@@ -1,3 +1,8 @@
+/* 企画一覧テキストを中央揃え */
+.project-plan-page .section-title {
+  text-align: center;
+}
+
 /* コントロール行: 年月プルダウン(左) ＋ メッセージ設定ボタン(右) */
 .project-controls {
   display: flex;
