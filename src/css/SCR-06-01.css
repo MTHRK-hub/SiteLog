@@ -34,6 +34,23 @@
   margin-bottom: 14px;
 }
 
+/* メッセージポップアップ */
+.msg-popup-box {
+  max-width: 480px;
+  width: 90vw;
+}
+
+.msg-popup-content {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0 0 16px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 /* テーブル行の色分け（ヘッダ行はそのまま） */
 .project-plan-page tbody tr:nth-child(odd) {
   background: rgb(30, 40, 55);

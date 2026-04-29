@@ -22,6 +22,7 @@ const USER_HEADERS = [
   "ユーザー名",
   "生年月日",
   "管理者フラグ",
+  "メッセージ",
   "最終更新日時"
 ];
 
@@ -162,6 +163,16 @@ function doPost(e) {
     }
     if (action === "updateProject") {
       updateProject_(payload);
+      return jsonOk_({ message: "updated" });
+    }
+    if (action === "deleteProject") {
+      deleteProject_(payload);
+      return jsonOk_({ message: "deleted" });
+    }
+
+    // ユーザーメッセージ更新
+    if (action === "updateUserMessage") {
+      updateUserMessage_(payload);
       return jsonOk_({ message: "updated" });
     }
 
@@ -474,6 +485,57 @@ function updateProject_(record) {
 
   record["最終更新日時"] = currentTimestamp_();
   sheet.getRange(rowIndex, 1, 1, PROJECT_HEADERS.length).setValues([toRow_(record, PROJECT_HEADERS)]);
+}
+
+function deleteProject_(payload) {
+  const sheet = getSheet_(PROJECT_SHEET_NAME);
+  ensureHeader_(sheet, PROJECT_HEADERS);
+
+  const id = normalize_(payload.id);
+  if (!id) throw new Error("id is required");
+
+  const rowIndex = findRowById_(sheet, id);
+  if (rowIndex < 0) throw new Error("target id not found: " + id);
+
+  sheet.deleteRow(rowIndex);
+}
+
+function updateUserMessage_(payload) {
+  const ssId = PropertiesService.getScriptProperties().getProperty("SPREADSHEET_ID");
+  if (!ssId) throw new Error("SPREADSHEET_ID is not set");
+  const ss = SpreadsheetApp.openById(ssId);
+  const sheet = ss.getSheetByName(USER_SHEET_NAME);
+  if (!sheet) throw new Error("sheet not found: " + USER_SHEET_NAME);
+
+  const userId = normalize_(payload.userId);
+  const message = payload.message != null ? String(payload.message) : "";
+  if (!userId) throw new Error("userId is required");
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) throw new Error("no user data found");
+
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const idColIdx = headers.findIndex(function (h) { return normalize_(h) === USER_ID_COL; });
+  const msgColIdx = headers.findIndex(function (h) { return normalize_(h) === "メッセージ"; });
+  if (idColIdx < 0) throw new Error("column not found: " + USER_ID_COL);
+  if (msgColIdx < 0) throw new Error("column not found: メッセージ");
+
+  const dataValues = sheet.getRange(2, idColIdx + 1, lastRow - 1, 1).getValues();
+  let targetRow = -1;
+  for (let i = 0; i < dataValues.length; i++) {
+    if (normalize_(dataValues[i][0]) === userId) {
+      targetRow = i + 2;
+      break;
+    }
+  }
+  if (targetRow < 0) throw new Error("user not found: " + userId);
+
+  sheet.getRange(targetRow, msgColIdx + 1).setValue(message);
+
+  const tsColIdx = headers.findIndex(function (h) { return normalize_(h) === "最終更新日時"; });
+  if (tsColIdx >= 0) {
+    sheet.getRange(targetRow, tsColIdx + 1).setValue(currentTimestamp_());
+  }
 }
 
 // ============================

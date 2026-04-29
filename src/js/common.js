@@ -467,6 +467,14 @@
     await callWriteApi("updateProject", record);
   }
 
+  async function deleteProject(id) {
+    await callWriteApi("deleteProject", { id: id });
+  }
+
+  async function updateUserMessage(userId, encryptedMessage) {
+    await callWriteApi("updateUserMessage", { userId: String(userId || ""), message: String(encryptedMessage || "") });
+  }
+
   // =========================
   // 日付ユーティリティ
   // =========================
@@ -654,7 +662,8 @@
     projectPlan: "SCR-06-01.html",
     projectDetail: "SCR-06-02.html",
     projectCreate: "SCR-06-03.html",
-    projectEdit: "SCR-06-04.html"
+    projectEdit: "SCR-06-04.html",
+    projectMessageSetting: "SCR-06-05.html"
   };
 
   function navigate(screen) {
@@ -929,6 +938,8 @@
     getProjectId: getProjectId,
     findProjectById: findProjectById,
     appendProject: appendProject,
-    updateProject: updateProject
+    updateProject: updateProject,
+    deleteProject: deleteProject,
+    updateUserMessage: updateUserMessage
   };
 })();

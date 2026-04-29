@@ -98,10 +98,89 @@
           return String(p["ユーザーID"] || "").trim() === loginUserId;
         })
       : result.rows;
-    allProjects = filtered.map(function (p) { return c.decryptProjectRecord(p); });
+    allProjects = filtered.map(function (p) {
+      var decrypted = c.decryptProjectRecord(p);
+      // シートの旧カラム名「年月」→「日付」の後方互換対応
+      if (!decrypted["日付"] && p["年月"]) {
+        decrypted["日付"] = String(p["年月"]).trim();
+      }
+      return decrypted;
+    });
     c.setProjects(allProjects);
     renderTable(document.getElementById("month-filter").value);
   }
+
+  document.getElementById("btn-msg-setting").addEventListener("click", function () {
+    c.navigate("projectMessageSetting");
+  });
+
+  // ===== メッセージ表示ポップアップ =====
+  const msgPopup = document.getElementById("msg-popup");
+  const msgPopupContent = document.getElementById("msg-popup-content");
+  let cachedUserMessage = null;
+
+  async function getUserMessage() {
+    if (cachedUserMessage !== null) return cachedUserMessage;
+    const result = await c.safeLoadSheetRows("users");
+    if (!result.ok) { cachedUserMessage = ""; return ""; }
+    const userRow = result.rows.find(function (u) {
+      return c.normalizeAuthValue(u["ユーザーID"] || u["id"] || u["ID"] || "") === loginUserId;
+    });
+    cachedUserMessage = (userRow && userRow["メッセージ"]) ? c.decrypt(userRow["メッセージ"]) : "";
+    return cachedUserMessage;
+  }
+
+  function getGreeting() {
+    const hour = new Date().getHours();
+    const name = loginUser ? (loginUser.name || "") : "";
+    if (hour >= 6 && hour < 11) return name + "さん、おはようございます☀️";
+    if (hour >= 11 && hour < 17) return name + "さん、こんにちは🌤️";
+    return name + "さん、こんばんは🌙";
+  }
+
+  function showPopup(text) {
+    msgPopupContent.textContent = text;
+    msgPopup.hidden = false;
+  }
+
+  document.getElementById("btn-msg-show").addEventListener("click", async function () {
+    const filterMonth = document.getElementById("month-filter").value;
+
+    // A: 年月未選択
+    if (!filterMonth) {
+      showPopup("対象年月を選択してください。");
+      return;
+    }
+
+    // B: 0:00〜5:59 は実行不可
+    if (new Date().getHours() < 6) {
+      showPopup("6:00以降に実行してください。");
+      return;
+    }
+
+    // C: 通常ポップアップ
+    const userMessage = await getUserMessage();
+    const filtered = allProjects.filter(function (p) {
+      return extractYm(String(p["日付"] || "").trim()) === filterMonth;
+    });
+
+    const DIVIDER = "════════════════";
+    const lines = [getGreeting()];
+    if (userMessage) lines.push(userMessage);
+    filtered.forEach(function (p) {
+      lines.push(DIVIDER);
+      if (p["日付"]) lines.push(c.formatDate(p["日付"]));
+      if (p["時間"]) lines.push(p["時間"]);
+      if (p["内容"]) lines.push(p["内容"]);
+    });
+    if (filtered.length > 0) lines.push(DIVIDER);
+
+    showPopup(lines.join("\n"));
+  });
+
+  document.getElementById("btn-msg-popup-close").addEventListener("click", function () {
+    msgPopup.hidden = true;
+  });
 
   buildMonthOptions();
   loadProjects();

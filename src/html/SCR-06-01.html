@@ -13,10 +13,10 @@
     <div class="card">
       <div class="project-controls">
         <select id="month-filter" class="month-select"></select>
-        <button type="button" class="btn btn-secondary" id="btn-msg-setting" disabled>メッセージ設定</button>
+        <button type="button" class="btn btn-secondary" id="btn-msg-setting">メッセージ設定</button>
       </div>
       <div class="project-msg-row">
-        <button type="button" class="btn btn-secondary" id="btn-msg-show" disabled>メッセージ表示</button>
+        <button type="button" class="btn btn-secondary" id="btn-msg-show">メッセージ表示</button>
       </div>
       <h3 class="section-title">企画一覧</h3>
       <p class="info-text" id="project-load-status"></p>
@@ -32,6 +32,15 @@
           </thead>
           <tbody id="project-list-body"></tbody>
         </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="msg-popup" class="dialog-overlay" hidden>
+    <div class="dialog-box msg-popup-box">
+      <pre id="msg-popup-content" class="msg-popup-content"></pre>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-secondary" id="btn-msg-popup-close">閉じる</button>
       </div>
     </div>
   </div>
