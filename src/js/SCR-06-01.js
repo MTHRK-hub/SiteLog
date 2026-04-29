@@ -132,10 +132,19 @@
 
   function getGreeting() {
     const hour = new Date().getHours();
-    const name = loginUser ? (loginUser.name || "") : "";
-    if (hour >= 6 && hour < 11) return name + "さん、おはようございます☀️";
-    if (hour >= 11 && hour < 17) return name + "さん、こんにちは🌤️";
-    return name + "さん、こんばんは🌙";
+    if (hour >= 6 && hour < 11) return "⚫︎さん、おはようございます☀️";
+    if (hour >= 11 && hour < 17) return "⚫︎さん、こんにちは🌤️";
+    return "⚫︎さん、こんばんは🌙";
+  }
+
+  // ポップアップ用日付フォーマット: YYYY/MM/DD → m/d(曜日)
+  function formatDateShort(dateStr) {
+    const s = String(dateStr || "").trim();
+    const m = /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/.exec(s);
+    if (!m) return s;
+    const d = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+    const days = ["日", "月", "火", "水", "木", "金", "土"];
+    return parseInt(m[2], 10) + "/" + parseInt(m[3], 10) + "(" + days[d.getDay()] + ")";
   }
 
   function showPopup(text) {
@@ -164,13 +173,14 @@
       return extractYm(String(p["日付"] || "").trim()) === filterMonth;
     });
 
-    const DIVIDER = "════════════════";
+    const DIVIDER = "----------------------";
     const lines = [getGreeting()];
     if (userMessage) lines.push(userMessage);
     filtered.forEach(function (p) {
       lines.push(DIVIDER);
-      if (p["日付"]) lines.push(c.formatDate(p["日付"]));
-      if (p["時間"]) lines.push(p["時間"]);
+      const datePart = p["日付"] ? formatDateShort(p["日付"]) : "";
+      const timePart = p["時間"] ? p["時間"] : "";
+      if (datePart || timePart) lines.push([datePart, timePart].filter(Boolean).join(" "));
       if (p["内容"]) lines.push(p["内容"]);
     });
     if (filtered.length > 0) lines.push(DIVIDER);

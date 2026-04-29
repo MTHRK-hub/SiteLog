@@ -59,8 +59,7 @@ body {
 }
 
 body {
-  padding: max(12px, env(safe-area-inset-top)) max(7px, env(safe-area-inset-right))
-    max(12px, env(safe-area-inset-bottom)) max(7px, env(safe-area-inset-left));
+  padding: max(12px, env(safe-area-inset-top)) max(7px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(7px, env(safe-area-inset-left));
 }
 
 /* ==========
@@ -201,6 +200,16 @@ body {
 .btn-ghost:hover {
   color: var(--text);
   background: rgba(255, 255, 255, 0.08);
+}
+
+:is(.btn, .btn-primary, .btn-secondary, .btn-ghost):active {
+  /*ボタンを押したとき*/
+  -webkit-transform: translateY(4px);
+  /*下に動く*/
+  transform: translateY(4px);
+  /*影を小さく*/
+  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);
+  border-bottom: none;
 }
 
 /* ==========
@@ -392,13 +401,37 @@ thead th {
   overflow: visible;
 }
 
-.globe-ring-a { animation: globeSpinCW 3.6s linear infinite; transform-origin: 45px 45px; }
-.globe-ring-b { animation: globeSpinCCW 5.2s linear infinite; transform-origin: 45px 45px; }
-.globe-ring-c { animation: globeSpinCW 7.8s linear infinite; transform-origin: 45px 45px; }
-.globe-spark  { animation: globeSpinCW 2.4s linear infinite; transform-origin: 45px 45px; }
+.globe-ring-a {
+  animation: globeSpinCW 3.6s linear infinite;
+  transform-origin: 45px 45px;
+}
 
-@keyframes globeSpinCW  { to { transform: rotate(360deg); } }
-@keyframes globeSpinCCW { to { transform: rotate(-360deg); } }
+.globe-ring-b {
+  animation: globeSpinCCW 5.2s linear infinite;
+  transform-origin: 45px 45px;
+}
+
+.globe-ring-c {
+  animation: globeSpinCW 7.8s linear infinite;
+  transform-origin: 45px 45px;
+}
+
+.globe-spark {
+  animation: globeSpinCW 2.4s linear infinite;
+  transform-origin: 45px 45px;
+}
+
+@keyframes globeSpinCW {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes globeSpinCCW {
+  to {
+    transform: rotate(-360deg);
+  }
+}
 
 .globe-canvas-wrap {
   width: 54px;

@@ -457,14 +457,18 @@ function appendProject_(record) {
   const sheet = getSheet_(PROJECT_SHEET_NAME);
   ensureHeader_(sheet, PROJECT_HEADERS);
 
-  const id = normalize_(record.id);
-  if (!id) throw new Error("id is required");
   if (!normalize_(record["日付"])) {
     throw new Error("日付 is required");
   }
 
-  const ids = getExistingIds_(sheet);
-  if (ids.has(id)) throw new Error("id already exists: " + id);
+  // シート上の全 ID から最大値を取得して採番（クライアント送信の id は使わない）
+  const existingIds = getExistingIds_(sheet);
+  let maxId = 0;
+  existingIds.forEach(function (idStr) {
+    const n = Number(idStr);
+    if (Number.isFinite(n) && n > maxId) maxId = n;
+  });
+  record.id = String(maxId + 1);
 
   record["最終更新日時"] = currentTimestamp_();
   sheet.appendRow(toRow_(record, PROJECT_HEADERS));
