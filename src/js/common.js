@@ -8,7 +8,8 @@
     friends: { gid: "1058818904", name: "友達情報" },
     siteLogs: { gid: "241811860", name: "現場記録情報" },
     manuscripts: { gid: "784637613", name: "メモ情報" },
-    projects: { gid: "830834819", name: "企画情報" }
+    projects: { gid: "830834819", name: "企画情報" },
+    cashflows: { gid: "662697822", name: "キャッシュフロー情報" }
   };
   // 書き込みAPIのURL（window.SITELOG_WEBAPP_URL または window.SITELOG_FRIENDS_WEBAPP_URL を設定）
   const WRITE_API_URL = (window.SITELOG_WEBAPP_URL || window.SITELOG_FRIENDS_WEBAPP_URL || "");
@@ -25,6 +26,8 @@
     selectedSiteLogId: "siteLog-selected-siteLog-id",
     selectedManuscriptId: "siteLog-selected-manuscript-id",
     selectedProjectId: "siteLog-selected-project-id",
+    cashflows: "siteLog-cashflows-data",
+    selectedCashflowId: "siteLog-selected-cashflow-id",
     completionInfo: "siteLog-completion-info"
   };
 
@@ -195,6 +198,9 @@
       if (key === "projects" && !("日付" in first)) {
         return "取得は成功しましたが、企画情報のヘッダ名が一致しません。";
       }
+      if (key === "cashflows" && !("年月" in first)) {
+        return "取得は成功しましたが、キャッシュフロー情報のヘッダ名が一致しません。";
+      }
     }
     if (key === "users") {
       return "ユーザーデータを取得できません。シート共有設定を確認してください。";
@@ -207,6 +213,9 @@
     }
     if (key === "projects") {
       return "企画情報を取得できません。シート共有設定を確認してください。";
+    }
+    if (key === "cashflows") {
+      return "キャッシュフロー情報を取得できません。シート共有設定を確認してください。";
     }
     return "現場記録情報を取得できません。シート共有設定を確認してください。";
   }
@@ -337,6 +346,7 @@
   var SITELOG_ENCRYPT_FIELDS = ["日付", "項目", "出会った相手", "メモ", "ToDo"];
   var MANUSCRIPT_ENCRYPT_FIELDS = ["タイトル", "メモ"];
   var PROJECT_ENCRYPT_FIELDS = ["日付", "時間", "場所", "内容", "説明", "男性参加費", "女性参加費"];
+  var CASHFLOW_ENCRYPT_FIELDS = ["内訳", "金額", "備考"];
 
   function encryptRecord(record, fields) {
     var out = {};
@@ -384,6 +394,14 @@
 
   function decryptProjectRecord(record) {
     return decryptRecord(record, PROJECT_ENCRYPT_FIELDS);
+  }
+
+  function encryptCashflowRecord(record) {
+    return encryptRecord(record, CASHFLOW_ENCRYPT_FIELDS);
+  }
+
+  function decryptCashflowRecord(record) {
+    return decryptRecord(record, CASHFLOW_ENCRYPT_FIELDS);
   }
 
   // =========================
@@ -473,6 +491,21 @@
 
   async function updateUserMessage(userId, encryptedMessage) {
     await callWriteApi("updateUserMessage", { userId: String(userId || ""), message: String(encryptedMessage || "") });
+  }
+
+  // =========================
+  // キャッシュフロー情報 書き込み
+  // =========================
+  async function appendCashflow(record) {
+    await callWriteApi("appendCashflow", record);
+  }
+
+  async function updateCashflow(record) {
+    await callWriteApi("updateCashflow", record);
+  }
+
+  async function deleteCashflow(id) {
+    await callWriteApi("deleteCashflow", { id: id });
   }
 
   // =========================
@@ -663,7 +696,8 @@
     projectDetail: "SCR-06-02.html",
     projectCreate: "SCR-06-03.html",
     projectEdit: "SCR-06-04.html",
-    projectMessageSetting: "SCR-06-05.html"
+    projectMessageSetting: "SCR-06-05.html",
+    cashflowPlan: "SCR-07-01.html"
   };
 
   function navigate(screen) {
@@ -834,6 +868,42 @@
   }
 
   // =========================
+  // キャッシュフロー情報 ストレージ
+  // =========================
+  function setCashflows(rows) {
+    writeJson(STORAGE_KEYS.cashflows, rows || []);
+  }
+
+  function getCashflows() {
+    return readJson(STORAGE_KEYS.cashflows, []);
+  }
+
+  function setSelectedCashflowId(id) {
+    sessionStorage.setItem(STORAGE_KEYS.selectedCashflowId, String(id));
+  }
+
+  function getSelectedCashflowId() {
+    const raw = sessionStorage.getItem(STORAGE_KEYS.selectedCashflowId);
+    return raw == null ? "" : String(raw);
+  }
+
+  function getCashflowId(cashflow, fallbackIndex) {
+    if (!cashflow) return "";
+    const raw = cashflow.id != null && String(cashflow.id).trim() !== "" ? cashflow.id : (fallbackIndex + 1);
+    return normalizeAuthValue(raw);
+  }
+
+  function findCashflowById(rows, id) {
+    const normId = normalizeAuthValue(id);
+    if (!normId) return null;
+    const index = rows.findIndex(function (row, idx) {
+      return getCashflowId(row, idx) === normId;
+    });
+    if (index < 0) return null;
+    return { index: index, row: rows[index] };
+  }
+
+  // =========================
   // 完了画面 情報
   // =========================
   function setCompletionInfo(info) {
@@ -940,6 +1010,17 @@
     appendProject: appendProject,
     updateProject: updateProject,
     deleteProject: deleteProject,
-    updateUserMessage: updateUserMessage
+    updateUserMessage: updateUserMessage,
+    encryptCashflowRecord: encryptCashflowRecord,
+    decryptCashflowRecord: decryptCashflowRecord,
+    setCashflows: setCashflows,
+    getCashflows: getCashflows,
+    setSelectedCashflowId: setSelectedCashflowId,
+    getSelectedCashflowId: getSelectedCashflowId,
+    getCashflowId: getCashflowId,
+    findCashflowById: findCashflowById,
+    appendCashflow: appendCashflow,
+    updateCashflow: updateCashflow,
+    deleteCashflow: deleteCashflow
   };
 })();

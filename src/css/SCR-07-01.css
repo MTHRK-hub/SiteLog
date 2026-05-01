@@ -1,0 +1,80 @@
+/* コントロール行: 年月プルダウン(左) ＋ 編集ボタン(右) */
+.cashflow-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.month-select {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-size: 0.95rem;
+  min-height: var(--touch-min);
+}
+
+.month-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* 年月タイトル */
+.cashflow-title {
+  text-align: center;
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+}
+
+/* 収支サマリーテーブル */
+.summary-table-wrap {
+  margin-bottom: 20px;
+}
+
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.summary-table th,
+.summary-table td {
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-table th {
+  background: var(--surface-alt);
+  width: 45%;
+  font-weight: 600;
+}
+
+.summary-table td {
+  text-align: right;
+}
+
+.summary-cashflow-row th,
+.summary-cashflow-row td {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.summary-cashflow-row td.negative {
+  color: #f07070;
+}
+
+/* [収入] / [支出] セクションラベル */
+.section-label {
+  margin: 18px 0 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted, rgba(255, 255, 255, 0.7));
+}
+
+/* 金額列右揃え */
+.cashflow-plan-page .amount-cell {
+  text-align: right;
+  white-space: nowrap;
+}

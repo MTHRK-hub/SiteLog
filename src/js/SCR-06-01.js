@@ -71,7 +71,7 @@
       const projectId = c.getProjectId(p, origIndex);
       return "<tr>" +
         "<td>" + c.escapeHtml(c.formatDate(p["日付"] || "")) + "</td>" +
-        "<td>" + c.escapeHtml(p["場所"] || "") + "</td>" +
+        "<td>" + c.escapeHtml(p["時間"] || "") + "</td>" +
         "<td>" + c.escapeHtml(p["内容"] || "") + "</td>" +
         '<td><button type="button" class="btn btn-secondary btn-sm" data-project-id="' +
           c.escapeHtml(projectId) + '">詳細</button></td>' +

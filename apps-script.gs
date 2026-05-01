@@ -91,6 +91,21 @@ const PROJECT_HEADERS = [
 ];
 
 // ============================
+// キャッシュフロー情報 設定
+// ============================
+const CASHFLOW_SHEET_NAME = "キャッシュフロー情報";
+const CASHFLOW_HEADERS = [
+  "id",
+  "年月",
+  "取支区分",
+  "内訳",
+  "金額",
+  "備考",
+  "ユーザーID",
+  "最終更新日時"
+];
+
+// ============================
 // エントリーポイント
 // ============================
 function doGet() {
@@ -167,6 +182,20 @@ function doPost(e) {
     }
     if (action === "deleteProject") {
       deleteProject_(payload);
+      return jsonOk_({ message: "deleted" });
+    }
+
+    // キャッシュフロー情報操作
+    if (action === "appendCashflow") {
+      appendCashflow_(payload);
+      return jsonOk_({ message: "appended" });
+    }
+    if (action === "updateCashflow") {
+      updateCashflow_(payload);
+      return jsonOk_({ message: "updated" });
+    }
+    if (action === "deleteCashflow") {
+      deleteCashflow_(payload);
       return jsonOk_({ message: "deleted" });
     }
 
@@ -540,6 +569,62 @@ function updateUserMessage_(payload) {
   if (tsColIdx >= 0) {
     sheet.getRange(targetRow, tsColIdx + 1).setValue(currentTimestamp_());
   }
+}
+
+// ============================
+// キャッシュフロー情報 操作
+// ============================
+function appendCashflow_(record) {
+  const sheet = getSheet_(CASHFLOW_SHEET_NAME);
+  ensureHeader_(sheet, CASHFLOW_HEADERS);
+
+  if (!normalize_(record["年月"])) {
+    throw new Error("年月 is required");
+  }
+  if (normalize_(record["取支区分"]) !== "0" && normalize_(record["取支区分"]) !== "1") {
+    throw new Error("取支区分 must be 0 or 1");
+  }
+
+  const existingIds = getExistingIds_(sheet);
+  let maxId = 0;
+  existingIds.forEach(function (idStr) {
+    const n = Number(idStr);
+    if (Number.isFinite(n) && n > maxId) maxId = n;
+  });
+  record.id = String(maxId + 1);
+
+  record["最終更新日時"] = currentTimestamp_();
+  sheet.appendRow(toRow_(record, CASHFLOW_HEADERS));
+}
+
+function updateCashflow_(record) {
+  const sheet = getSheet_(CASHFLOW_SHEET_NAME);
+  ensureHeader_(sheet, CASHFLOW_HEADERS);
+
+  const id = normalize_(record.id);
+  if (!id) throw new Error("id is required");
+  if (!normalize_(record["年月"])) {
+    throw new Error("年月 is required");
+  }
+
+  const rowIndex = findRowById_(sheet, id);
+  if (rowIndex < 0) throw new Error("target id not found: " + id);
+
+  record["最終更新日時"] = currentTimestamp_();
+  sheet.getRange(rowIndex, 1, 1, CASHFLOW_HEADERS.length).setValues([toRow_(record, CASHFLOW_HEADERS)]);
+}
+
+function deleteCashflow_(payload) {
+  const sheet = getSheet_(CASHFLOW_SHEET_NAME);
+  ensureHeader_(sheet, CASHFLOW_HEADERS);
+
+  const id = normalize_(payload.id);
+  if (!id) throw new Error("id is required");
+
+  const rowIndex = findRowById_(sheet, id);
+  if (rowIndex < 0) throw new Error("target id not found: " + id);
+
+  sheet.deleteRow(rowIndex);
 }
 
 // ============================

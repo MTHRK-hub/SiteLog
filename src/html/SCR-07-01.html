@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>現場記録簿 - キャッシュフロー計画</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/SCR-00-01.css" />
+  <link rel="stylesheet" href="../css/SCR-07-01.css" />
+</head>
+<body class="cashflow-plan-page">
+  <div class="app">
+    <div class="card">
+      <div class="cashflow-controls">
+        <select id="month-filter" class="month-select"></select>
+        <button type="button" class="btn btn-secondary" id="btn-edit" disabled>編集</button>
+      </div>
+
+      <div id="cashflow-content" hidden>
+        <h3 class="cashflow-title" id="cashflow-title"></h3>
+
+        <div class="summary-table-wrap">
+          <table class="summary-table">
+            <tbody>
+              <tr>
+                <th>収入</th>
+                <td id="summary-income"></td>
+              </tr>
+              <tr>
+                <th>支出</th>
+                <td id="summary-expense"></td>
+              </tr>
+              <tr class="summary-cashflow-row">
+                <th>キャッシュフロー</th>
+                <td id="summary-cashflow"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4 class="section-label">[収入]</h4>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>内訳</th>
+                <th>金額</th>
+                <th>備考</th>
+              </tr>
+            </thead>
+            <tbody id="income-list-body"></tbody>
+          </table>
+        </div>
+
+        <h4 class="section-label">[支出]</h4>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>内訳</th>
+                <th>金額</th>
+                <th>備考</th>
+              </tr>
+            </thead>
+            <tbody id="expense-list-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="info-text" id="cashflow-load-status"></p>
+    </div>
+  </div>
+
+  <script>
+    window.SITELOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzslsgfnlEFzyDA6W4ysgPJYz8w2PDOG_bCZh5qCy7lQvnfyYa9rR-kkLZGGXENb81D/exec";
+  </script>
+  <script src="../js/common.js"></script>
+  <script src="../js/SCR-07-01.js"></script>
+</body>
+</html>
