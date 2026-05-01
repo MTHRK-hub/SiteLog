@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>現場記録簿 - キャッシュフロー登録</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/SCR-00-01.css" />
+  <link rel="stylesheet" href="../css/SCR-07-02.css" />
+</head>
+<body class="cashflow-form-page">
+  <div class="app">
+    <div class="card">
+      <form id="cashflow-create-form" novalidate>
+        <div class="cf-field">
+          <label for="cf-ym">年月</label>
+          <input type="month" id="cf-ym" name="年月" required />
+        </div>
+
+        <div class="cf-section">
+          <div class="cf-section-header">
+            <span class="cf-section-label">[収入]</span>
+            <button type="button" class="btn btn-secondary" id="btn-add-income">追加</button>
+          </div>
+          <div class="table-wrap">
+            <table id="income-table">
+              <thead>
+                <tr>
+                  <th>内訳</th>
+                  <th>金額</th>
+                  <th>備考</th>
+                </tr>
+              </thead>
+              <tbody id="income-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="cf-section">
+          <div class="cf-section-header">
+            <span class="cf-section-label">[支出]</span>
+            <button type="button" class="btn btn-secondary" id="btn-add-expense">追加</button>
+          </div>
+          <div class="table-wrap">
+            <table id="expense-table">
+              <thead>
+                <tr>
+                  <th>内訳</th>
+                  <th>金額</th>
+                  <th>備考</th>
+                </tr>
+              </thead>
+              <tbody id="expense-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <p id="cashflow-create-error" class="error-msg" role="alert"></p>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">登録</button>
+          <button type="button" class="btn btn-secondary" id="btn-create-cancel">キャンセル</button>
+        </div>
+      </form>
+
+      <div id="confirm-dialog" class="dialog-overlay" hidden>
+        <div class="dialog-box">
+          <p class="dialog-msg">登録しますか？</p>
+          <div class="dialog-actions">
+            <button type="button" class="btn btn-primary" id="btn-confirm-ok">はい</button>
+            <button type="button" class="btn btn-secondary" id="btn-confirm-cancel">キャンセル</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.SITELOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzslsgfnlEFzyDA6W4ysgPJYz8w2PDOG_bCZh5qCy7lQvnfyYa9rR-kkLZGGXENb81D/exec";
+  </script>
+  <script src="../js/common.js"></script>
+  <script src="../js/SCR-07-02.js"></script>
+</body>
+</html>

@@ -10,7 +10,7 @@
     extraId: "btn-cashflow-create",
     extraLabel: "新規作成",
     extraScreen: "cashflowCreate",
-    extraEnabled: false
+    extraEnabled: true
   });
 
   const status = document.getElementById("cashflow-load-status");
@@ -83,8 +83,8 @@
 
     cashflowTitle.textContent = ymToLabel(filterYm) + " キャッシュフロー";
 
-    const incomeRows = rows.filter(function (r) { return String(r["取支区分"] || "").trim() === "0"; });
-    const expenseRows = rows.filter(function (r) { return String(r["取支区分"] || "").trim() === "1"; });
+    const incomeRows = rows.filter(function (r) { return String(r["収支区分"] || "").trim() === "0"; });
+    const expenseRows = rows.filter(function (r) { return String(r["収支区分"] || "").trim() === "1"; });
 
     function sumAmount(list) {
       return list.reduce(function (acc, r) {
@@ -102,6 +102,12 @@
     summaryCashflow.textContent = (cashflowVal >= 0 ? "¥" : "-¥") + Math.abs(cashflowVal).toLocaleString("ja-JP");
     summaryCashflow.parentElement.classList.toggle("negative", cashflowVal < 0);
 
+    function sortByBiko(list) {
+      return list.slice().sort(function (a, b) {
+        return String(b["備考"] || "").localeCompare(String(a["備考"] || ""), "ja");
+      });
+    }
+
     function buildRows(list) {
       if (!list.length) {
         return '<tr><td colspan="3" style="text-align:center">データがありません</td></tr>';
@@ -115,17 +121,59 @@
       }).join("");
     }
 
-    incomeBody.innerHTML = buildRows(incomeRows);
-    expenseBody.innerHTML = buildRows(expenseRows);
+    incomeBody.innerHTML = buildRows(sortByBiko(incomeRows));
+    expenseBody.innerHTML = buildRows(sortByBiko(expenseRows));
     content.hidden = false;
   }
 
   monthFilter.addEventListener("change", function () {
     renderContent(monthFilter.value);
+    document.getElementById("cashflow-delete-row").hidden = !monthFilter.value;
   });
 
   document.getElementById("btn-edit").addEventListener("click", function () {
     alert("後日実装予定です。");
+  });
+
+  const deleteDialog = document.getElementById("delete-dialog");
+  const deleteDialogMsg = document.getElementById("delete-dialog-msg");
+  const btnDeleteOk = document.getElementById("btn-delete-ok");
+  const btnDeleteCancel = document.getElementById("btn-delete-cancel");
+  const statusEl = document.getElementById("cashflow-load-status");
+
+  btnDeleteCancel.addEventListener("click", function () {
+    deleteDialog.hidden = true;
+  });
+
+  document.getElementById("btn-delete").addEventListener("click", function () {
+    const ym = monthFilter.value;
+    if (!ym) return;
+    deleteDialogMsg.textContent = ymToLabel(ym) + "のデータを削除しますか？";
+    deleteDialog.hidden = false;
+  });
+
+  btnDeleteOk.addEventListener("click", async function () {
+    deleteDialog.hidden = true;
+    const ym = monthFilter.value;
+    if (!ym) return;
+    const targets = allCashflows.filter(function (r) {
+      return extractYm(r["年月"] || "") === ym;
+    });
+    statusEl.textContent = "削除中...";
+    try {
+      for (var i = 0; i < targets.length; i++) {
+        await c.deleteCashflow(targets[i].id);
+      }
+      c.setCompletionInfo({
+        title: "キャッシュフロー削除完了",
+        message: "キャッシュフローデータが削除されました。",
+        buttonLabel: "計画画面に戻る",
+        backScreen: "cashflowPlan"
+      });
+      c.navigate("completion");
+    } catch (err) {
+      statusEl.textContent = err && err.message ? err.message : "削除に失敗しました。";
+    }
   });
 
   async function loadCashflows() {

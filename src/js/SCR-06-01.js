@@ -106,6 +106,18 @@
       }
       return decrypted;
     });
+    // 月の降順・日の昇順でソート
+    allProjects.sort(function (a, b) {
+      var parseDate = function (p) {
+        var s = String(p["日付"] || "").trim();
+        var m = /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/.exec(s);
+        if (m) return { month: parseInt(m[2], 10), day: parseInt(m[3], 10) };
+        return { month: 0, day: 0 };
+      };
+      var da = parseDate(a), db = parseDate(b);
+      if (da.month !== db.month) return db.month - da.month;
+      return da.day - db.day;
+    });
     c.setProjects(allProjects);
     renderTable(document.getElementById("month-filter").value);
   }

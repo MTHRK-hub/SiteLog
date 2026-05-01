@@ -6,6 +6,10 @@
   margin-bottom: 16px;
 }
 
+.cashflow-controls .btn {
+  padding: 8px 28px;
+}
+
 .month-select {
   flex: 1;
   padding: 8px 10px;
@@ -77,4 +81,11 @@
 .cashflow-plan-page .amount-cell {
   text-align: right;
   white-space: nowrap;
+}
+
+/* 削除ボタン行 */
+.cashflow-delete-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
 }

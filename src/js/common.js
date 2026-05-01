@@ -346,7 +346,7 @@
   var SITELOG_ENCRYPT_FIELDS = ["日付", "項目", "出会った相手", "メモ", "ToDo"];
   var MANUSCRIPT_ENCRYPT_FIELDS = ["タイトル", "メモ"];
   var PROJECT_ENCRYPT_FIELDS = ["日付", "時間", "場所", "内容", "説明", "男性参加費", "女性参加費"];
-  var CASHFLOW_ENCRYPT_FIELDS = ["内訳", "金額", "備考"];
+  var CASHFLOW_ENCRYPT_FIELDS = ["年月", "収支区分", "内訳", "金額", "備考"];
 
   function encryptRecord(record, fields) {
     var out = {};
@@ -697,7 +697,8 @@
     projectCreate: "SCR-06-03.html",
     projectEdit: "SCR-06-04.html",
     projectMessageSetting: "SCR-06-05.html",
-    cashflowPlan: "SCR-07-01.html"
+    cashflowPlan: "SCR-07-01.html",
+    cashflowCreate: "SCR-07-02.html"
   };
 
   function navigate(screen) {

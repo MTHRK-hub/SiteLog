@@ -1,0 +1,66 @@
+.cashflow-form-page .cf-field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 20px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.cashflow-form-page .cf-field input {
+  width: 100%;
+  min-height: var(--touch-min);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-size: 1rem;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.cashflow-form-page .cf-field input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.cashflow-form-page .cf-section {
+  margin-bottom: 20px;
+}
+
+.cashflow-form-page .cf-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.cashflow-form-page .cf-section-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.cashflow-form-page .cf-input {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 0.9rem;
+  background: var(--bg);
+  color: var(--text);
+  box-sizing: border-box;
+}
+
+.cashflow-form-page .cf-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.cashflow-form-page .cf-input[type="number"] {
+  text-align: right;
+}
+
+.cashflow-form-page .form-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 20px;
+}

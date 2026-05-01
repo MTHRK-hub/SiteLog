@@ -97,7 +97,7 @@ const CASHFLOW_SHEET_NAME = "キャッシュフロー情報";
 const CASHFLOW_HEADERS = [
   "id",
   "年月",
-  "取支区分",
+  "収支区分",
   "内訳",
   "金額",
   "備考",
@@ -580,9 +580,6 @@ function appendCashflow_(record) {
 
   if (!normalize_(record["年月"])) {
     throw new Error("年月 is required");
-  }
-  if (normalize_(record["取支区分"]) !== "0" && normalize_(record["取支区分"]) !== "1") {
-    throw new Error("取支区分 must be 0 or 1");
   }
 
   const existingIds = getExistingIds_(sheet);
