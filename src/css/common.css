@@ -240,7 +240,13 @@ td {
   padding: 10px 12px;
   text-align: left;
   border-top: 2px solid rgb(44, 42, 176);
+  border-left: 2px solid rgb(44, 42, 176);
   white-space: nowrap;
+}
+
+th:first-child,
+td:first-child {
+  border-left: none;
 }
 
 thead th {
