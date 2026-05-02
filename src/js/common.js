@@ -28,6 +28,7 @@
     selectedProjectId: "siteLog-selected-project-id",
     cashflows: "siteLog-cashflows-data",
     selectedCashflowId: "siteLog-selected-cashflow-id",
+    selectedCashflowYm: "siteLog-selected-cashflow-ym",
     completionInfo: "siteLog-completion-info"
   };
 
@@ -698,7 +699,8 @@
     projectEdit: "SCR-06-04.html",
     projectMessageSetting: "SCR-06-05.html",
     cashflowPlan: "SCR-07-01.html",
-    cashflowCreate: "SCR-07-02.html"
+    cashflowCreate: "SCR-07-02.html",
+    cashflowEdit: "SCR-07-03.html"
   };
 
   function navigate(screen) {
@@ -888,6 +890,15 @@
     return raw == null ? "" : String(raw);
   }
 
+  function setSelectedCashflowYm(ym) {
+    sessionStorage.setItem(STORAGE_KEYS.selectedCashflowYm, String(ym || ""));
+  }
+
+  function getSelectedCashflowYm() {
+    const raw = sessionStorage.getItem(STORAGE_KEYS.selectedCashflowYm);
+    return raw == null ? "" : String(raw);
+  }
+
   function getCashflowId(cashflow, fallbackIndex) {
     if (!cashflow) return "";
     const raw = cashflow.id != null && String(cashflow.id).trim() !== "" ? cashflow.id : (fallbackIndex + 1);
@@ -1018,6 +1029,8 @@
     getCashflows: getCashflows,
     setSelectedCashflowId: setSelectedCashflowId,
     getSelectedCashflowId: getSelectedCashflowId,
+    setSelectedCashflowYm: setSelectedCashflowYm,
+    getSelectedCashflowYm: getSelectedCashflowYm,
     getCashflowId: getCashflowId,
     findCashflowById: findCashflowById,
     appendCashflow: appendCashflow,

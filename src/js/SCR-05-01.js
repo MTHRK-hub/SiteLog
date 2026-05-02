@@ -14,6 +14,31 @@
 
   const status = document.getElementById("manuscript-load-status");
   const body = document.getElementById("manuscript-list-body");
+  const categoryFilter = document.getElementById("category-filter");
+
+  let allFiltered = [];
+
+  function extractCategory(title) {
+    const m = /^(【[^】]+】)/.exec(String(title || ""));
+    return m ? m[1] : null;
+  }
+
+  function buildCategoryOptions(rows) {
+    const catSet = new Set();
+    rows.forEach(function (r) {
+      const cat = extractCategory(r["タイトル"] || "");
+      if (cat) catSet.add(cat);
+    });
+    const sorted = Array.from(catSet).sort(function (a, b) {
+      return a.localeCompare(b, "ja");
+    });
+    sorted.forEach(function (cat) {
+      const opt = document.createElement("option");
+      opt.value = cat;
+      opt.textContent = cat;
+      categoryFilter.appendChild(opt);
+    });
+  }
 
   function render(rows) {
     body.innerHTML = "";
@@ -37,6 +62,19 @@
     });
   }
 
+  function applyFilter() {
+    const sel = categoryFilter.value;
+    const visible = sel
+      ? allFiltered.filter(function (r) {
+          return String(r["タイトル"] || "").startsWith(sel);
+        })
+      : allFiltered;
+    status.textContent = "メモデータ " + visible.length + "件を表示中";
+    render(visible);
+  }
+
+  categoryFilter.addEventListener("change", applyFilter);
+
   const loginUser = c.getCurrentUser();
 
   (async function init() {
@@ -56,7 +94,8 @@
     filtered.sort(function (a, b) {
       return String(a["タイトル"] || "").localeCompare(String(b["タイトル"] || ""), "ja");
     });
-    status.textContent = "メモデータ " + filtered.length + "件を表示中";
-    render(filtered);
+    allFiltered = filtered;
+    buildCategoryOptions(filtered);
+    applyFilter();
   })();
 })();

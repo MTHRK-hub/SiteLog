@@ -1,0 +1,31 @@
+.cashflow-form-page .cf-field.cf-ym-readonly {
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.cashflow-form-page .cf-ym-readonly-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.cashflow-form-page .cf-ym-readonly-value {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cashflow-form-page .table-wrap th:last-child,
+.cashflow-form-page .table-wrap td:last-child {
+  width: 4.5rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.cashflow-form-page .btn-row-delete {
+  padding: 6px 8px;
+  font-size: 0.8rem;
+}

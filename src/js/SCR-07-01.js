@@ -71,11 +71,15 @@
     });
   }
 
+  const btnEdit = document.getElementById("btn-edit");
+
   function renderContent(filterYm) {
     if (!filterYm) {
       content.hidden = true;
+      btnEdit.disabled = true;
       return;
     }
+    btnEdit.disabled = false;
 
     const rows = allCashflows.filter(function (r) {
       return extractYm(r["年月"] || "") === filterYm;
@@ -131,8 +135,11 @@
     document.getElementById("cashflow-delete-row").hidden = !monthFilter.value;
   });
 
-  document.getElementById("btn-edit").addEventListener("click", function () {
-    alert("後日実装予定です。");
+  btnEdit.addEventListener("click", function () {
+    const ym = monthFilter.value;
+    if (!ym) return;
+    c.setSelectedCashflowYm(ym);
+    c.navigate("cashflowEdit");
   });
 
   const deleteDialog = document.getElementById("delete-dialog");
