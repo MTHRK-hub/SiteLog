@@ -108,7 +108,7 @@
 
     function sortByBiko(list) {
       return list.slice().sort(function (a, b) {
-        return String(b["備考"] || "").localeCompare(String(a["備考"] || ""), "ja");
+        return String(a["備考"] || "").localeCompare(String(b["備考"] || ""), "ja");
       });
     }
 
