@@ -20,6 +20,10 @@
 
   function render(rows) {
     body.innerHTML = "";
+    if (!rows.length) {
+      body.innerHTML = '<tr><td colspan="4" style="text-align:center">データがありません</td></tr>';
+      return;
+    }
     rows.forEach(function (f, index) {
       const tr = document.createElement("tr");
       tr.innerHTML =

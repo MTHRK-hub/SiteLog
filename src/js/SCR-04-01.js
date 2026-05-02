@@ -15,26 +15,42 @@
 
   const status = document.getElementById("site-load-status");
   const body = document.getElementById("site-list-body");
+  const itemFilter = document.getElementById("item-filter");
+
+  let allFiltered = [];
 
   function render(rows) {
     body.innerHTML = "";
-    rows.forEach(function (log, index) {
+    if (!rows.length) {
+      body.innerHTML = '<tr><td colspan="3" style="text-align:center">データがありません</td></tr>';
+      return;
+    }
+    rows.forEach(function (log) {
+      const allIdx = allFiltered.indexOf(log);
       const tr = document.createElement("tr");
       tr.innerHTML =
         "<td>" + c.escapeHtml(c.formatDate(log["日付"])) + "</td>" +
         "<td>" + c.escapeHtml(log["項目"]) + "</td>" +
-        "<td><button type='button' class='btn-detail' data-log-index='" + index + "'>詳細</button></td>";
-      body.appendChild(tr);
-    });
-    body.querySelectorAll("[data-log-index]").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        const idx = Number(btn.getAttribute("data-log-index"));
-        c.setSelectedSiteLogIndex(idx);
-        c.setSelectedSiteLogId(c.getSiteLogId(rows[idx], idx));
+        "<td><button type='button' class='btn-detail'>詳細</button></td>";
+      tr.querySelector(".btn-detail").addEventListener("click", function () {
+        c.setSelectedSiteLogIndex(allIdx);
+        c.setSelectedSiteLogId(c.getSiteLogId(log, allIdx));
         c.navigate("siteDetail");
       });
+      body.appendChild(tr);
     });
   }
+
+  function applyFilter() {
+    const sel = itemFilter.value;
+    const visible = sel
+      ? allFiltered.filter(function (r) { return r["項目"] === sel; })
+      : allFiltered;
+    status.textContent = "現場記録データ " + visible.length + "件を表示中";
+    render(visible);
+  }
+
+  itemFilter.addEventListener("change", applyFilter);
 
   (async function init() {
     status.textContent = "現場記録データを読み込み中...";
@@ -54,7 +70,7 @@
     filtered.sort(function (a, b) {
       return String(b["日付"] || "").localeCompare(String(a["日付"] || ""));
     });
-    status.textContent = "現場記録データ " + filtered.length + "件を表示中";
-    render(filtered);
+    allFiltered = filtered;
+    applyFilter();
   })();
 })();

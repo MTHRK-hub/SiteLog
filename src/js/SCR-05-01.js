@@ -42,6 +42,10 @@
 
   function render(rows) {
     body.innerHTML = "";
+    if (!rows.length) {
+      body.innerHTML = '<tr><td colspan="2" style="text-align:center">データがありません</td></tr>';
+      return;
+    }
     rows.forEach(function (manuscript, index) {
       const tr = document.createElement("tr");
       const titleBtn = document.createElement("button");

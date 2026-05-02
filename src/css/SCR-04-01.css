@@ -1,3 +1,23 @@
+.site-filter-row {
+  margin-bottom: 12px;
+}
+
+.item-select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-size: 0.95rem;
+  min-height: var(--touch-min);
+}
+
+.item-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
 /* テーブル行の色分け（ヘッダ行はそのまま） */
 .site-list-page tbody tr:nth-child(odd) {
   background: rgb(72, 48, 77);
