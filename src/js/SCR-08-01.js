@@ -9,8 +9,7 @@
     showUser: true,
     extraId: "btn-event-create",
     extraLabel: "新規作成",
-    extraScreen: "eventCreate",
-    extraEnabled: true
+    extraEnabled: false
   });
 
   const status = document.getElementById("event-load-status");
@@ -102,9 +101,15 @@
           "<td>" + c.escapeHtml(r["日付"] || "") + "</td>" +
           "<td>" + c.escapeHtml(r["時間"] || "") + "</td>" +
           "<td>" + c.escapeHtml(r["イベント名"] || "") + "</td>" +
-          "<td><button type='button' class='btn btn-sm btn-secondary' disabled>詳細</button></td>" +
+          "<td><button type='button' class='btn btn-sm btn-secondary btn-event-detail' data-eid='" + c.escapeHtml(String(r.id || "")) + "'>詳細</button></td>" +
           "</tr>";
       }).join("");
+      listBody.querySelectorAll(".btn-event-detail").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          c.setSelectedEventId(btn.dataset.eid);
+          c.navigate("eventDetail");
+        });
+      });
     }
 
     content.hidden = false;

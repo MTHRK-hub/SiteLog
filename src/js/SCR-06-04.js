@@ -25,6 +25,7 @@
     form.elements["時間From"].value = timeParts[0] ? timeParts[0].trim() : "";
     form.elements["時間To"].value = timeParts[1] ? timeParts[1].trim() : "";
     form.elements["場所"].value = project["場所"] || "";
+    form.elements["場所URL"].value = project["場所URL"] || "";
     form.elements["内容"].value = project["内容"] || "";
     form.elements["説明"].value = project["説明"] || "";
     form.elements["男性参加費"].value = project["男性参加費"] || "";
@@ -53,6 +54,7 @@
         "日付": String(fd.get("日付") || "").trim(),
         "時間": time,
         "場所": String(fd.get("場所") || "").trim(),
+        "場所URL": String(fd.get("場所URL") || "").trim(),
         "内容": String(fd.get("内容") || "").trim(),
         "説明": String(fd.get("説明") || "").trim(),
         "男性参加費": String(fd.get("男性参加費") || "").trim(),

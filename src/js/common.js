@@ -31,7 +31,8 @@
     selectedCashflowId: "siteLog-selected-cashflow-id",
     selectedCashflowYm: "siteLog-selected-cashflow-ym",
     completionInfo: "siteLog-completion-info",
-    events: "siteLog-events-data"
+    events: "siteLog-events-data",
+    selectedEventId: "siteLog-selected-event-id"
   };
 
   // =========================
@@ -354,7 +355,7 @@
   var FRIEND_ENCRYPT_FIELDS = ["名前", "LINE名", "年齢差", "生年月日", "性別", "職業", "出会った日", "出会った場所", "相手の情報", "今後の予定"];
   var SITELOG_ENCRYPT_FIELDS = ["日付", "項目", "出会った相手", "メモ", "ToDo"];
   var MANUSCRIPT_ENCRYPT_FIELDS = ["タイトル", "メモ"];
-  var PROJECT_ENCRYPT_FIELDS = ["日付", "時間", "場所", "内容", "説明", "男性参加費", "女性参加費"];
+  var PROJECT_ENCRYPT_FIELDS = ["日付", "時間", "場所", "場所URL", "内容", "説明", "男性参加費", "女性参加費"];
   var CASHFLOW_ENCRYPT_FIELDS = ["年月", "収支区分", "内訳", "金額", "備考"];
   var EVENT_ENCRYPT_FIELDS = ["日付", "時間", "項目", "場所", "イベント名", "参加費", "URL", "参加フラグ"];
 
@@ -734,7 +735,7 @@
     cashflowCreate: "SCR-07-02.html",
     cashflowEdit: "SCR-07-03.html",
     eventList: "SCR-08-01.html",
-    eventCreate: "SCR-08-02.html"
+    eventDetail: "SCR-08-02.html"
   };
 
   function navigate(screen) {
@@ -960,6 +961,15 @@
     return readJson(STORAGE_KEYS.events, []);
   }
 
+  function setSelectedEventId(id) {
+    sessionStorage.setItem(STORAGE_KEYS.selectedEventId, String(id));
+  }
+
+  function getSelectedEventId() {
+    const raw = sessionStorage.getItem(STORAGE_KEYS.selectedEventId);
+    return raw == null ? "" : String(raw);
+  }
+
   // =========================
   // 完了画面 情報
   // =========================
@@ -1086,6 +1096,8 @@
     decryptEventRecord: decryptEventRecord,
     setEvents: setEvents,
     getEvents: getEvents,
+    setSelectedEventId: setSelectedEventId,
+    getSelectedEventId: getSelectedEventId,
     appendEvent: appendEvent,
     deleteEvent: deleteEvent
   };

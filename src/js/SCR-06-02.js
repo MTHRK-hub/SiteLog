@@ -43,6 +43,18 @@
       "</dt><dd>" + c.escapeHtml(value || "") + "</dd></div>";
   }
 
+  function buildLocationRow(place, locationUrl) {
+    const placeStr = String(place || "");
+    const urlStr = String(locationUrl || "").trim();
+    if (!urlStr) return row("場所", placeStr);
+    const lines = placeStr.split(/\r?\n/);
+    const firstLine = c.escapeHtml(lines[0] || "");
+    const restLines = lines.slice(1).map(function (l) { return c.escapeHtml(l); });
+    let dd = '<a href="' + c.escapeHtml(urlStr) + '" target="_blank" rel="noopener">' + firstLine + "</a>";
+    if (restLines.length) dd += "<br>" + restLines.join("<br>");
+    return "<div class='detail-row'><dt>場所</dt><dd>" + dd + "</dd></div>";
+  }
+
   function formatFee(value) {
     const str = String(value || "").trim().replace(/[,¥]/g, "");
     if (!str) return "";
@@ -60,7 +72,8 @@
   content.innerHTML =
     row("日付", c.formatDate(project["日付"])) +
     row("時間", project["時間"]) +
-    row("場所", project["場所"]) +
+    buildLocationRow(project["場所"], project["場所URL"]) +
+    row("場所URL", project["場所URL"]) +
     row("内容", project["内容"]) +
     row("説明", project["説明"]) +
     feeRow;

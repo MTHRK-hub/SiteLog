@@ -107,6 +107,8 @@
       navHtml = '<button type="button" class="btn btn-secondary" id="hdr-btn-nav">一覧に戻る</button>';
     } else if (back === "project-plan") {
       navHtml = '<button type="button" class="btn btn-secondary" id="hdr-btn-nav">計画画面に戻る</button>';
+    } else if (back === "event-list") {
+      navHtml = '<button type="button" class="btn btn-secondary" id="hdr-btn-nav">一覧に戻る</button>';
     }
 
     // 下段右: ページ固有ボタン (新規登録・編集など)
@@ -186,7 +188,8 @@
         back === "site-list"       ? "siteList"        :
         back === "user-list"       ? "userCreate"     :
         back === "manuscript-list" ? "manuscriptList" :
-        back === "project-plan"    ? "projectPlan"    : "";
+        back === "project-plan"    ? "projectPlan"    :
+        back === "event-list"      ? "eventList"      : "";
       if (backScreen) {
         navBtn.addEventListener("click", function () {
           navigateMain(backScreen);

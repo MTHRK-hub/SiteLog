@@ -40,6 +40,7 @@
       "日付": String(fd.get("日付") || "").trim(),
       "時間": time,
       "場所": String(fd.get("場所") || "").trim(),
+      "場所URL": String(fd.get("場所URL") || "").trim(),
       "内容": String(fd.get("内容") || "").trim(),
       "説明": String(fd.get("説明") || "").trim(),
       "男性参加費": String(fd.get("男性参加費") || "").trim(),
