@@ -1,0 +1,63 @@
+/* コントロール行: 年月プルダウン(左) ＋ チェックボックス(右) */
+.event-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.month-select {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-size: 0.95rem;
+  min-height: var(--touch-min);
+}
+
+.month-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* 参加のみチェックボックス */
+.event-check-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.event-check-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.event-check-label input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* 合計参加費 */
+.event-fee-total {
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 12px;
+  padding: 8px;
+  background: var(--surface-alt);
+  border-radius: var(--radius);
+}
+
+/* 過去データ削除ボタン行 */
+.event-delete-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}

@@ -9,7 +9,8 @@
     siteLogs: { gid: "241811860", name: "現場記録情報" },
     manuscripts: { gid: "784637613", name: "メモ情報" },
     projects: { gid: "830834819", name: "企画情報" },
-    cashflows: { gid: "662697822", name: "キャッシュフロー情報" }
+    cashflows: { gid: "662697822", name: "キャッシュフロー情報" },
+    events: { gid: "273287419", name: "イベント情報" }
   };
   // 書き込みAPIのURL（window.SITELOG_WEBAPP_URL または window.SITELOG_FRIENDS_WEBAPP_URL を設定）
   const WRITE_API_URL = (window.SITELOG_WEBAPP_URL || window.SITELOG_FRIENDS_WEBAPP_URL || "");
@@ -29,7 +30,8 @@
     cashflows: "siteLog-cashflows-data",
     selectedCashflowId: "siteLog-selected-cashflow-id",
     selectedCashflowYm: "siteLog-selected-cashflow-ym",
-    completionInfo: "siteLog-completion-info"
+    completionInfo: "siteLog-completion-info",
+    events: "siteLog-events-data"
   };
 
   // =========================
@@ -202,6 +204,9 @@
       if (key === "cashflows" && !("年月" in first)) {
         return "取得は成功しましたが、キャッシュフロー情報のヘッダ名が一致しません。";
       }
+      if (key === "events" && !("イベント名" in first)) {
+        return "取得は成功しましたが、イベント情報のヘッダ名が一致しません。";
+      }
     }
     if (key === "users") {
       return "ユーザーデータを取得できません。シート共有設定を確認してください。";
@@ -217,6 +222,9 @@
     }
     if (key === "cashflows") {
       return "キャッシュフロー情報を取得できません。シート共有設定を確認してください。";
+    }
+    if (key === "events") {
+      return "イベント情報を取得できません。シート共有設定を確認してください。";
     }
     return "現場記録情報を取得できません。シート共有設定を確認してください。";
   }
@@ -348,6 +356,7 @@
   var MANUSCRIPT_ENCRYPT_FIELDS = ["タイトル", "メモ"];
   var PROJECT_ENCRYPT_FIELDS = ["日付", "時間", "場所", "内容", "説明", "男性参加費", "女性参加費"];
   var CASHFLOW_ENCRYPT_FIELDS = ["年月", "収支区分", "内訳", "金額", "備考"];
+  var EVENT_ENCRYPT_FIELDS = ["日付", "時間", "項目", "場所", "イベント名", "参加費", "URL", "参加フラグ"];
 
   function encryptRecord(record, fields) {
     var out = {};
@@ -405,6 +414,14 @@
     return decryptRecord(record, CASHFLOW_ENCRYPT_FIELDS);
   }
 
+  function encryptEventRecord(record) {
+    return encryptRecord(record, EVENT_ENCRYPT_FIELDS);
+  }
+
+  function decryptEventRecord(record) {
+    return decryptRecord(record, EVENT_ENCRYPT_FIELDS);
+  }
+
   // =========================
   // パスワード変更
   // =========================
@@ -428,6 +445,10 @@
 
   async function deleteUser(id) {
     await callWriteApi("deleteUser", { id: id });
+  }
+
+  async function deleteUserWithCascade(id) {
+    await callWriteApi("deleteUserCascade", { id: id });
   }
 
   // =========================
@@ -507,6 +528,17 @@
 
   async function deleteCashflow(id) {
     await callWriteApi("deleteCashflow", { id: id });
+  }
+
+  // =========================
+  // イベント情報 書き込み
+  // =========================
+  async function appendEvent(record) {
+    await callWriteApi("appendEvent", record);
+  }
+
+  async function deleteEvent(id) {
+    await callWriteApi("deleteEvent", { id: id });
   }
 
   // =========================
@@ -700,7 +732,9 @@
     projectMessageSetting: "SCR-06-05.html",
     cashflowPlan: "SCR-07-01.html",
     cashflowCreate: "SCR-07-02.html",
-    cashflowEdit: "SCR-07-03.html"
+    cashflowEdit: "SCR-07-03.html",
+    eventList: "SCR-08-01.html",
+    eventCreate: "SCR-08-02.html"
   };
 
   function navigate(screen) {
@@ -916,6 +950,17 @@
   }
 
   // =========================
+  // イベント情報 ストレージ
+  // =========================
+  function setEvents(rows) {
+    writeJson(STORAGE_KEYS.events, rows || []);
+  }
+
+  function getEvents() {
+    return readJson(STORAGE_KEYS.events, []);
+  }
+
+  // =========================
   // 完了画面 情報
   // =========================
   function setCompletionInfo(info) {
@@ -1035,6 +1080,13 @@
     findCashflowById: findCashflowById,
     appendCashflow: appendCashflow,
     updateCashflow: updateCashflow,
-    deleteCashflow: deleteCashflow
+    deleteCashflow: deleteCashflow,
+    deleteUserWithCascade: deleteUserWithCascade,
+    encryptEventRecord: encryptEventRecord,
+    decryptEventRecord: decryptEventRecord,
+    setEvents: setEvents,
+    getEvents: getEvents,
+    appendEvent: appendEvent,
+    deleteEvent: deleteEvent
   };
 })();

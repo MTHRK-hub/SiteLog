@@ -97,7 +97,7 @@
           deleteDialog.setAttribute("hidden", "");
           status.textContent = "削除中...";
           try {
-            await c.deleteUser(uid);
+            await c.deleteUserWithCascade(uid);
             c.setCompletionInfo({
               title: "ユーザー削除完了",
               message: "ユーザーの削除が完了しました。",

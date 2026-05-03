@@ -106,6 +106,24 @@ const CASHFLOW_HEADERS = [
 ];
 
 // ============================
+// イベント情報 設定
+// ============================
+const EVENT_SHEET_NAME = "イベント情報";
+const EVENT_HEADERS = [
+  "id",
+  "日付",
+  "時間",
+  "項目",
+  "場所",
+  "イベント名",
+  "参加費",
+  "URL",
+  "参加フラグ",
+  "ユーザーID",
+  "最終更新日時"
+];
+
+// ============================
 // エントリーポイント
 // ============================
 function doGet() {
@@ -196,6 +214,22 @@ function doPost(e) {
     }
     if (action === "deleteCashflow") {
       deleteCashflow_(payload);
+      return jsonOk_({ message: "deleted" });
+    }
+
+    // ユーザー連鎖削除
+    if (action === "deleteUserCascade") {
+      deleteUserCascade_(payload);
+      return jsonOk_({ message: "deleted" });
+    }
+
+    // イベント情報操作
+    if (action === "appendEvent") {
+      appendEvent_(payload);
+      return jsonOk_({ message: "appended" });
+    }
+    if (action === "deleteEvent") {
+      deleteEvent_(payload);
       return jsonOk_({ message: "deleted" });
     }
 
@@ -327,6 +361,38 @@ function deleteUser_(payload) {
   if (targetRow < 0) throw new Error("user not found: " + userId);
 
   sheet.deleteRow(targetRow);
+}
+
+// ============================
+// ユーザー連鎖削除
+// ============================
+function deleteRowsByUserId_(sheet, userId) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return;
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const colIdx = headers.findIndex(function (h) { return normalize_(h) === "ユーザーID"; });
+  if (colIdx < 0) return;
+  const values = sheet.getRange(2, colIdx + 1, lastRow - 1, 1).getValues();
+  const rows = [];
+  for (let i = 0; i < values.length; i++) {
+    if (normalize_(values[i][0]) === userId) rows.push(i + 2);
+  }
+  for (let i = rows.length - 1; i >= 0; i--) {
+    sheet.deleteRow(rows[i]);
+  }
+}
+
+function deleteUserCascade_(payload) {
+  deleteUser_(payload);
+  const userId = normalize_(payload.id);
+  const ssId = PropertiesService.getScriptProperties().getProperty("SPREADSHEET_ID");
+  if (!ssId) return;
+  const ss = SpreadsheetApp.openById(ssId);
+  [FRIEND_SHEET_NAME, SITELOG_SHEET_NAME, MANUSCRIPT_SHEET_NAME,
+   PROJECT_SHEET_NAME, CASHFLOW_SHEET_NAME, EVENT_SHEET_NAME].forEach(function (name) {
+    const sheet = ss.getSheetByName(name);
+    if (sheet) deleteRowsByUserId_(sheet, userId);
+  });
 }
 
 // ============================
@@ -614,6 +680,40 @@ function updateCashflow_(record) {
 function deleteCashflow_(payload) {
   const sheet = getSheet_(CASHFLOW_SHEET_NAME);
   ensureHeader_(sheet, CASHFLOW_HEADERS);
+
+  const id = normalize_(payload.id);
+  if (!id) throw new Error("id is required");
+
+  const rowIndex = findRowById_(sheet, id);
+  if (rowIndex < 0) throw new Error("target id not found: " + id);
+
+  sheet.deleteRow(rowIndex);
+}
+
+// ============================
+// イベント情報 操作
+// ============================
+function appendEvent_(record) {
+  const sheet = getSheet_(EVENT_SHEET_NAME);
+  ensureHeader_(sheet, EVENT_HEADERS);
+
+  if (!normalize_(record["日付"])) throw new Error("日付 is required");
+
+  const existingIds = getExistingIds_(sheet);
+  let maxId = 0;
+  existingIds.forEach(function (idStr) {
+    const n = Number(idStr);
+    if (Number.isFinite(n) && n > maxId) maxId = n;
+  });
+  record.id = String(maxId + 1);
+
+  record["最終更新日時"] = currentTimestamp_();
+  sheet.appendRow(toRow_(record, EVENT_HEADERS));
+}
+
+function deleteEvent_(payload) {
+  const sheet = getSheet_(EVENT_SHEET_NAME);
+  ensureHeader_(sheet, EVENT_HEADERS);
 
   const id = normalize_(payload.id);
   if (!id) throw new Error("id is required");

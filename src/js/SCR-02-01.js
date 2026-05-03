@@ -25,6 +25,10 @@
     c.navigate("cashflowPlan");
   });
 
+  document.getElementById("link-event-list").addEventListener("click", function () {
+    c.navigate("eventList");
+  });
+
   document.getElementById("link-password-change").addEventListener("click", function () {
     c.navigate("passwordChange");
   });
