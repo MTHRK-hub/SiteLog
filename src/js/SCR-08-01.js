@@ -18,6 +18,7 @@
   const listBody = document.getElementById("event-list-body");
   const monthFilter = document.getElementById("month-filter");
   const chkParticipation = document.getElementById("chk-participation");
+  const chkParticipationLabel = document.getElementById("chk-participation-label");
   const deleteRow = document.getElementById("event-delete-row");
   const deleteDialog = document.getElementById("delete-dialog");
   const deleteDialogMsg = document.getElementById("delete-dialog-msg");
@@ -33,7 +34,7 @@
     monthFilter.innerHTML = "";
     const emptyOpt = document.createElement("option");
     emptyOpt.value = "";
-    emptyOpt.textContent = "";
+    emptyOpt.textContent = "全件表示";
     monthFilter.appendChild(emptyOpt);
     for (let i = 0; i < 3; i++) {
       const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
@@ -57,7 +58,8 @@
   function parseEventDateTime(dateStr, timeStr) {
     const date = String(dateStr || "").trim();
     const time = String(timeStr || "").trim();
-    const startTime = (time.split("~")[0] || time.split("〜")[0] || time).trim() || "00:00";
+    const parts = time.split(/[~〜]/);
+    const startTime = (parts.length > 1 ? parts[1] : parts[0] || time).trim() || "00:00";
     const normalized = startTime.length === 4 ? "0" + startTime : startTime;
     const dt = new Date(date + "T" + normalized + ":00");
     return Number.isNaN(dt.getTime()) ? null : dt;
@@ -71,27 +73,32 @@
   }
 
   function renderContent(filterYm) {
-    if (!filterYm) {
-      content.hidden = true;
-      deleteRow.hidden = true;
-      chkParticipation.disabled = true;
-      chkParticipation.checked = false;
-      return;
-    }
-    chkParticipation.disabled = false;
+    const baseRows = filterYm
+      ? allEvents.filter(function (r) {
+          return getEventYm(r["日付"] || "") === filterYm;
+        })
+      : allEvents;
 
-    const monthRows = allEvents.filter(function (r) {
-      return getEventYm(r["日付"] || "") === filterYm;
-    });
-
-    const participationRows = monthRows.filter(function (r) {
+    const participationRows = baseRows.filter(function (r) {
       return String(r["参加フラグ"] || "").trim() === "1";
     });
-    const totalFee = calcTotalFee(participationRows);
-    feeTotalRow.textContent = filterYm.replace(/^(\d{4})-0?(\d+)$/, "$1年$2月") +
-      " 合計参加費 ￥" + totalFee.toLocaleString("ja-JP");
 
-    const displayRows = chkParticipation.checked ? participationRows : monthRows;
+    if (filterYm) {
+      const totalFee = calcTotalFee(participationRows);
+      feeTotalRow.textContent = filterYm.replace(/^(\d{4})-0?(\d+)$/, "$1年$2月") +
+        " 合計参加費 ￥" + totalFee.toLocaleString("ja-JP");
+      feeTotalRow.hidden = false;
+      chkParticipationLabel.hidden = false;
+      chkParticipation.disabled = false;
+    } else {
+      feeTotalRow.textContent = "";
+      feeTotalRow.hidden = true;
+      chkParticipationLabel.hidden = true;
+      chkParticipation.disabled = true;
+      chkParticipation.checked = false;
+    }
+
+    const displayRows = chkParticipation.checked ? participationRows : baseRows;
 
     if (!displayRows.length) {
       listBody.innerHTML = '<tr><td colspan="4" style="text-align:center">データがありません</td></tr>';
@@ -175,6 +182,14 @@
       : result.rows;
     allEvents = filtered.map(function (r) {
       return c.decryptEventRecord(r);
+    });
+    allEvents.sort(function (a, b) {
+      const dateA = String(a["日付"] || "");
+      const dateB = String(b["日付"] || "");
+      if (dateA !== dateB) return dateA.localeCompare(dateB);
+      const timeA = String(a["時間"] || "").split(/[~〜]/)[0].trim() || "00:00";
+      const timeB = String(b["時間"] || "").split(/[~〜]/)[0].trim() || "00:00";
+      return timeA.localeCompare(timeB);
     });
     c.setEvents(allEvents);
     status.textContent = "";

@@ -44,12 +44,20 @@
   opacity: 0.5;
 }
 
-/* 合計参加費 */
+/* 合計参加費 ＋ チェックボックス横並び */
+.event-fee-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
 .event-fee-total {
+  flex: 1;
   text-align: center;
   font-size: 0.95rem;
   font-weight: 600;
-  margin: 0 0 12px;
+  margin: 0;
   padding: 8px;
   background: var(--surface-alt);
   border-radius: var(--radius);

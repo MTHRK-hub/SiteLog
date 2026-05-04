@@ -60,7 +60,7 @@
 
     const emptyOpt = document.createElement("option");
     emptyOpt.value = "";
-    emptyOpt.textContent = "";
+    emptyOpt.textContent = "年月を選択してください。";
     monthFilter.appendChild(emptyOpt);
 
     sorted.forEach(function (ym) {

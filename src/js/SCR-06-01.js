@@ -33,7 +33,7 @@
   function buildMonthOptions() {
     const select = document.getElementById("month-filter");
     const now = new Date();
-    const options = [{ label: "", value: "" }];
+    const options = [{ label: "全件表示", value: "" }];
     for (let offset = -2; offset <= 2; offset++) {
       const d = new Date(now.getFullYear(), now.getMonth() + offset, 1);
       const y = d.getFullYear();
