@@ -11,6 +11,7 @@
 }
 
 .friend-form-page input,
+.friend-form-page select,
 .friend-form-page textarea {
   width: 100%;
   min-height: var(--touch-min);
@@ -28,6 +29,7 @@
 }
 
 .friend-form-page input:focus,
+.friend-form-page select:focus,
 .friend-form-page textarea:focus {
   outline: none;
   border-color: var(--accent);

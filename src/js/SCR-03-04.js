@@ -19,6 +19,16 @@
   }
   birthDateInput.addEventListener("input", syncAgeDiffState);
 
+  // 居住形態が一人暮らし以外の場合は更新月を非活性にする
+  const residenceTypeSelect = document.getElementById("input-residence-type");
+  const renewalMonthInput = document.getElementById("input-renewal-month");
+  function syncRenewalMonthState() {
+    const isAlone = residenceTypeSelect.value === "一人暮らし";
+    renewalMonthInput.disabled = !isAlone;
+    if (!isAlone) renewalMonthInput.value = "";
+  }
+  residenceTypeSelect.addEventListener("change", syncRenewalMonthState);
+
   if (!found) {
     errorEl.textContent = "編集対象データがありません。";
     form.querySelectorAll("input, textarea, button").forEach(function (el) {
@@ -38,7 +48,18 @@
     form.elements["職業"].value = friend["職業"] || "";
     form.elements["出会った日"].value = friend["出会った日"] || "";
     form.elements["出会った場所"].value = friend["出会った場所"] || "";
-    form.elements["相手の情報"].value = friend["相手の情報"] || "";
+    form.elements["出身"].value = friend["出身"] || "";
+    form.elements["居住地"].value = friend["居住地"] || "";
+    residenceTypeSelect.value = friend["居住形態"] || "";
+    syncRenewalMonthState();
+    if (friend["居住形態"] === "一人暮らし") {
+      renewalMonthInput.value = friend["更新月"] || "";
+    }
+    form.elements["趣味"].value = friend["趣味"] || "";
+    form.elements["家族構成"].value = friend["家族構成"] || "";
+    form.elements["話したこと"].value = friend["話したこと"] || "";
+    form.elements["提案対象"].value = friend["提案対象"] || "";
+    form.elements["その他"].value = friend["その他"] || "";
     form.elements["今後の予定"].value = friend["今後の予定"] || "";
 
     const confirmDialog = document.getElementById("confirm-dialog");
@@ -65,7 +86,15 @@
         "職業": String(fd.get("職業") || "").trim(),
         "出会った日": String(fd.get("出会った日") || "").trim(),
         "出会った場所": String(fd.get("出会った場所") || "").trim(),
-        "相手の情報": String(fd.get("相手の情報") || "").trim(),
+        "出身": String(fd.get("出身") || "").trim(),
+        "居住地": String(fd.get("居住地") || "").trim(),
+        "居住形態": String(fd.get("居住形態") || "").trim(),
+        "更新月": renewalMonthInput.disabled ? "" : String(fd.get("更新月") || "").trim(),
+        "趣味": String(fd.get("趣味") || "").trim(),
+        "家族構成": String(fd.get("家族構成") || "").trim(),
+        "話したこと": String(fd.get("話したこと") || "").trim(),
+        "提案対象": String(fd.get("提案対象") || "").trim(),
+        "その他": String(fd.get("その他") || "").trim(),
         "今後の予定": String(fd.get("今後の予定") || "").trim(),
         "ユーザーID": currentUser ? String(currentUser.id || "") : "",
         "最終更新日時": new Date().toISOString().slice(0, 19).replace("T", " ")

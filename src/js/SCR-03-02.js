@@ -63,12 +63,20 @@
       "<div class='detail-row'><dt>名前</dt><dd>" + c.escapeHtml(friend["名前"]) + "</dd></div>" +
       "<div class='detail-row'><dt>LINE名</dt><dd>" + c.escapeHtml(friend["LINE名"]) + "</dd></div>" +
       "<div class='detail-row'><dt>性別</dt><dd>" + c.escapeHtml(friend["性別"]) + "</dd></div>" +
-      (friend["生年月日"] ? "<div class='detail-row'><dt>生年月日</dt><dd>" + c.escapeHtml(friend["生年月日"]) + "</dd></div>" : "") +
+      "<div class='detail-row'><dt>生年月日</dt><dd>" + c.escapeHtml(friend["生年月日"]) + "</dd></div>" +
       "<div class='detail-row'><dt>年齢</dt><dd>" + c.escapeHtml(c.calcAge(friend, loginUser)) + "</dd></div>" +
       "<div class='detail-row'><dt>職業</dt><dd>" + c.escapeHtml(friend["職業"]) + "</dd></div>" +
       "<div class='detail-row'><dt>出会った日</dt><dd>" + c.escapeHtml(c.formatDate(friend["出会った日"])) + "</dd></div>" +
       "<div class='detail-row'><dt>出会った場所</dt><dd>" + c.escapeHtml(friend["出会った場所"]) + "</dd></div>" +
-      "<div class='detail-row'><dt>相手の情報</dt><dd>" + c.escapeHtml(friend["相手の情報"]) + "</dd></div>" +
+      "<div class='detail-row'><dt>出身</dt><dd>" + c.escapeHtml(friend["出身"]) + "</dd></div>" +
+      "<div class='detail-row'><dt>居住地</dt><dd>" + c.escapeHtml(friend["居住地"]) + "</dd></div>" +
+      "<div class='detail-row'><dt>居住形態</dt><dd>" + c.escapeHtml(friend["居住形態"]) + "</dd></div>" +
+      (friend["居住形態"] === "一人暮らし" ? "<div class='detail-row'><dt>更新月</dt><dd>" + c.escapeHtml(friend["更新月"]) + "</dd></div>" : "") +
+      "<div class='detail-row'><dt>趣味</dt><dd>" + c.escapeHtml(friend["趣味"]) + "</dd></div>" +
+      "<div class='detail-row'><dt>家族構成</dt><dd>" + c.escapeHtml(friend["家族構成"]) + "</dd></div>" +
+      "<div class='detail-row'><dt>話したこと</dt><dd>" + c.escapeHtml(friend["話したこと"]) + "</dd></div>" +
+      "<div class='detail-row'><dt>提案対象</dt><dd>" + c.escapeHtml(friend["提案対象"]) + "</dd></div>" +
+      "<div class='detail-row'><dt>その他</dt><dd>" + c.escapeHtml(friend["その他"]) + "</dd></div>" +
       "<div class='detail-row'><dt>今後の予定</dt><dd>" + c.escapeHtml(friend["今後の予定"]) + "</dd></div>";
 
     // 削除ボタン: 確認ダイアログを表示

@@ -24,6 +24,17 @@
   }
   birthDateInput.addEventListener("input", syncAgeDiffState);
 
+  // 居住形態が一人暮らし以外の場合は更新月を非活性にする
+  const residenceTypeSelect = document.getElementById("input-residence-type");
+  const renewalMonthInput = document.getElementById("input-renewal-month");
+  function syncRenewalMonthState() {
+    const isAlone = residenceTypeSelect.value === "一人暮らし";
+    renewalMonthInput.disabled = !isAlone;
+    if (!isAlone) renewalMonthInput.value = "";
+  }
+  syncRenewalMonthState();
+  residenceTypeSelect.addEventListener("change", syncRenewalMonthState);
+
   const confirmDialog = document.getElementById("confirm-dialog");
   const btnConfirmOk = document.getElementById("btn-confirm-ok");
   const btnConfirmCancel = document.getElementById("btn-confirm-cancel");
@@ -49,7 +60,15 @@
       "職業": String(fd.get("職業") || "").trim(),
       "出会った日": String(fd.get("出会った日") || "").trim(),
       "出会った場所": String(fd.get("出会った場所") || "").trim(),
-      "相手の情報": String(fd.get("相手の情報") || "").trim(),
+      "出身": String(fd.get("出身") || "").trim(),
+      "居住地": String(fd.get("居住地") || "").trim(),
+      "居住形態": String(fd.get("居住形態") || "").trim(),
+      "更新月": renewalMonthInput.disabled ? "" : String(fd.get("更新月") || "").trim(),
+      "趣味": String(fd.get("趣味") || "").trim(),
+      "家族構成": String(fd.get("家族構成") || "").trim(),
+      "話したこと": String(fd.get("話したこと") || "").trim(),
+      "提案対象": String(fd.get("提案対象") || "").trim(),
+      "その他": String(fd.get("その他") || "").trim(),
       "今後の予定": String(fd.get("今後の予定") || "").trim(),
       "ユーザーID": currentUser ? String(currentUser.id || "") : "",
       "最終更新日時": new Date().toISOString().slice(0, 19).replace("T", " ")
