@@ -543,6 +543,10 @@
     await callWriteApi("deleteEvent", { id: id });
   }
 
+  async function updateEventHideFlag(id) {
+    await callWriteApi("updateEventHideFlag", { id: String(id || "") });
+  }
+
   // =========================
   // 日付ユーティリティ
   // =========================
@@ -1100,6 +1104,7 @@
     setSelectedEventId: setSelectedEventId,
     getSelectedEventId: getSelectedEventId,
     appendEvent: appendEvent,
-    deleteEvent: deleteEvent
+    deleteEvent: deleteEvent,
+    updateEventHideFlag: updateEventHideFlag
   };
 })();

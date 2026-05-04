@@ -73,11 +73,15 @@
   }
 
   function renderContent(filterYm) {
+    const nonHiddenEvents = allEvents.filter(function (r) {
+      const flag = String(r["非表示フラグ"] || "").trim();
+      return flag !== "1" && flag.toUpperCase() !== "TRUE";
+    });
     const baseRows = filterYm
-      ? allEvents.filter(function (r) {
+      ? nonHiddenEvents.filter(function (r) {
           return getEventYm(r["日付"] || "") === filterYm;
         })
-      : allEvents;
+      : nonHiddenEvents;
 
     const participationRows = baseRows.filter(function (r) {
       return String(r["参加フラグ"] || "").trim() === "1";
@@ -143,18 +147,23 @@
   btnDeleteOk.addEventListener("click", async function () {
     deleteDialog.hidden = true;
     const now = new Date();
-    const targets = allEvents.filter(function (r) {
+    const pastEvents = allEvents.filter(function (r) {
       const dt = parseEventDateTime(r["日付"], r["時間"]);
       return dt && dt < now;
     });
-    if (!targets.length) {
+    if (!pastEvents.length) {
       status.textContent = "削除対象の過去データはありません。";
       return;
     }
     status.textContent = "削除中...";
     try {
-      for (let i = 0; i < targets.length; i++) {
-        await c.deleteEvent(targets[i].id);
+      for (let i = 0; i < pastEvents.length; i++) {
+        const r = pastEvents[i];
+        if (String(r["参加フラグ"] || "").trim() === "1") {
+          await c.updateEventHideFlag(r.id);
+        } else {
+          await c.deleteEvent(r.id);
+        }
       }
       c.setCompletionInfo({
         title: "イベント削除完了",
@@ -180,7 +189,11 @@
           return String(r["ユーザーID"] || "").trim() === loginUserId;
         })
       : result.rows;
-    allEvents = filtered.map(function (r) {
+    const visible = filtered.filter(function (r) {
+      const flag = String(r["非表示フラグ"] || "").trim();
+      return flag !== "1" && flag.toUpperCase() !== "TRUE";
+    });
+    allEvents = visible.map(function (r) {
       return c.decryptEventRecord(r);
     });
     allEvents.sort(function (a, b) {

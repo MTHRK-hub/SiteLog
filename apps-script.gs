@@ -128,6 +128,7 @@ const EVENT_HEADERS = [
   "参加費",
   "URL",
   "参加フラグ",
+  "非表示フラグ",
   "ユーザーID",
   "最終更新日時"
 ];
@@ -240,6 +241,10 @@ function doPost(e) {
     if (action === "deleteEvent") {
       deleteEvent_(payload);
       return jsonOk_({ message: "deleted" });
+    }
+    if (action === "updateEventHideFlag") {
+      updateEventHideFlag_(payload);
+      return jsonOk_({ message: "updated" });
     }
 
     // ユーザーメッセージ更新
@@ -731,6 +736,27 @@ function deleteEvent_(payload) {
   if (rowIndex < 0) throw new Error("target id not found: " + id);
 
   sheet.deleteRow(rowIndex);
+}
+
+function updateEventHideFlag_(payload) {
+  const sheet = getSheet_(EVENT_SHEET_NAME);
+
+  const id = normalize_(payload.id);
+  if (!id) throw new Error("id is required");
+
+  const rowIndex = findRowById_(sheet, id);
+  if (rowIndex < 0) throw new Error("target id not found: " + id);
+
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const flagColIdx = headers.findIndex(function (h) { return normalize_(h) === "非表示フラグ"; });
+  if (flagColIdx < 0) throw new Error("column not found: 非表示フラグ");
+
+  sheet.getRange(rowIndex, flagColIdx + 1).setValue("1");
+
+  const tsColIdx = headers.findIndex(function (h) { return normalize_(h) === "最終更新日時"; });
+  if (tsColIdx >= 0) {
+    sheet.getRange(rowIndex, tsColIdx + 1).setValue(currentTimestamp_());
+  }
 }
 
 // ============================

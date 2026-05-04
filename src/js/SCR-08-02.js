@@ -8,7 +8,10 @@
     screenId: "SCR-08-02",
     title: "イベント詳細",
     back: "event-list",
-    showUser: true
+    showUser: true,
+    extraId: "btn-event-edit",
+    extraLabel: "編集",
+    extraEnabled: false
   });
 
   const events = c.getEvents();
