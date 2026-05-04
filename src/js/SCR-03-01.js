@@ -15,8 +15,25 @@
 
   const status = document.getElementById("friend-load-status");
   const body = document.getElementById("friend-list-body");
+  const filterSelect = document.getElementById("friend-filter");
 
   const loginUser = c.getCurrentUser();
+
+  function applyFilter(rows, filterValue) {
+    if (!filterValue) return rows;
+    if (filterValue === "20代") {
+      return rows.filter(function (f) {
+        const age = parseInt(c.calcAge(f, loginUser), 10);
+        return !Number.isNaN(age) && age >= 20 && age <= 29;
+      });
+    }
+    if (filterValue === "予定あり") {
+      return rows.filter(function (f) {
+        return String(f["今後の予定"] || "").startsWith("あり:");
+      });
+    }
+    return rows;
+  }
 
   function render(rows) {
     body.innerHTML = "";
@@ -79,7 +96,14 @@
     filtered.sort(function (a, b) {
       return String(a["名前"] || "").localeCompare(String(b["名前"] || ""), "ja");
     });
-    status.textContent = "友達データ " + filtered.length + "件を表示中";
-    render(filtered);
+
+    function refreshView() {
+      const applied = applyFilter(filtered, filterSelect.value);
+      status.textContent = "友達データ " + applied.length + "件を表示中";
+      render(applied);
+    }
+
+    filterSelect.addEventListener("change", refreshView);
+    refreshView();
   })();
 })();

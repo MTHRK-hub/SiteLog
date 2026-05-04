@@ -35,6 +35,59 @@
   syncRenewalMonthState();
   residenceTypeSelect.addEventListener("change", syncRenewalMonthState);
 
+  // 今後の予定: ラジオボタンによりテキストエリアの活性/非活性を切り替える
+  const futurePlanText = document.getElementById("input-future-plan-text");
+  function syncFuturePlanState() {
+    const checked = form.querySelector('input[name="今後の予定フラグ"]:checked');
+    const isAri = checked && checked.value === "あり";
+    futurePlanText.disabled = !isAri;
+    if (!isAri) futurePlanText.value = "";
+  }
+  form.querySelectorAll('input[name="今後の予定フラグ"]').forEach(function (r) {
+    r.addEventListener("change", syncFuturePlanState);
+  });
+
+  // 提案対象: Enumシートから選択肢を動的生成
+  async function loadProposeTargetOptions() {
+    const result = await c.safeLoadSheetRows("enums");
+    if (!result.ok) return [];
+    const row = result.rows.find(function (r) {
+      return String(r["Enum名"] || "").trim() === "提案対象";
+    });
+    if (!row) return [];
+    const options = [];
+    for (let i = 1; i <= 15; i++) {
+      const v = String(row["値" + i] || "").trim();
+      if (v) options.push(v);
+    }
+    return options;
+  }
+
+  function renderProposeTargetCheckboxes(options, selectedValues) {
+    const container = document.getElementById("propose-target-checkboxes");
+    container.innerHTML = "";
+    if (!options.length) {
+      container.innerHTML = "<span>選択肢がありません</span>";
+      return;
+    }
+    options.forEach(function (opt) {
+      const label = document.createElement("label");
+      label.className = "checkbox-label";
+      const input = document.createElement("input");
+      input.type = "checkbox";
+      input.name = "提案対象";
+      input.value = opt;
+      if (selectedValues && selectedValues.indexOf(opt) >= 0) input.checked = true;
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(opt));
+      container.appendChild(label);
+    });
+  }
+
+  loadProposeTargetOptions().then(function (options) {
+    renderProposeTargetCheckboxes(options, []);
+  });
+
   const confirmDialog = document.getElementById("confirm-dialog");
   const btnConfirmOk = document.getElementById("btn-confirm-ok");
   const btnConfirmCancel = document.getElementById("btn-confirm-cancel");
@@ -50,6 +103,16 @@
     const rows = c.getFriends();
     const fd = new FormData(form);
     const currentUser = c.getCurrentUser();
+
+    // 提案対象: チェック済みの値をカンマ結合
+    const checkedPropose = Array.from(form.querySelectorAll('input[name="提案対象"]:checked'))
+      .map(function (cb) { return cb.value; });
+
+    // 今後の予定: ラジオ値 + テキスト
+    const futureFlagEl = form.querySelector('input[name="今後の予定フラグ"]:checked');
+    const futureFlag = futureFlagEl ? futureFlagEl.value : "なし";
+    const futurePlanValue = futureFlag + ":" + (futureFlag === "あり" ? futurePlanText.value.trim() : "");
+
     const record = {
       id: nextId(rows),
       "名前": String(fd.get("名前") || "").trim(),
@@ -67,9 +130,9 @@
       "趣味": String(fd.get("趣味") || "").trim(),
       "家族構成": String(fd.get("家族構成") || "").trim(),
       "話したこと": String(fd.get("話したこと") || "").trim(),
-      "提案対象": String(fd.get("提案対象") || "").trim(),
+      "提案対象": checkedPropose.join(","),
       "その他": String(fd.get("その他") || "").trim(),
-      "今後の予定": String(fd.get("今後の予定") || "").trim(),
+      "今後の予定": futurePlanValue,
       "ユーザーID": currentUser ? String(currentUser.id || "") : "",
       "最終更新日時": new Date().toISOString().slice(0, 19).replace("T", " ")
     };

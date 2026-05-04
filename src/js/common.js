@@ -10,7 +10,8 @@
     manuscripts: { gid: "784637613", name: "メモ情報" },
     projects: { gid: "830834819", name: "企画情報" },
     cashflows: { gid: "662697822", name: "キャッシュフロー情報" },
-    events: { gid: "273287419", name: "イベント情報" }
+    events: { gid: "273287419", name: "イベント情報" },
+    enums: { gid: "1382604625", name: "Enum情報" }
   };
   // 書き込みAPIのURL（window.SITELOG_WEBAPP_URL または window.SITELOG_FRIENDS_WEBAPP_URL を設定）
   const WRITE_API_URL = (window.SITELOG_WEBAPP_URL || window.SITELOG_FRIENDS_WEBAPP_URL || "");
@@ -45,7 +46,7 @@
   function gvizUrl(gid, callbackName) {
     return "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
       "/gviz/tq?gid=" + gid +
-      "&tqx=out:json;responseHandler:" + encodeURIComponent(callbackName);
+      "&headers=1&tqx=out:json;responseHandler:" + encodeURIComponent(callbackName);
   }
 
   function parseCsv(text) {

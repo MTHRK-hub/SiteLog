@@ -76,3 +76,50 @@
   min-height: auto;
   accent-color: var(--accent);
 }
+
+/* 今後の予定 fieldset 内 textarea */
+.friend-form-page #fieldset-future-plan textarea {
+  margin-top: 10px;
+}
+
+/* チェックボックス fieldset */
+.friend-form-page .checkbox-fieldset {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 8px 12px 10px;
+  margin: 0;
+}
+
+.friend-form-page .checkbox-legend {
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 0 4px;
+}
+
+.friend-form-page .checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 8px;
+}
+
+.friend-form-page .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+  font-size: 1rem;
+  min-height: var(--touch-min);
+  cursor: pointer;
+}
+
+.friend-form-page .checkbox-label input[type="checkbox"] {
+  width: auto;
+  min-height: auto;
+  accent-color: var(--accent);
+}
+
+.friend-form-page .loading-text {
+  color: var(--muted);
+  font-size: 0.9rem;
+}

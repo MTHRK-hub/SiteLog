@@ -29,13 +29,67 @@
   }
   residenceTypeSelect.addEventListener("change", syncRenewalMonthState);
 
+  // 今後の予定: ラジオボタンによりテキストエリアの活性/非活性を切り替える
+  const futurePlanText = document.getElementById("input-future-plan-text");
+  function syncFuturePlanState() {
+    const checked = form.querySelector('input[name="今後の予定フラグ"]:checked');
+    const isAri = checked && checked.value === "あり";
+    futurePlanText.disabled = !isAri;
+    if (!isAri) futurePlanText.value = "";
+  }
+  form.querySelectorAll('input[name="今後の予定フラグ"]').forEach(function (r) {
+    r.addEventListener("change", syncFuturePlanState);
+  });
+
+  // 提案対象: Enumシートから選択肢を動的生成
+  async function loadProposeTargetOptions() {
+    const result = await c.safeLoadSheetRows("enums");
+    if (!result.ok) return [];
+    const row = result.rows.find(function (r) {
+      return String(r["Enum名"] || "").trim() === "提案対象";
+    });
+    if (!row) return [];
+    const options = [];
+    for (let i = 1; i <= 15; i++) {
+      const v = String(row["値" + i] || "").trim();
+      if (v) options.push(v);
+    }
+    return options;
+  }
+
+  function renderProposeTargetCheckboxes(options, selectedValues) {
+    const container = document.getElementById("propose-target-checkboxes");
+    container.innerHTML = "";
+    if (!options.length) {
+      container.innerHTML = "<span>選択肢がありません</span>";
+      return;
+    }
+    options.forEach(function (opt) {
+      const label = document.createElement("label");
+      label.className = "checkbox-label";
+      const input = document.createElement("input");
+      input.type = "checkbox";
+      input.name = "提案対象";
+      input.value = opt;
+      if (selectedValues && selectedValues.indexOf(opt) >= 0) input.checked = true;
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(opt));
+      container.appendChild(label);
+    });
+  }
+
   if (!found) {
     errorEl.textContent = "編集対象データがありません。";
-    form.querySelectorAll("input, textarea, button").forEach(function (el) {
+    form.querySelectorAll("input, textarea, select, button").forEach(function (el) {
       if (el.id !== "btn-edit-cancel") el.disabled = true;
+    });
+    loadProposeTargetOptions().then(function (options) {
+      renderProposeTargetCheckboxes(options, []);
     });
   } else {
     const friend = c.decryptFriendRecord(found.row);
+
+    // 基本フィールド初期値
     form.elements["名前"].value = friend["名前"] || "";
     form.elements["LINE名"].value = friend["LINE名"] || "";
     form.elements["生年月日"].value = friend["生年月日"] || "";
@@ -58,9 +112,29 @@
     form.elements["趣味"].value = friend["趣味"] || "";
     form.elements["家族構成"].value = friend["家族構成"] || "";
     form.elements["話したこと"].value = friend["話したこと"] || "";
-    form.elements["提案対象"].value = friend["提案対象"] || "";
     form.elements["その他"].value = friend["その他"] || "";
-    form.elements["今後の予定"].value = friend["今後の予定"] || "";
+
+    // 今後の予定: "あり:content" または "なし:" 形式を解析
+    const futurePlanRaw = friend["今後の予定"] || "";
+    const futurePlanMatch = /^(あり|なし):(.*)$/s.exec(futurePlanRaw);
+    if (futurePlanMatch) {
+      const flag = futurePlanMatch[1];
+      const text = futurePlanMatch[2];
+      const radioEl = form.querySelector('input[name="今後の予定フラグ"][value="' + flag + '"]');
+      if (radioEl) radioEl.checked = true;
+      if (flag === "あり") {
+        futurePlanText.disabled = false;
+        futurePlanText.value = text;
+      }
+    }
+
+    // 提案対象チェックボックス: Enum読込後に初期チェック状態を設定
+    const selectedPropose = friend["提案対象"]
+      ? friend["提案対象"].split(",").map(function (s) { return s.trim(); })
+      : [];
+    loadProposeTargetOptions().then(function (options) {
+      renderProposeTargetCheckboxes(options, selectedPropose);
+    });
 
     const confirmDialog = document.getElementById("confirm-dialog");
     const btnConfirmOk = document.getElementById("btn-confirm-ok");
@@ -76,6 +150,16 @@
 
       const fd = new FormData(form);
       const currentUser = c.getCurrentUser();
+
+      // 提案対象: チェック済みの値をカンマ結合
+      const checkedPropose = Array.from(form.querySelectorAll('input[name="提案対象"]:checked'))
+        .map(function (cb) { return cb.value; });
+
+      // 今後の予定: ラジオ値 + テキスト
+      const futureFlagEl = form.querySelector('input[name="今後の予定フラグ"]:checked');
+      const futureFlag = futureFlagEl ? futureFlagEl.value : "なし";
+      const futurePlanValue = futureFlag + ":" + (futureFlag === "あり" ? futurePlanText.value.trim() : "");
+
       const updated = {
         id: c.getFriendId(friend, found.index),
         "名前": String(fd.get("名前") || "").trim(),
@@ -93,9 +177,9 @@
         "趣味": String(fd.get("趣味") || "").trim(),
         "家族構成": String(fd.get("家族構成") || "").trim(),
         "話したこと": String(fd.get("話したこと") || "").trim(),
-        "提案対象": String(fd.get("提案対象") || "").trim(),
+        "提案対象": checkedPropose.join(","),
         "その他": String(fd.get("その他") || "").trim(),
-        "今後の予定": String(fd.get("今後の予定") || "").trim(),
+        "今後の予定": futurePlanValue,
         "ユーザーID": currentUser ? String(currentUser.id || "") : "",
         "最終更新日時": new Date().toISOString().slice(0, 19).replace("T", " ")
       };
