@@ -59,7 +59,7 @@
   function parseEventDateTime(dateStr, timeStr) {
     const date = String(dateStr || "").trim();
     const time = String(timeStr || "").trim();
-    const parts = time.split(/[~〜]/);
+    const parts = time.split(/[~〜～]/);
     const startTime = (parts.length > 1 ? parts[1] : parts[0] || time).trim() || "00:00";
     const normalized = startTime.length === 4 ? "0" + startTime : startTime;
     const dt = new Date(date + "T" + normalized + ":00");
@@ -197,8 +197,8 @@
       const dateA = String(a["日付"] || "");
       const dateB = String(b["日付"] || "");
       if (dateA !== dateB) return dateA.localeCompare(dateB);
-      const timeA = String(a["時間"] || "").split(/[~〜]/)[0].trim() || "00:00";
-      const timeB = String(b["時間"] || "").split(/[~〜]/)[0].trim() || "00:00";
+      const timeA = String(a["時間"] || "").split(/[~〜～]/)[0].trim() || "00:00";
+      const timeB = String(b["時間"] || "").split(/[~〜～]/)[0].trim() || "00:00";
       return timeA.localeCompare(timeB);
     });
     allEventsIncludingHidden = allDecrypted;
