@@ -105,6 +105,8 @@
 
     const displayRows = chkParticipation.checked ? participationRows : baseRows;
 
+    status.textContent = "イベントデータ " + displayRows.length + "件を表示中";
+
     if (!displayRows.length) {
       listBody.innerHTML = '<tr><td colspan="4" style="text-align:center">データがありません</td></tr>';
     } else {
