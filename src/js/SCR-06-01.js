@@ -62,7 +62,7 @@
     status.textContent = "企画データ " + rows.length + "件を表示中";
 
     if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">データがありません</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center">データがありません</td></tr>';
       return;
     }
 
@@ -72,9 +72,8 @@
       return "<tr>" +
         "<td>" + c.escapeHtml(c.formatDate(p["日付"] || "")) + "</td>" +
         "<td>" + c.escapeHtml(p["時間"] || "") + "</td>" +
-        "<td>" + c.escapeHtml(p["内容"] || "") + "</td>" +
-        '<td><button type="button" class="btn btn-secondary btn-sm" data-project-id="' +
-          c.escapeHtml(projectId) + '">詳細</button></td>' +
+        '<td><button type="button" class="name-link" data-project-id="' +
+          c.escapeHtml(projectId) + '">' + c.escapeHtml(p["内容"] || "") + "</button></td>" +
         "</tr>";
     }).join("");
 

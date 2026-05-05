@@ -53,13 +53,21 @@
 
   const participation = String(event["参加フラグ"] || "").trim() === "1" ? "参加" : "不参加";
 
+  function formatFee(val) {
+    const s = String(val || "").trim();
+    if (!s) return "";
+    const n = parseInt(s.replace(/[^0-9]/g, ""), 10);
+    if (Number.isNaN(n)) return s;
+    return "¥" + n.toLocaleString("ja-JP");
+  }
+
   content.innerHTML =
     row("日付", c.formatDate(event["日付"])) +
     row("時間", event["時間"]) +
     row("項目", event["項目"]) +
     row("場所", event["場所"]) +
     eventNameRow(event["イベント名"], event["URL"]) +
-    row("参加費", event["参加費"]) +
+    row("参加費", formatFee(event["参加費"])) +
     row("参加/不参加", participation);
 
   btnDelete.addEventListener("click", function () {

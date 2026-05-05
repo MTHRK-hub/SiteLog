@@ -20,6 +20,7 @@
   const chkParticipation = document.getElementById("chk-participation");
   const chkParticipationLabel = document.getElementById("chk-participation-label");
   const deleteRow = document.getElementById("event-delete-row");
+  const deleteStatus = document.getElementById("event-delete-status");
   const deleteDialog = document.getElementById("delete-dialog");
   const deleteDialogMsg = document.getElementById("delete-dialog-msg");
   const btnDeleteOk = document.getElementById("btn-delete-ok");
@@ -108,17 +109,16 @@
     status.textContent = "イベントデータ " + displayRows.length + "件を表示中";
 
     if (!displayRows.length) {
-      listBody.innerHTML = '<tr><td colspan="4" style="text-align:center">データがありません</td></tr>';
+      listBody.innerHTML = '<tr><td colspan="3" style="text-align:center">データがありません</td></tr>';
     } else {
       listBody.innerHTML = displayRows.map(function (r) {
         return "<tr>" +
           "<td>" + c.escapeHtml(c.formatDate(r["日付"])) + "</td>" +
           "<td>" + c.escapeHtml(r["時間"] || "") + "</td>" +
-          "<td>" + c.escapeHtml(r["イベント名"] || "") + "</td>" +
-          "<td><button type='button' class='btn btn-sm btn-secondary btn-event-detail' data-eid='" + c.escapeHtml(String(r.id || "")) + "'>詳細</button></td>" +
+          "<td><button type='button' class='name-link' data-eid='" + c.escapeHtml(String(r.id || "")) + "'>" + c.escapeHtml(r["イベント名"] || "") + "</button></td>" +
           "</tr>";
       }).join("");
-      listBody.querySelectorAll(".btn-event-detail").forEach(function (btn) {
+      listBody.querySelectorAll("[data-eid]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           c.setSelectedEventId(btn.dataset.eid);
           c.navigate("eventDetail");
@@ -149,13 +149,14 @@
 
   btnDeleteOk.addEventListener("click", async function () {
     deleteDialog.hidden = true;
+    deleteStatus.textContent = "";
     const now = new Date();
     const pastEvents = allEvents.filter(function (r) {
       const dt = parseEventDateTime(r["日付"], r["時間"]);
       return dt && dt < now;
     });
     if (!pastEvents.length) {
-      status.textContent = "削除対象の過去データはありません。";
+      deleteStatus.textContent = "削除対象の過去データはありません。";
       return;
     }
     status.textContent = "削除中...";
