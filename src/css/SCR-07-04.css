@@ -1,3 +1,39 @@
+.category-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.category-filter-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.category-filter-select {
+  min-height: var(--touch-min);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  background: var(--bg);
+  color: var(--text);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.category-filter-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.category-filter-total {
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .exp-list-title {
   text-align: center;
   margin: 0 0 16px;

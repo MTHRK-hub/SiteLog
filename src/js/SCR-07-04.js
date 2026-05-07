@@ -30,6 +30,8 @@
   const deleteDialogMsg = document.getElementById("delete-dialog-msg");
   const btnDeleteOk = document.getElementById("btn-delete-ok");
   const btnDeleteCancel = document.getElementById("btn-delete-cancel");
+  const categoryFilterEl = document.getElementById("exp-category-filter");
+  const categoryTotalEl = document.getElementById("exp-category-total");
 
   let expenditures = [];
   let pendingDeleteId = null;
@@ -58,16 +60,43 @@
     }, 0);
   }
 
-  function render() {
-    const total = calcTotal(expenditures);
-    titleEl.textContent = ymToLabel(ym) + " 合計支出 ¥" + total.toLocaleString("ja-JP");
+  function populateCategoryFilter(enumRows) {
+    while (categoryFilterEl.options.length > 1) categoryFilterEl.remove(1);
+    const row = enumRows.find(function (r) {
+      return String(r["Enum名"] || "").trim() === "支出カテゴリ";
+    });
+    if (!row) return;
+    for (let i = 1; i <= 15; i++) {
+      const v = String(row["値" + i] || "").trim();
+      if (!v) continue;
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v;
+      categoryFilterEl.appendChild(opt);
+    }
+  }
 
-    if (!expenditures.length) {
+  function render() {
+    const selectedCat = categoryFilterEl.value;
+    const filtered = selectedCat
+      ? expenditures.filter(function (r) { return String(r["カテゴリ"] || "").trim() === selectedCat; })
+      : expenditures;
+
+    const monthTotal = calcTotal(expenditures);
+    titleEl.textContent = ymToLabel(ym) + " 合計支出 ¥" + monthTotal.toLocaleString("ja-JP");
+
+    if (selectedCat) {
+      categoryTotalEl.textContent = "¥" + calcTotal(filtered).toLocaleString("ja-JP");
+    } else {
+      categoryTotalEl.textContent = "";
+    }
+
+    if (!filtered.length) {
       tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">データがありません</td></tr>';
       return;
     }
 
-    tbody.innerHTML = expenditures.map(function (r) {
+    tbody.innerHTML = filtered.map(function (r) {
       return "<tr>" +
         "<td>" + c.escapeHtml(formatDateMmDd(r["日付"] || "")) + "</td>" +
         "<td>" + c.escapeHtml(r["カテゴリ"] || "") + "</td>" +
@@ -95,6 +124,10 @@
       });
     });
   }
+
+  categoryFilterEl.addEventListener("change", function () {
+    render();
+  });
 
   btnDeleteCancel.addEventListener("click", function () {
     deleteDialog.setAttribute("hidden", "");
@@ -127,19 +160,33 @@
       return;
     }
     statusEl.textContent = "読み込み中...";
-    const result = await c.safeLoadSheetRows("expenditures");
-    if (!result.ok) {
-      statusEl.textContent = result.message || "支出情報を取得できませんでした。";
+
+    const [enumResult, expResult] = await Promise.all([
+      c.safeLoadSheetRows("enums"),
+      c.safeLoadSheetRows("expenditures")
+    ]);
+
+    if (!enumResult.ok) {
+      statusEl.textContent = "Enum情報を取得できませんでした。";
+      return;
+    }
+    if (!expResult.ok) {
+      statusEl.textContent = expResult.message || "支出情報を取得できませんでした。";
       return;
     }
 
-    expenditures = result.rows
+    populateCategoryFilter(enumResult.rows);
+
+    expenditures = expResult.rows
       .filter(function (r) {
         return !loginUserId || String(r["ユーザーID"] || "").trim() === loginUserId;
       })
       .map(function (r) { return c.decryptExpenditureRecord(r); })
       .filter(function (r) {
         return String(r["日付"] || "").slice(0, 7) === ym;
+      })
+      .sort(function (a, b) {
+        return String(b["日付"] || "").localeCompare(String(a["日付"] || ""));
       });
 
     statusEl.textContent = "";
