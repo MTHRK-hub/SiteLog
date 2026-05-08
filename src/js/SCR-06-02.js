@@ -83,15 +83,24 @@
 
   const DIVIDER = "―――――――――――――――";
 
+  function formatDateShort(dateStr) {
+    if (!dateStr) return "";
+    const s = String(dateStr).trim();
+    const m = /^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/.exec(s);
+    if (!m) return s;
+    const d = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+    const dow = ["日", "月", "火", "水", "木", "金", "土"][d.getDay()];
+    return parseInt(m[2], 10) + "/" + parseInt(m[3], 10) + "(" + dow + ")";
+  }
+
   function buildDetailMessage() {
     const lines = [];
     lines.push(DIVIDER);
     if (project["内容"]) lines.push(project["内容"]);
-    lines.push("");
     if (project["説明"]) lines.push(project["説明"]);
     lines.push("");
     lines.push("【日時】");
-    lines.push([c.formatDate(project["日付"]), project["時間"]].filter(Boolean).join(" "));
+    lines.push([formatDateShort(project["日付"]), project["時間"]].filter(Boolean).join(" "));
     lines.push("");
     lines.push("【場所】");
     lines.push((project["場所"] || ""));

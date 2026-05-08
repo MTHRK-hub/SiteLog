@@ -34,21 +34,30 @@
 
   function buildMonthOptions() {
     const now = new Date();
+    const ymSet = new Set();
+    allEventsIncludingHidden.forEach(function (r) {
+      const ym = getEventYm(r["日付"] || "");
+      if (ym) ymSet.add(ym);
+    });
+    for (let i = 0; i < 3; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      ymSet.add(d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0"));
+    }
+    const sorted = Array.from(ymSet).sort();
     monthFilter.innerHTML = "";
     const emptyOpt = document.createElement("option");
     emptyOpt.value = "";
     emptyOpt.textContent = "全件表示";
     monthFilter.appendChild(emptyOpt);
-    for (let i = 0; i < 3; i++) {
-      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
-      const y = d.getFullYear();
-      const m = d.getMonth() + 1;
-      const ym = y + "-" + String(m).padStart(2, "0");
+    sorted.forEach(function (ym) {
+      const parts = ym.split("-");
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10);
       const opt = document.createElement("option");
       opt.value = ym;
       opt.textContent = y + "年" + m + "月";
       monthFilter.appendChild(opt);
-    }
+    });
   }
 
   function getEventYm(dateStr) {
@@ -97,14 +106,12 @@
       feeTotalRow.textContent = filterYm.replace(/^(\d{4})-0?(\d+)$/, "$1年$2月") +
         " 合計参加費 ￥" + totalFee.toLocaleString("ja-JP");
       feeTotalRow.hidden = false;
-      filterGroup.querySelectorAll("input[type='radio']").forEach(function (r) {
-        r.disabled = false;
-      });
+      filterGroup.hidden = false;
     } else {
       feeTotalRow.textContent = "";
       feeTotalRow.hidden = true;
+      filterGroup.hidden = true;
       filterGroup.querySelectorAll("input[type='radio']").forEach(function (r) {
-        r.disabled = true;
         r.checked = false;
       });
     }
@@ -112,7 +119,7 @@
     const filterMode = getFilterMode();
     let displayRows;
     if (filterMode === "participation") {
-      displayRows = allEventsIncludingHidden.filter(function (r) {
+      displayRows = allEvents.filter(function (r) {
         return getEventYm(r["日付"] || "") === filterYm &&
           String(r["参加フラグ"] || "").trim() === "1";
       });

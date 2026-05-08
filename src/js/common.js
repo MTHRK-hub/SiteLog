@@ -360,7 +360,7 @@
   var MANUSCRIPT_ENCRYPT_FIELDS = ["タイトル", "メモ"];
   var PROJECT_ENCRYPT_FIELDS = ["日付", "時間", "場所", "場所URL", "内容", "説明", "男性参加費", "女性参加費"];
   var CASHFLOW_ENCRYPT_FIELDS = ["年月", "収支区分", "内訳", "金額", "備考"];
-  var EVENT_ENCRYPT_FIELDS = ["日付", "時間", "項目", "場所", "イベント名", "参加費", "URL", "参加フラグ"];
+  var EVENT_ENCRYPT_FIELDS = ["日付", "時間", "項目", "場所", "イベント名", "参加費", "URL", "参加フラグ", "非表示フラグ"];
   var EXPENDITURE_ENCRYPT_FIELDS = ["日付", "カテゴリ", "種別", "内容", "金額", "備考"];
 
   function encryptRecord(record, fields) {
@@ -580,7 +580,7 @@
   }
 
   async function updateEventHideFlag(id) {
-    await callWriteApi("updateEventHideFlag", { id: String(id || "") });
+    await callWriteApi("updateEventHideFlag", { id: String(id || ""), flagValue: encrypt("1") });
   }
 
   function getEventId(event, fallbackIndex) {

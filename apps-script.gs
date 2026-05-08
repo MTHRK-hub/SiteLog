@@ -830,7 +830,8 @@ function updateEventHideFlag_(payload) {
   const flagColIdx = headers.findIndex(function (h) { return normalize_(h) === "非表示フラグ"; });
   if (flagColIdx < 0) throw new Error("column not found: 非表示フラグ");
 
-  sheet.getRange(rowIndex, flagColIdx + 1).setValue("1");
+  const flagValue = payload.flagValue !== undefined ? payload.flagValue : "1";
+  sheet.getRange(rowIndex, flagColIdx + 1).setValue(flagValue);
 
   const tsColIdx = headers.findIndex(function (h) { return normalize_(h) === "最終更新日時"; });
   if (tsColIdx >= 0) {
