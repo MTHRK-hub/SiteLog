@@ -17,8 +17,9 @@
   const feeTotalRow = document.getElementById("event-fee-total-row");
   const listBody = document.getElementById("event-list-body");
   const monthFilter = document.getElementById("month-filter");
-  const chkParticipation = document.getElementById("chk-participation");
-  const chkParticipationLabel = document.getElementById("chk-participation-label");
+  const radioParticipation = document.getElementById("radio-participation");
+  const radioCompleted = document.getElementById("radio-completed");
+  const filterGroup = document.getElementById("event-filter-group");
   const deleteRow = document.getElementById("event-delete-row");
   const deleteStatus = document.getElementById("event-delete-status");
   const deleteDialog = document.getElementById("delete-dialog");
@@ -74,16 +75,18 @@
     }, 0);
   }
 
+  function getFilterMode() {
+    if (radioParticipation.checked) return "participation";
+    if (radioCompleted.checked) return "completed";
+    return "all";
+  }
+
   function renderContent(filterYm) {
     const baseRows = filterYm
       ? allEvents.filter(function (r) {
           return getEventYm(r["日付"] || "") === filterYm;
         })
       : allEvents;
-
-    const participationRows = baseRows.filter(function (r) {
-      return String(r["参加フラグ"] || "").trim() === "1";
-    });
 
     if (filterYm) {
       const feeTargetRows = allEventsIncludingHidden.filter(function (r) {
@@ -94,17 +97,34 @@
       feeTotalRow.textContent = filterYm.replace(/^(\d{4})-0?(\d+)$/, "$1年$2月") +
         " 合計参加費 ￥" + totalFee.toLocaleString("ja-JP");
       feeTotalRow.hidden = false;
-      chkParticipationLabel.hidden = false;
-      chkParticipation.disabled = false;
+      filterGroup.querySelectorAll("input[type='radio']").forEach(function (r) {
+        r.disabled = false;
+      });
     } else {
       feeTotalRow.textContent = "";
       feeTotalRow.hidden = true;
-      chkParticipationLabel.hidden = true;
-      chkParticipation.disabled = true;
-      chkParticipation.checked = false;
+      filterGroup.querySelectorAll("input[type='radio']").forEach(function (r) {
+        r.disabled = true;
+        r.checked = false;
+      });
     }
 
-    const displayRows = chkParticipation.checked ? participationRows : baseRows;
+    const filterMode = getFilterMode();
+    let displayRows;
+    if (filterMode === "participation") {
+      displayRows = allEventsIncludingHidden.filter(function (r) {
+        return getEventYm(r["日付"] || "") === filterYm &&
+          String(r["参加フラグ"] || "").trim() === "1";
+      });
+    } else if (filterMode === "completed") {
+      displayRows = allEventsIncludingHidden.filter(function (r) {
+        return getEventYm(r["日付"] || "") === filterYm &&
+          (String(r["非表示フラグ"] || "").trim() === "1" ||
+           String(r["非表示フラグ"] || "").trim().toUpperCase() === "TRUE");
+      });
+    } else {
+      displayRows = baseRows;
+    }
 
     status.textContent = "イベントデータ " + displayRows.length + "件を表示中";
 
@@ -134,8 +154,17 @@
     renderContent(monthFilter.value);
   });
 
-  chkParticipation.addEventListener("change", function () {
-    renderContent(monthFilter.value);
+  [radioParticipation, radioCompleted].forEach(function (radio) {
+    var prevChecked = false;
+    radio.addEventListener("mousedown", function () {
+      prevChecked = radio.checked;
+    });
+    radio.addEventListener("click", function () {
+      if (prevChecked) {
+        radio.checked = false;
+      }
+      renderContent(monthFilter.value);
+    });
   });
 
   btnDeleteCancel.addEventListener("click", function () {

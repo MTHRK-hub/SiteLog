@@ -22,10 +22,16 @@
           <p class="event-fee-total" id="event-fee-total-row"></p>
         </div>
       </div>
-      <label class="event-check-label" id="chk-participation-label">
-        <input type="checkbox" id="chk-participation" disabled />
-        参加予定
-      </label>
+      <div class="event-radio-group" id="event-filter-group">
+        <label class="event-radio-label">
+          <input type="radio" name="event-filter" id="radio-participation" disabled />
+          参加予定
+        </label>
+        <label class="event-radio-label">
+          <input type="radio" name="event-filter" id="radio-completed" disabled />
+          参加済み
+        </label>
+      </div>
       <p class="info-text" id="event-load-status"></p>
       <div class="table-wrap">
         <table>

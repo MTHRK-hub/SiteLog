@@ -178,11 +178,17 @@
       return;
     }
 
-    // C: 通常ポップアップ
+    // C/D: 企画データの有無で分岐
     const userMessage = await getUserMessage();
     const filtered = allProjects.filter(function (p) {
       return extractYm(String(p["日付"] || "").trim()) === filterMonth;
     });
+
+    // C: 企画データが存在しない場合
+    if (filtered.length === 0) {
+      showPopup("企画データが存在しません。");
+      return;
+    }
 
     const DIVIDER = "----------------------";
     const lines = [getGreeting()];

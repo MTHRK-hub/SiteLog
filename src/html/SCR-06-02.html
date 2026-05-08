@@ -13,7 +13,16 @@
     <div class="card">
       <dl class="detail-rows" id="project-detail-content"></dl>
       <div class="detail-actions">
+        <button type="button" class="btn btn-secondary" id="btn-detail-msg">詳細メッセージ表示</button>
         <button type="button" class="btn btn-danger" id="btn-project-delete">削除</button>
+      </div>
+      <div id="detail-msg-popup" class="dialog-overlay" hidden>
+        <div class="dialog-box project-detail-msg-box">
+          <pre id="detail-msg-content" class="msg-popup-content"></pre>
+          <div class="dialog-actions" style="grid-template-columns: 1fr;">
+            <button type="button" class="btn btn-secondary" id="btn-detail-msg-close">閉じる</button>
+          </div>
+        </div>
       </div>
       <div id="delete-dialog" class="dialog-overlay" hidden>
         <div class="dialog-box">

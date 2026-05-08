@@ -22,24 +22,30 @@
   border-color: var(--accent);
 }
 
-/* 参加のみチェックボックス */
-.event-check-label {
+/* 参加フィルター ラジオボタングループ */
+.event-radio-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  white-space: nowrap;
+}
+
+.event-radio-label {
   display: flex;
   align-items: center;
   gap: 6px;
-  white-space: nowrap;
   font-size: 0.9rem;
   cursor: pointer;
 }
 
-.event-check-label input[type="checkbox"] {
+.event-radio-label input[type="radio"] {
   width: 18px;
   height: 18px;
   accent-color: var(--accent);
   cursor: pointer;
 }
 
-.event-check-label input[type="checkbox"]:disabled {
+.event-radio-label input[type="radio"]:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }

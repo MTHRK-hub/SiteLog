@@ -4,6 +4,9 @@
 
   const content = document.getElementById("project-detail-content");
   const btnDelete = document.getElementById("btn-project-delete");
+  const btnDetailMsg = document.getElementById("btn-detail-msg");
+  const detailMsgPopup = document.getElementById("detail-msg-popup");
+  const detailMsgContent = document.getElementById("detail-msg-content");
   const dialog = document.getElementById("delete-dialog");
   const deleteError = document.getElementById("delete-error");
 
@@ -24,6 +27,7 @@
     });
     content.innerHTML = "<div class='detail-row'><dt>情報</dt><dd>対象データがありません。一覧に戻ってください。</dd></div>";
     btnDelete.disabled = true;
+    btnDetailMsg.disabled = true;
     return;
   }
 
@@ -76,6 +80,38 @@
     row("内容", project["内容"]) +
     row("説明", project["説明"]) +
     feeRow;
+
+  const DIVIDER = "―――――――――――――――";
+
+  function buildDetailMessage() {
+    const lines = [];
+    lines.push(DIVIDER);
+    if (project["内容"]) lines.push(project["内容"]);
+    lines.push("");
+    if (project["説明"]) lines.push(project["説明"]);
+    lines.push("");
+    lines.push("【日時】");
+    lines.push([c.formatDate(project["日付"]), project["時間"]].filter(Boolean).join(" "));
+    lines.push("");
+    lines.push("【場所】");
+    lines.push((project["場所"] || ""));
+    if (project["場所URL"]) lines.push(project["場所URL"]);
+    lines.push("");
+    lines.push("【参加費】");
+    lines.push("男性👨‍🦱：" + formatFee(project["男性参加費"]));
+    lines.push("女性👩‍🦱：" + formatFee(project["女性参加費"]));
+    lines.push(DIVIDER);
+    return lines.join("\n");
+  }
+
+  btnDetailMsg.addEventListener("click", function () {
+    detailMsgContent.textContent = buildDetailMessage();
+    detailMsgPopup.hidden = false;
+  });
+
+  document.getElementById("btn-detail-msg-close").addEventListener("click", function () {
+    detailMsgPopup.hidden = true;
+  });
 
   btnDelete.addEventListener("click", function () {
     deleteError.textContent = "";
