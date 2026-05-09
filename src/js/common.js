@@ -12,7 +12,8 @@
     cashflows: { gid: "662697822", name: "キャッシュフロー情報" },
     events: { gid: "273287419", name: "イベント情報" },
     enums: { gid: "1382604625", name: "Enum情報" },
-    expenditures: { gid: "801460108", name: "支出情報" }
+    expenditures: { gid: "801460108", name: "支出情報" },
+    shops: { gid: "1386142929", name: "お店一覧" }
   };
   // 書き込みAPIのURL（window.SITELOG_WEBAPP_URL または window.SITELOG_FRIENDS_WEBAPP_URL を設定）
   const WRITE_API_URL = (window.SITELOG_WEBAPP_URL || window.SITELOG_FRIENDS_WEBAPP_URL || "");
@@ -35,7 +36,9 @@
     completionInfo: "siteLog-completion-info",
     events: "siteLog-events-data",
     selectedEventId: "siteLog-selected-event-id",
-    selectedExpenditureId: "siteLog-selected-expenditure-id"
+    selectedExpenditureId: "siteLog-selected-expenditure-id",
+    shops: "siteLog-shops-data",
+    selectedShopId: "siteLog-selected-shop-id"
   };
 
   // =========================
@@ -211,6 +214,9 @@
       if (key === "events" && !("イベント名" in first)) {
         return "取得は成功しましたが、イベント情報のヘッダ名が一致しません。";
       }
+      if (key === "shops" && !("店名" in first)) {
+        return "取得は成功しましたが、お店情報のヘッダ名が一致しません。";
+      }
     }
     if (key === "users") {
       return "ユーザーデータを取得できません。シート共有設定を確認してください。";
@@ -229,6 +235,9 @@
     }
     if (key === "events") {
       return "イベント情報を取得できません。シート共有設定を確認してください。";
+    }
+    if (key === "shops") {
+      return "お店情報を取得できません。シート共有設定を確認してください。";
     }
     return "現場記録情報を取得できません。シート共有設定を確認してください。";
   }
@@ -362,6 +371,7 @@
   var CASHFLOW_ENCRYPT_FIELDS = ["年月", "収支区分", "内訳", "金額", "備考"];
   var EVENT_ENCRYPT_FIELDS = ["日付", "時間", "項目", "場所", "イベント名", "参加費", "URL", "参加フラグ", "非表示フラグ"];
   var EXPENDITURE_ENCRYPT_FIELDS = ["日付", "カテゴリ", "種別", "内容", "金額", "備考"];
+  var SHOP_ENCRYPT_FIELDS = ["店名", "場所", "カテゴリ", "URL", "営業時間", "訪問歴", "予約可否", "備考"];
 
   function encryptRecord(record, fields) {
     var out = {};
@@ -433,6 +443,14 @@
 
   function decryptExpenditureRecord(record) {
     return decryptRecord(record, EXPENDITURE_ENCRYPT_FIELDS);
+  }
+
+  function encryptShopRecord(record) {
+    return encryptRecord(record, SHOP_ENCRYPT_FIELDS);
+  }
+
+  function decryptShopRecord(record) {
+    return decryptRecord(record, SHOP_ENCRYPT_FIELDS);
   }
 
   // =========================
@@ -570,6 +588,21 @@
     await callWriteApi("deleteExpenditure", { id: id });
   }
 
+  // =========================
+  // お店情報 書き込み
+  // =========================
+  async function appendShop(record) {
+    await callWriteApi("appendShop", record);
+  }
+
+  async function updateShop(record) {
+    await callWriteApi("updateShop", record);
+  }
+
+  async function deleteShop(id) {
+    await callWriteApi("deleteShop", { id: id });
+  }
+
   function setSelectedExpenditureId(id) {
     sessionStorage.setItem(STORAGE_KEYS.selectedExpenditureId, String(id));
   }
@@ -577,6 +610,42 @@
   function getSelectedExpenditureId() {
     const raw = sessionStorage.getItem(STORAGE_KEYS.selectedExpenditureId);
     return raw == null ? "" : String(raw);
+  }
+
+  // =========================
+  // お店情報 ストレージ
+  // =========================
+  function setShops(rows) {
+    writeJson(STORAGE_KEYS.shops, rows || []);
+  }
+
+  function getShops() {
+    return readJson(STORAGE_KEYS.shops, []);
+  }
+
+  function setSelectedShopId(id) {
+    sessionStorage.setItem(STORAGE_KEYS.selectedShopId, String(id));
+  }
+
+  function getSelectedShopId() {
+    const raw = sessionStorage.getItem(STORAGE_KEYS.selectedShopId);
+    return raw == null ? "" : String(raw);
+  }
+
+  function getShopId(shop, fallbackIndex) {
+    if (!shop) return "";
+    const raw = shop.id != null && String(shop.id).trim() !== "" ? shop.id : (fallbackIndex + 1);
+    return normalizeAuthValue(raw);
+  }
+
+  function findShopById(rows, id) {
+    const normId = normalizeAuthValue(id);
+    if (!normId) return null;
+    const index = rows.findIndex(function (row, idx) {
+      return getShopId(row, idx) === normId;
+    });
+    if (index < 0) return null;
+    return { index: index, row: rows[index] };
   }
 
   async function updateEventHideFlag(id) {
@@ -797,7 +866,11 @@
     eventList: "SCR-08-01.html",
     eventDetail: "SCR-08-02.html",
     eventCreate: "SCR-08-03.html",
-    eventEdit: "SCR-08-04.html"
+    eventEdit: "SCR-08-04.html",
+    shopList: "SCR-09-01.html",
+    shopDetail: "SCR-09-02.html",
+    shopCreate: "SCR-09-03.html",
+    shopEdit: "SCR-09-04.html"
   };
 
   function navigate(screen) {
@@ -1172,6 +1245,17 @@
     updateExpenditure: updateExpenditure,
     deleteExpenditure: deleteExpenditure,
     setSelectedExpenditureId: setSelectedExpenditureId,
-    getSelectedExpenditureId: getSelectedExpenditureId
+    getSelectedExpenditureId: getSelectedExpenditureId,
+    encryptShopRecord: encryptShopRecord,
+    decryptShopRecord: decryptShopRecord,
+    appendShop: appendShop,
+    updateShop: updateShop,
+    deleteShop: deleteShop,
+    setShops: setShops,
+    getShops: getShops,
+    setSelectedShopId: setSelectedShopId,
+    getSelectedShopId: getSelectedShopId,
+    getShopId: getShopId,
+    findShopById: findShopById
   };
 })();

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>現場記録簿 - お店編集</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/SCR-00-01.css" />
+  <link rel="stylesheet" href="../css/SCR-09-03.css" />
+</head>
+<body class="shop-form-page">
+  <div class="app">
+    <div class="card">
+      <form id="shop-edit-form" class="form-grid" novalidate>
+        <label>店名<input name="店名" required /></label>
+        <label>場所<input name="場所" /></label>
+        <label>カテゴリ
+          <select name="カテゴリ" id="select-category">
+            <option value=""></option>
+          </select>
+        </label>
+        <label>URL<input name="URL" /></label>
+        <label>営業時間<input name="営業時間" /></label>
+        <label>訪問歴<input name="訪問歴" /></label>
+        <label>予約可否<input name="予約可否" /></label>
+        <label>備考<textarea name="備考" rows="3"></textarea></label>
+        <p id="shop-edit-error" class="error-msg" role="alert"></p>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">更新</button>
+          <button type="button" class="btn btn-secondary" id="btn-edit-cancel">キャンセル</button>
+        </div>
+      </form>
+      <div id="confirm-dialog" class="dialog-overlay" hidden>
+        <div class="dialog-box">
+          <p class="dialog-msg">更新しますか？</p>
+          <div class="dialog-actions">
+            <button type="button" class="btn btn-primary" id="btn-confirm-ok">はい</button>
+            <button type="button" class="btn btn-secondary" id="btn-confirm-cancel">キャンセル</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.SITELOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzslsgfnlEFzyDA6W4ysgPJYz8w2PDOG_bCZh5qCy7lQvnfyYa9rR-kkLZGGXENb81D/exec";
+  </script>
+  <script src="../js/common.js"></script>
+  <script src="../js/SCR-09-04.js"></script>
+</body>
+</html>

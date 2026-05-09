@@ -29,6 +29,10 @@
     c.navigate("eventList");
   });
 
+  document.getElementById("link-shop-list").addEventListener("click", function () {
+    c.navigate("shopList");
+  });
+
   document.getElementById("link-password-change").addEventListener("click", function () {
     c.navigate("passwordChange");
   });

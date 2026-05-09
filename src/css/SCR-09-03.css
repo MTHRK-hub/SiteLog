@@ -1,0 +1,43 @@
+.shop-form-page .form-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.shop-form-page label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.shop-form-page input,
+.shop-form-page select,
+.shop-form-page textarea {
+  width: 100%;
+  min-height: var(--touch-min);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-size: 1rem;
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+}
+
+.shop-form-page textarea {
+  min-height: calc(var(--touch-min) * 2);
+  resize: vertical;
+}
+
+.shop-form-page input:focus,
+.shop-form-page select:focus,
+.shop-form-page textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.form-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}

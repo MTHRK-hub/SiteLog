@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>現場記録簿 - お店詳細</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/SCR-00-01.css" />
+  <link rel="stylesheet" href="../css/SCR-09-02.css" />
+</head>
+<body class="shop-detail-page">
+  <div class="app">
+    <div class="card">
+      <dl class="detail-rows" id="shop-detail-content"></dl>
+      <div class="detail-actions">
+        <button type="button" class="btn btn-primary" id="btn-shop-register">登録</button>
+        <button type="button" class="btn btn-secondary" id="btn-shop-cancel">キャンセル</button>
+      </div>
+      <div id="register-dialog" class="dialog-overlay" hidden>
+        <div class="dialog-box">
+          <p class="dialog-msg">登録しますか？</p>
+          <div class="dialog-actions">
+            <button type="button" class="btn btn-primary" id="btn-register-confirm">はい</button>
+            <button type="button" class="btn btn-secondary" id="btn-register-cancel">キャンセル</button>
+          </div>
+          <p id="register-error" class="error-msg" role="alert"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.SITELOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzslsgfnlEFzyDA6W4ysgPJYz8w2PDOG_bCZh5qCy7lQvnfyYa9rR-kkLZGGXENb81D/exec";
+  </script>
+  <script src="../js/common.js"></script>
+  <script src="../js/SCR-09-02.js"></script>
+</body>
+</html>

@@ -130,6 +130,24 @@ const EXPENDITURE_HEADERS = [
 ];
 
 // ============================
+// お店情報 設定
+// ============================
+const SHOP_SHEET_NAME = "お店一覧";
+const SHOP_HEADERS = [
+  "id",
+  "店名",
+  "場所",
+  "カテゴリ",
+  "URL",
+  "営業時間",
+  "訪問歴",
+  "予約可否",
+  "備考",
+  "ユーザーID",
+  "最終更新日時"
+];
+
+// ============================
 // イベント情報 設定
 // ============================
 const EVENT_SHEET_NAME = "イベント情報";
@@ -264,6 +282,20 @@ function doPost(e) {
     if (action === "updateEvent") {
       updateEvent_(payload);
       return jsonOk_({ message: "updated" });
+    }
+
+    // お店情報操作
+    if (action === "appendShop") {
+      appendShop_(payload);
+      return jsonOk_({ message: "appended" });
+    }
+    if (action === "updateShop") {
+      updateShop_(payload);
+      return jsonOk_({ message: "updated" });
+    }
+    if (action === "deleteShop") {
+      deleteShop_(payload);
+      return jsonOk_({ message: "deleted" });
     }
 
     // 支出情報操作
@@ -773,6 +805,55 @@ function updateExpenditure_(record) {
 function deleteExpenditure_(payload) {
   const sheet = getSheet_(EXPENDITURE_SHEET_NAME);
   ensureHeader_(sheet, EXPENDITURE_HEADERS);
+
+  const id = normalize_(payload.id);
+  if (!id) throw new Error("id is required");
+
+  const rowIndex = findRowById_(sheet, id);
+  if (rowIndex < 0) throw new Error("target id not found: " + id);
+
+  sheet.deleteRow(rowIndex);
+}
+
+// ============================
+// お店情報 操作
+// ============================
+function appendShop_(record) {
+  const sheet = getSheet_(SHOP_SHEET_NAME);
+  ensureHeader_(sheet, SHOP_HEADERS);
+
+  if (!normalize_(record["店名"])) throw new Error("店名 is required");
+
+  const existingIds = getExistingIds_(sheet);
+  let maxId = 0;
+  existingIds.forEach(function (idStr) {
+    const n = Number(idStr);
+    if (Number.isFinite(n) && n > maxId) maxId = n;
+  });
+  record.id = String(maxId + 1);
+
+  record["最終更新日時"] = currentTimestamp_();
+  sheet.appendRow(toRow_(record, SHOP_HEADERS));
+}
+
+function updateShop_(record) {
+  const sheet = getSheet_(SHOP_SHEET_NAME);
+  ensureHeader_(sheet, SHOP_HEADERS);
+
+  const id = normalize_(record.id);
+  if (!id) throw new Error("id is required");
+  if (!normalize_(record["店名"])) throw new Error("店名 is required");
+
+  const rowIndex = findRowById_(sheet, id);
+  if (rowIndex < 0) throw new Error("target id not found: " + id);
+
+  record["最終更新日時"] = currentTimestamp_();
+  sheet.getRange(rowIndex, 1, 1, SHOP_HEADERS.length).setValues([toRow_(record, SHOP_HEADERS)]);
+}
+
+function deleteShop_(payload) {
+  const sheet = getSheet_(SHOP_SHEET_NAME);
+  ensureHeader_(sheet, SHOP_HEADERS);
 
   const id = normalize_(payload.id);
   if (!id) throw new Error("id is required");
