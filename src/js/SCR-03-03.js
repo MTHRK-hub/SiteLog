@@ -24,6 +24,17 @@
   }
   birthDateInput.addEventListener("input", syncAgeDiffState);
 
+  // InstagramアカウントURLはアカウント名が空の場合は非表示
+  const instagramNameInput = document.getElementById("input-instagram-name");
+  const instagramUrlLabel = document.getElementById("label-instagram-url");
+  function syncInstagramUrlState() {
+    instagramUrlLabel.hidden = !instagramNameInput.value.trim();
+    if (!instagramNameInput.value.trim()) {
+      instagramUrlLabel.querySelector("input").value = "";
+    }
+  }
+  instagramNameInput.addEventListener("input", syncInstagramUrlState);
+
   // 居住形態が一人暮らし以外の場合は更新月を非活性にする
   const residenceTypeSelect = document.getElementById("input-residence-type");
   const renewalMonthInput = document.getElementById("input-renewal-month");
@@ -117,6 +128,8 @@
       id: nextId(rows),
       "名前": String(fd.get("名前") || "").trim(),
       "LINE名": String(fd.get("LINE名") || "").trim(),
+      "Instagramアカウント名": String(fd.get("Instagramアカウント名") || "").trim(),
+      "Instagram URL": String(fd.get("Instagram URL") || "").trim(),
       "年齢差": ageDiffInput.disabled ? "" : String(fd.get("年齢差") || "").trim(),
       "生年月日": String(fd.get("生年月日") || "").trim(),
       "性別": String(fd.get("性別") || "").trim(),

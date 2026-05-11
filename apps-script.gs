@@ -34,6 +34,8 @@ const FRIEND_HEADERS = [
   "id",
   "名前",
   "LINE名",
+  "Instagramアカウント名",
+  "Instagram URL",
   "年齢差",
   "生年月日",
   "性別",

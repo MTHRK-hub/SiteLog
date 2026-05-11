@@ -21,8 +21,20 @@
         </label>
         <label>URL<input name="URL" /></label>
         <label>営業時間<input name="営業時間" /></label>
-        <label>訪問歴<input name="訪問歴" /></label>
-        <label>予約可否<input name="予約可否" /></label>
+        <fieldset class="radio-fieldset">
+          <legend class="radio-legend">訪問歴</legend>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="訪問歴" value="あり" />あり</label>
+            <label class="radio-label"><input type="radio" name="訪問歴" value="なし" />なし</label>
+          </div>
+        </fieldset>
+        <fieldset class="radio-fieldset">
+          <legend class="radio-legend">予約可否</legend>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="予約可否" value="⚪︎" />⚪︎</label>
+            <label class="radio-label"><input type="radio" name="予約可否" value="×" />×</label>
+          </div>
+        </fieldset>
         <label>備考<textarea name="備考" rows="3"></textarea></label>
         <p id="shop-create-error" class="error-msg" role="alert"></p>
         <div class="form-actions">

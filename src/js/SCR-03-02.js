@@ -62,6 +62,15 @@
     content.innerHTML =
       "<div class='detail-row'><dt>名前</dt><dd>" + c.escapeHtml(friend["名前"]) + "</dd></div>" +
       "<div class='detail-row'><dt>LINE名</dt><dd>" + c.escapeHtml(friend["LINE名"]) + "</dd></div>" +
+      (function () {
+        const name = friend["Instagramアカウント名"] || "";
+        const url  = String(friend["Instagram URL"] || "").trim();
+        if (!name) return "";
+        const inner = url
+          ? '<a class="name-link" href="' + c.escapeHtml(url) + '" target="_blank" rel="noopener">' + c.escapeHtml(name) + "</a>"
+          : c.escapeHtml(name);
+        return "<div class='detail-row'><dt>Instagramアカウント名</dt><dd>" + inner + "</dd></div>";
+      })() +
       "<div class='detail-row'><dt>性別</dt><dd>" + c.escapeHtml(friend["性別"]) + "</dd></div>" +
       "<div class='detail-row'><dt>生年月日</dt><dd>" + c.escapeHtml(c.formatDate(friend["生年月日"])) + "</dd></div>" +
       "<div class='detail-row'><dt>年齢</dt><dd>" + c.escapeHtml(c.calcAge(friend, loginUser)) + "</dd></div>" +
