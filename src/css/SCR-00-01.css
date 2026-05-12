@@ -90,16 +90,45 @@
 /* ③ 画面ID（行1中央 / 画面名の半分サイズ） */
 .header-screen-id {
   font-size: 0.65rem;
-  font-weight: 400;
-  color: var(--muted);
+  font-weight: 600;
   letter-spacing: 0.05em;
+  background: linear-gradient(
+    180deg,
+    #fffce0 0%,
+    #ffd84e 35%,
+    #d49010 65%,
+    #ffe880 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter:
+    drop-shadow(0 1px 0 #7c5c0c)
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 0 6px rgba(255, 200, 60, 0.2));
 }
 
 /* ④ 画面名（行2 / colspan=3 全幅） */
 .header-title {
   font-size: clamp(1.35rem, 3vw, 1.2rem);
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  background: linear-gradient(
+    180deg,
+    #fffce0 0%,
+    #ffd84e 35%,
+    #d49010 65%,
+    #ffe880 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter:
+    drop-shadow(0 1px 0 #a07818)
+    drop-shadow(0 2px 0 #7c5c0c)
+    drop-shadow(0 3px 0 #5a4008)
+    drop-shadow(0 5px 8px rgba(0, 0, 0, 0.7))
+    drop-shadow(0 0 12px rgba(255, 200, 60, 0.25));
 }
 
 /* ===========================
@@ -107,12 +136,27 @@
    =========================== */
 .user-name {
   font-size: 0.85rem;
-  color: var(--muted);
+  font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: inline-block;
   max-width: 100%;
+  background: linear-gradient(
+    180deg,
+    #fffce0 0%,
+    #ffd84e 35%,
+    #d49010 65%,
+    #ffe880 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter:
+    drop-shadow(0 1px 0 #a07818)
+    drop-shadow(0 2px 0 #7c5c0c)
+    drop-shadow(0 3px 5px rgba(0, 0, 0, 0.65))
+    drop-shadow(0 0 8px rgba(255, 200, 60, 0.2));
 }
 
 /* ===========================

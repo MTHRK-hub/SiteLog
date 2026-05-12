@@ -31,8 +31,8 @@
       tr.innerHTML =
         "<td>" + c.escapeHtml(c.formatDate(log["日付"])) + "</td>" +
         "<td>" + c.escapeHtml(log["項目"]) + "</td>" +
-        "<td><button type='button' class='btn-detail'>詳細</button></td>";
-      tr.querySelector(".btn-detail").addEventListener("click", function () {
+        "<td><button type='button' class='btn btn-secondary'>詳細</button></td>";
+      tr.querySelector(".btn-secondary").addEventListener("click", function () {
         c.setSelectedSiteLogIndex(allIdx);
         c.setSelectedSiteLogId(c.getSiteLogId(log, allIdx));
         c.navigate("siteDetail");

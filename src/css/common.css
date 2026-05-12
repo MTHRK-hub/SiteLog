@@ -316,22 +316,6 @@ thead th {
   font-weight: 600;
 }
 
-.btn-detail {
-  min-height: 36px;
-  padding: 6px 10px;
-  border-radius: 9px;
-  border: none;
-  background: var(--surface-raised);
-  color: var(--accent);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-.btn-detail:hover {
-  background: rgba(61, 158, 255, 0.15);
-}
-
 .detail-rows {
   display: grid;
   gap: 12px;

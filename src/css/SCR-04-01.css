@@ -26,3 +26,11 @@
 .site-list-page tbody tr:nth-child(even) {
   background: rgb(56, 20, 51);
 }
+
+/* テーブル行内ボタンのサイズ調整 */
+.site-list-page .btn-secondary {
+  min-height: 36px;
+  padding: 6px 10px;
+  border-radius: 9px;
+  font-size: 0.85rem;
+}

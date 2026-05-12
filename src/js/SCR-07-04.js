@@ -104,7 +104,7 @@
         "<td>" + c.escapeHtml(r["内容"] || "") + "</td>" +
         "<td class='amount-cell'>" + c.escapeHtml(formatAmount(r["金額"])) + "</td>" +
         "<td>" + c.escapeHtml(r["備考"] || "") + "</td>" +
-        "<td><button class='btn btn-detail btn-edit-exp' data-id='" + c.escapeHtml(String(r["id"] || "")) + "'>編集</button></td>" +
+        "<td><button class='btn btn-secondary btn-edit-exp' data-id='" + c.escapeHtml(String(r["id"] || "")) + "'>編集</button></td>" +
         "<td><button class='btn btn-danger btn-delete-exp' data-id='" + c.escapeHtml(String(r["id"] || "")) + "'>削除</button></td>" +
         "</tr>";
     }).join("");
