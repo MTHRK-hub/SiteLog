@@ -68,7 +68,7 @@
       if (!subValue) return rows;
       return rows.filter(function (f) {
         const val = String(f["出会った場所"] || "");
-        return val === subValue || val.startsWith(subValue + "・");
+        return val === subValue || val.endsWith("：" + subValue);
       });
     }
     if (filterValue === "提案対象") {

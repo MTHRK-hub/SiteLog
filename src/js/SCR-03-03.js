@@ -156,7 +156,7 @@
       "出会った場所": (function () {
         const type = metPlaceTypeSelect.value.trim();
         const text = metPlaceTextInput.value.trim();
-        return type ? (text ? type + "・" + text : type) : text;
+        return text ? (type ? text + "：" + type : text) : type;
       })(),
       "出身": String(fd.get("出身") || "").trim(),
       "居住地": String(fd.get("居住地") || "").trim(),
