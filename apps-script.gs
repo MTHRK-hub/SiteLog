@@ -151,6 +151,19 @@ const SHOP_HEADERS = [
 ];
 
 // ============================
+// 残高情報 設定
+// ============================
+const STACKED_SHEET_NAME = "残高情報";
+const STACKED_HEADERS = [
+  "id",
+  "ユーザーID",
+  "項目",
+  "残高",
+  "順番",
+  "最終更新日時"
+];
+
+// ============================
 // イベント情報 設定
 // ============================
 const EVENT_SHEET_NAME = "イベント情報";
@@ -312,6 +325,20 @@ function doPost(e) {
     }
     if (action === "deleteExpenditure") {
       deleteExpenditure_(payload);
+      return jsonOk_({ message: "deleted" });
+    }
+
+    // 残高情報操作
+    if (action === "appendStacked") {
+      appendStacked_(payload);
+      return jsonOk_({ message: "appended" });
+    }
+    if (action === "updateStacked") {
+      updateStacked_(payload);
+      return jsonOk_({ message: "updated" });
+    }
+    if (action === "deleteStacked") {
+      deleteStacked_(payload);
       return jsonOk_({ message: "deleted" });
     }
 
@@ -857,6 +884,55 @@ function updateShop_(record) {
 function deleteShop_(payload) {
   const sheet = getSheet_(SHOP_SHEET_NAME);
   ensureHeader_(sheet, SHOP_HEADERS);
+
+  const id = normalize_(payload.id);
+  if (!id) throw new Error("id is required");
+
+  const rowIndex = findRowById_(sheet, id);
+  if (rowIndex < 0) throw new Error("target id not found: " + id);
+
+  sheet.deleteRow(rowIndex);
+}
+
+// ============================
+// 残高情報 操作
+// ============================
+function appendStacked_(record) {
+  const sheet = getSheet_(STACKED_SHEET_NAME);
+  ensureHeader_(sheet, STACKED_HEADERS);
+
+  if (!normalize_(record["項目"])) throw new Error("項目 is required");
+
+  const existingIds = getExistingIds_(sheet);
+  let maxId = 0;
+  existingIds.forEach(function (idStr) {
+    const n = Number(idStr);
+    if (Number.isFinite(n) && n > maxId) maxId = n;
+  });
+  record.id = String(maxId + 1);
+
+  record["最終更新日時"] = currentTimestamp_();
+  sheet.appendRow(toRow_(record, STACKED_HEADERS));
+}
+
+function updateStacked_(record) {
+  const sheet = getSheet_(STACKED_SHEET_NAME);
+  ensureHeader_(sheet, STACKED_HEADERS);
+
+  const id = normalize_(record.id);
+  if (!id) throw new Error("id is required");
+  if (!normalize_(record["項目"])) throw new Error("項目 is required");
+
+  const rowIndex = findRowById_(sheet, id);
+  if (rowIndex < 0) throw new Error("target id not found: " + id);
+
+  record["最終更新日時"] = currentTimestamp_();
+  sheet.getRange(rowIndex, 1, 1, STACKED_HEADERS.length).setValues([toRow_(record, STACKED_HEADERS)]);
+}
+
+function deleteStacked_(payload) {
+  const sheet = getSheet_(STACKED_SHEET_NAME);
+  ensureHeader_(sheet, STACKED_HEADERS);
 
   const id = normalize_(payload.id);
   if (!id) throw new Error("id is required");

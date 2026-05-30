@@ -149,6 +149,10 @@
     c.navigate("expenditureList");
   });
 
+  document.getElementById("btn-stacked").addEventListener("click", function () {
+    c.navigate("stackedList");
+  });
+
   const deleteDialog = document.getElementById("delete-dialog");
   const deleteDialogMsg = document.getElementById("delete-dialog-msg");
   const btnDeleteOk = document.getElementById("btn-delete-ok");

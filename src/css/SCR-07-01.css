@@ -90,3 +90,10 @@
   gap: 12px;
   margin-top: 24px;
 }
+
+/* 残高管理ボタン行（常時表示・中央配置） */
+.cashflow-stacked-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}

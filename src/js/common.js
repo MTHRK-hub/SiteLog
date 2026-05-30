@@ -13,7 +13,8 @@
     events: { gid: "273287419", name: "イベント情報" },
     enums: { gid: "1382604625", name: "Enum情報" },
     expenditures: { gid: "801460108", name: "支出情報" },
-    shops: { gid: "1386142929", name: "お店一覧" }
+    shops: { gid: "1386142929", name: "お店一覧" },
+    stacked: { gid: "271817480", name: "残高情報" }
   };
   // 書き込みAPIのURL（window.SITELOG_WEBAPP_URL または window.SITELOG_FRIENDS_WEBAPP_URL を設定）
   const WRITE_API_URL = (window.SITELOG_WEBAPP_URL || window.SITELOG_FRIENDS_WEBAPP_URL || "");
@@ -38,7 +39,8 @@
     selectedEventId: "siteLog-selected-event-id",
     selectedExpenditureId: "siteLog-selected-expenditure-id",
     shops: "siteLog-shops-data",
-    selectedShopId: "siteLog-selected-shop-id"
+    selectedShopId: "siteLog-selected-shop-id",
+    selectedStackedItemId: "siteLog-selected-stacked-item-id"
   };
 
   // =========================
@@ -217,6 +219,9 @@
       if (key === "shops" && !("店名" in first)) {
         return "取得は成功しましたが、お店情報のヘッダ名が一致しません。";
       }
+      if (key === "stacked" && !("項目" in first)) {
+        return "取得は成功しましたが、残高情報のヘッダ名が一致しません。";
+      }
     }
     if (key === "users") {
       return "ユーザーデータを取得できません。シート共有設定を確認してください。";
@@ -238,6 +243,9 @@
     }
     if (key === "shops") {
       return "お店情報を取得できません。シート共有設定を確認してください。";
+    }
+    if (key === "stacked") {
+      return "残高情報を取得できません。スプレッドシートのgid設定を確認してください。";
     }
     return "現場記録情報を取得できません。シート共有設定を確認してください。";
   }
@@ -649,6 +657,30 @@
     return { index: index, row: rows[index] };
   }
 
+  // =========================
+  // 残高情報 書き込み
+  // =========================
+  async function appendStacked(record) {
+    await callWriteApi("appendStacked", record);
+  }
+
+  async function updateStacked(record) {
+    await callWriteApi("updateStacked", record);
+  }
+
+  async function deleteStacked(id) {
+    await callWriteApi("deleteStacked", { id: id });
+  }
+
+  function setSelectedStackedItemId(id) {
+    sessionStorage.setItem(STORAGE_KEYS.selectedStackedItemId, String(id));
+  }
+
+  function getSelectedStackedItemId() {
+    const raw = sessionStorage.getItem(STORAGE_KEYS.selectedStackedItemId);
+    return raw == null ? "" : String(raw);
+  }
+
   async function updateEventHideFlag(id) {
     await callWriteApi("updateEventHideFlag", { id: String(id || ""), flagValue: encrypt("1") });
   }
@@ -871,7 +903,8 @@
     shopList: "SCR-09-01.html",
     shopDetail: "SCR-09-02.html",
     shopCreate: "SCR-09-03.html",
-    shopEdit: "SCR-09-04.html"
+    shopEdit: "SCR-09-04.html",
+    stackedList: "SCR-07-06.html"
   };
 
   function navigate(screen) {
@@ -1257,6 +1290,11 @@
     setSelectedShopId: setSelectedShopId,
     getSelectedShopId: getSelectedShopId,
     getShopId: getShopId,
-    findShopById: findShopById
+    findShopById: findShopById,
+    appendStacked: appendStacked,
+    updateStacked: updateStacked,
+    deleteStacked: deleteStacked,
+    setSelectedStackedItemId: setSelectedStackedItemId,
+    getSelectedStackedItemId: getSelectedStackedItemId
   };
 })();
