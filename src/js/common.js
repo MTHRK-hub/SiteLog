@@ -904,7 +904,8 @@
     shopDetail: "SCR-09-02.html",
     shopCreate: "SCR-09-03.html",
     shopEdit: "SCR-09-04.html",
-    stackedList: "SCR-07-06.html"
+    stackedList: "SCR-07-06.html",
+    stackedCreate: "SCR-07-07.html"
   };
 
   function navigate(screen) {
