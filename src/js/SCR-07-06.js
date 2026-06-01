@@ -14,32 +14,94 @@
 
   const loginUser = c.getCurrentUser();
   const loginUserId = loginUser ? String(loginUser.id || "").trim() : "";
-  const tbody = document.getElementById("stacked-list-body");
+  const totalAmountEl = document.getElementById("stacked-total-amount");
+  const container = document.getElementById("stacked-list-container");
   const statusEl = document.getElementById("stacked-list-status");
 
+  let currentRows = [];
+
   function formatAmount(val) {
-    const n = parseInt(String(val || "").replace(/[^0-9-]/g, ""), 10);
-    if (!Number.isFinite(n)) return String(val || "");
-    return "¥" + Math.abs(n).toLocaleString("ja-JP");
+    const s = String(val == null ? "" : val).trim();
+    if (s === "") return "-";
+    const n = parseInt(s.replace(/[^0-9-]/g, ""), 10);
+    if (!Number.isFinite(n)) return s;
+    return (n < 0 ? "-¥" : "¥") + Math.abs(n).toLocaleString("ja-JP");
   }
 
-  function render(rows) {
-    if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center">データがありません</td></tr>';
+  function render() {
+    let total = 0;
+    let hasValue = false;
+    currentRows.forEach(function (r) {
+      const n = parseInt(String(r["残高"] == null ? "" : r["残高"]).replace(/[^0-9-]/g, ""), 10);
+      if (Number.isFinite(n)) { total += n; hasValue = true; }
+    });
+    totalAmountEl.textContent = hasValue
+      ? (total < 0 ? "-¥" : "¥") + Math.abs(total).toLocaleString("ja-JP")
+      : "-";
+
+    if (!currentRows.length) {
+      container.innerHTML = '<p class="stacked-empty">データがありません</p>';
       return;
     }
-    tbody.innerHTML = rows.map(function (r) {
-      return "<tr>" +
-        "<td>" + c.escapeHtml(r["項目"] || "") + "</td>" +
-        "<td class='amount-cell'>" + c.escapeHtml(formatAmount(r["残高"])) + "</td>" +
-        "<td><button class='btn btn-secondary btn-edit-stacked' data-id='" + c.escapeHtml(String(r["id"] || "")) + "'>編集</button></td>" +
-        "</tr>";
+
+    container.innerHTML = currentRows.map(function (r, i) {
+      const upBtn = i > 0
+        ? '<button class="sort-btn sort-up" data-index="' + i + '" aria-label="上へ">▲</button>'
+        : '<span class="sort-placeholder"></span>';
+      const downBtn = i < currentRows.length - 1
+        ? '<button class="sort-btn sort-down" data-index="' + i + '" aria-label="下へ">▼</button>'
+        : '<span class="sort-placeholder"></span>';
+      return '<div class="stacked-row">' +
+        '<div class="stacked-card">' +
+          '<a class="stacked-item-name" role="button" tabindex="0" data-id="' + c.escapeHtml(String(r.id || "")) + '">' + c.escapeHtml(r["項目"] || "") + '</a>' +
+          '<span class="stacked-amount">' + c.escapeHtml(formatAmount(r["残高"])) + '</span>' +
+        '</div>' +
+        '<div class="stacked-sort-btns">' + upBtn + downBtn + '</div>' +
+      '</div>';
     }).join("");
 
-    tbody.querySelectorAll(".btn-edit-stacked").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        c.setSelectedStackedItemId(btn.dataset.id);
-        // 残高項目編集画面は後日実装
+    container.querySelectorAll(".stacked-item-name").forEach(function (a) {
+      a.addEventListener("click", function () {
+        c.setSelectedStackedItemId(a.dataset.id);
+        c.navigate("stackedEdit");
+      });
+      a.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          a.click();
+        }
+      });
+    });
+
+    container.querySelectorAll(".sort-btn").forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        const idx = parseInt(btn.dataset.index, 10);
+        const isUp = btn.classList.contains("sort-up");
+        const otherIdx = isUp ? idx - 1 : idx + 1;
+
+        const a = currentRows[idx];
+        const b = currentRows[otherIdx];
+        const orderA = a["表示順"];
+        const orderB = b["表示順"];
+        a["表示順"] = orderB;
+        b["表示順"] = orderA;
+
+        container.querySelectorAll(".sort-btn").forEach(function (b2) { b2.disabled = true; });
+        statusEl.textContent = "更新中...";
+        try {
+          await c.updateStacked(c.encryptStackedRecord(a));
+          await c.updateStacked(c.encryptStackedRecord(b));
+          statusEl.textContent = "";
+          currentRows.sort(function (x, y) {
+            return parseInt(String(x["表示順"] || "0"), 10) - parseInt(String(y["表示順"] || "0"), 10);
+          });
+          render();
+        } catch (err) {
+          a["表示順"] = orderA;
+          b["表示順"] = orderB;
+          statusEl.textContent = err && err.message ? err.message : "更新に失敗しました。";
+          container.querySelectorAll(".sort-btn").forEach(function (b2) { b2.disabled = false; });
+        }
       });
     });
   }
@@ -51,17 +113,18 @@
       statusEl.textContent = result.message || "残高情報を取得できませんでした。";
       return;
     }
-    const rows = result.rows
+    currentRows = result.rows
       .filter(function (r) {
         return !loginUserId || String(r["ユーザーID"] || "").trim() === loginUserId;
       })
+      .map(function (r) { return c.decryptStackedRecord(r); })
       .sort(function (a, b) {
         const na = parseInt(String(a["表示順"] || "0"), 10);
         const nb = parseInt(String(b["表示順"] || "0"), 10);
         return na - nb;
       });
     statusEl.textContent = "";
-    render(rows);
+    render();
   }
 
   loadStacked();

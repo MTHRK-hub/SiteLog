@@ -1,6 +1,73 @@
-.stacked-list-page .btn-secondary {
-  min-height: 36px;
-  padding: 6px 10px;
-  border-radius: 9px;
+.stacked-list-page .stacked-total {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 20px;
+}
+
+.stacked-list-page .stacked-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.stacked-list-page .stacked-card {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  background-color: #2e8b57;
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  min-height: 44px;
+  gap: 8px;
+}
+
+.stacked-list-page .stacked-item-name {
+  flex: 1;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.stacked-list-page .stacked-amount {
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.stacked-list-page .stacked-sort-btns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 8px;
+  gap: 2px;
+  min-width: 28px;
+}
+
+.stacked-list-page .sort-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
   font-size: 0.85rem;
+  padding: 2px 4px;
+  line-height: 1;
+  color: var(--text);
+}
+
+.stacked-list-page .sort-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.stacked-list-page .sort-placeholder {
+  display: inline-block;
+  width: 24px;
+  height: 20px;
+}
+
+.stacked-list-page .stacked-empty {
+  text-align: center;
+  padding: 24px 0;
 }

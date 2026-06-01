@@ -381,6 +381,7 @@
   var EVENT_ENCRYPT_FIELDS = ["日付", "時間", "項目", "場所", "イベント名", "参加費", "URL", "参加フラグ", "非表示フラグ"];
   var EXPENDITURE_ENCRYPT_FIELDS = ["日付", "カテゴリ", "種別", "内容", "金額", "備考"];
   var SHOP_ENCRYPT_FIELDS = ["店名", "場所", "カテゴリ", "URL", "営業時間", "訪問歴", "予約可否", "備考"];
+  var STACKED_ENCRYPT_FIELDS = ["項目", "表示順", "残高"];
 
   function encryptRecord(record, fields) {
     var out = {};
@@ -460,6 +461,14 @@
 
   function decryptShopRecord(record) {
     return decryptRecord(record, SHOP_ENCRYPT_FIELDS);
+  }
+
+  function encryptStackedRecord(record) {
+    return encryptRecord(record, STACKED_ENCRYPT_FIELDS);
+  }
+
+  function decryptStackedRecord(record) {
+    return decryptRecord(record, STACKED_ENCRYPT_FIELDS);
   }
 
   // =========================
@@ -905,7 +914,8 @@
     shopCreate: "SCR-09-03.html",
     shopEdit: "SCR-09-04.html",
     stackedList: "SCR-07-06.html",
-    stackedCreate: "SCR-07-07.html"
+    stackedCreate: "SCR-07-07.html",
+    stackedEdit: "SCR-07-08.html"
   };
 
   function navigate(screen) {
@@ -1292,6 +1302,8 @@
     getSelectedShopId: getSelectedShopId,
     getShopId: getShopId,
     findShopById: findShopById,
+    encryptStackedRecord: encryptStackedRecord,
+    decryptStackedRecord: decryptStackedRecord,
     appendStacked: appendStacked,
     updateStacked: updateStacked,
     deleteStacked: deleteStacked,
