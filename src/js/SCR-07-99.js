@@ -11,6 +11,7 @@
   const btnConfirmCancel = document.getElementById("btn-confirm-cancel");
 
   let enumRows = [];
+  let stackedRows = [];
 
   function populateSelect(selectEl, enumName) {
     while (selectEl.options.length > 1) selectEl.remove(1);
@@ -42,11 +43,12 @@
     const result = await c.safeLoadSheetRows("stacked");
     if (!result.ok) return;
 
-    result.rows
+    stackedRows = result.rows.map(function (r) { return c.decryptStackedRecord(r); });
+
+    stackedRows
       .filter(function (r) {
         return String(r["ユーザーID"] || "").trim() === userId;
       })
-      .map(function (r) { return c.decryptStackedRecord(r); })
       .sort(function (a, b) {
         const oa = parseInt(String(a["表示順"] || "0"), 10);
         const ob = parseInt(String(b["表示順"] || "0"), 10);
@@ -134,8 +136,26 @@
 
       try {
         await c.appendExpenditure(c.encryptExpenditureRecord(record));
+
+        if (targetBalance) {
+          const stackedItem = stackedRows.find(function (r) {
+            return String(r["ユーザーID"] || "").trim() === userId &&
+              String(r["項目"] || "").trim() === targetBalance;
+          });
+          if (stackedItem) {
+            const cur = parseInt(String(stackedItem["残高"] || "0").replace(/[^0-9-]/g, ""), 10) || 0;
+            const amountNum = parseInt(String(amount).replace(/[^0-9-]/g, ""), 10) || 0;
+            stackedItem["残高"] = String(
+              incomeExpense === "0" ? cur + Math.abs(amountNum) : cur - Math.abs(amountNum)
+            );
+            stackedItem["最終更新日時"] = new Date().toISOString().slice(0, 19).replace("T", " ");
+            await c.updateStacked(c.encryptStackedRecord(stackedItem));
+          }
+        }
+
         showSuccess("登録しました。");
         form.reset();
+        stackedRows = [];
         while (selectTargetBalance.options.length > 1) selectTargetBalance.remove(1);
         while (selectType.options.length > 1) selectType.remove(1);
         selectType.disabled = true;

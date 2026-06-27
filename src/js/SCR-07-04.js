@@ -12,7 +12,7 @@
 
   c.updateParentHeader({
     screenId: "SCR-07-04",
-    title: "収支実績一覧",
+    title: "支出実績一覧",
     back: "cashflow-plan",
     showUser: true,
     extraId: "hdr-btn-new-expenditure",
@@ -94,27 +94,28 @@
     }
 
     if (!filtered.length) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">データがありません</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center">データがありません</td></tr>';
       return;
     }
 
     tbody.innerHTML = filtered.map(function (r) {
       return "<tr>" +
-        "<td>" + c.escapeHtml(formatDateMmDd(r["日付"] || "")) + "</td>" +
+        "<td><a class='date-link' role='button' tabindex='0' data-id='" + c.escapeHtml(String(r["id"] || "")) + "'>" + c.escapeHtml(formatDateMmDd(r["日付"] || "")) + "</a></td>" +
         "<td>" + c.escapeHtml(r["カテゴリ"] || "") + "</td>" +
         "<td>" + c.escapeHtml(r["種別"] || "") + "</td>" +
         "<td>" + c.escapeHtml(r["内容"] || "") + "</td>" +
         "<td class='amount-cell'>" + c.escapeHtml(formatAmount(r["金額"])) + "</td>" +
         "<td>" + c.escapeHtml(r["備考"] || "") + "</td>" +
-        "<td><button class='btn btn-secondary btn-edit-exp' data-id='" + c.escapeHtml(String(r["id"] || "")) + "'>編集</button></td>" +
         "<td><button class='btn btn-danger btn-delete-exp' data-id='" + c.escapeHtml(String(r["id"] || "")) + "'>削除</button></td>" +
         "</tr>";
     }).join("");
 
-    tbody.querySelectorAll(".btn-edit-exp").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        c.setSelectedExpenditureId(btn.dataset.id);
-        c.navigate("expenditureEdit");
+    tbody.querySelectorAll(".date-link").forEach(function (a) {
+      a.addEventListener("click", function () {
+        c.navigate("stackedList");
+      });
+      a.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); a.click(); }
       });
     });
 
@@ -141,9 +142,40 @@
     if (!pendingDeleteId) return;
     const id = pendingDeleteId;
     pendingDeleteId = null;
+
+    const targetRecord = expenditures.find(function (r) {
+      return String(r.id || "") === String(id);
+    });
+
     statusEl.textContent = "削除中...";
     try {
       await c.deleteExpenditure(id);
+
+      if (targetRecord) {
+        const targetBalance = String(targetRecord["対象残高"] || "").trim();
+        const amount = parseInt(String(targetRecord["金額"] || "").replace(/[^0-9-]/g, ""), 10);
+        const incomeExpense = String(targetRecord["収支区分"] || "").trim();
+        if (targetBalance && Number.isFinite(amount)) {
+          const stackedResult = await c.safeLoadSheetRows("stacked", { allowEmpty: true });
+          if (stackedResult.ok) {
+            const stackedItem = stackedResult.rows
+              .map(function (r) { return c.decryptStackedRecord(r); })
+              .find(function (r) {
+                return String(r["ユーザーID"] || "").trim() === loginUserId &&
+                  String(r["項目"] || "").trim() === targetBalance;
+              });
+            if (stackedItem) {
+              const cur = parseInt(String(stackedItem["残高"] || "0").replace(/[^0-9-]/g, ""), 10) || 0;
+              stackedItem["残高"] = String(
+                incomeExpense === "0" ? cur - Math.abs(amount) : cur + Math.abs(amount)
+              );
+              stackedItem["最終更新日時"] = new Date().toISOString().slice(0, 19).replace("T", " ");
+              await c.updateStacked(c.encryptStackedRecord(stackedItem));
+            }
+          }
+        }
+      }
+
       c.setCompletionInfo({
         title: "収支削除完了",
         message: "収支データが削除されました。",

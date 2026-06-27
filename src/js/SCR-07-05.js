@@ -4,181 +4,140 @@
 
   c.updateParentHeader({
     screenId: "SCR-07-05",
-    title: "収支編集",
-    showUser: true
+    title: "残高一覧",
+    back: "cashflow-plan",
+    showUser: true,
+    extraId: "hdr-btn-stacked-create",
+    extraLabel: "新規作成",
+    extraScreen: "stackedCreate"
   });
-
-  const form = document.getElementById("expenditure-edit-form");
-  const errorEl = document.getElementById("exp-edit-error");
-  const selectCategory = document.getElementById("exp-category");
-  const selectType = document.getElementById("exp-type");
-  const selectTargetBalance = document.getElementById("exp-target-balance");
-  const confirmDialog = document.getElementById("confirm-dialog");
-  const btnConfirmOk = document.getElementById("btn-confirm-ok");
-  const btnConfirmCancel = document.getElementById("btn-confirm-cancel");
 
   const loginUser = c.getCurrentUser();
   const loginUserId = loginUser ? String(loginUser.id || "").trim() : "";
+  const totalAmountEl = document.getElementById("stacked-total-amount");
+  const container = document.getElementById("stacked-list-container");
+  const statusEl = document.getElementById("stacked-list-status");
 
-  let enumRows = [];
-  let targetRecord = null;
-  const selectedId = c.getSelectedExpenditureId();
+  let currentRows = [];
 
-  function populateSelect(selectEl, enumName) {
-    while (selectEl.options.length > 1) selectEl.remove(1);
-    const row = enumRows.find(function (r) {
-      return String(r["Enum名"] || "").trim() === enumName;
-    });
-    if (!row) return;
-    for (let i = 1; i <= 15; i++) {
-      const v = String(row["値" + i] || "").trim();
-      if (!v) continue;
-      const opt = document.createElement("option");
-      opt.value = v;
-      opt.textContent = v;
-      selectEl.appendChild(opt);
-    }
+  function formatAmount(val) {
+    const s = String(val == null ? "" : val).trim();
+    if (s === "") return "-";
+    const n = parseInt(s.replace(/[^0-9-]/g, ""), 10);
+    if (!Number.isFinite(n)) return s;
+    return (n < 0 ? "-¥" : "¥") + Math.abs(n).toLocaleString("ja-JP");
   }
 
-  selectCategory.addEventListener("change", function () {
-    const cat = selectCategory.value.trim();
-    while (selectType.options.length > 1) selectType.remove(1);
-    selectType.value = "";
-    if (!cat) {
-      selectType.disabled = true;
-      return;
-    }
-    selectType.disabled = false;
-    populateSelect(selectType, "支出[" + cat + "]");
-  });
-
-  document.getElementById("btn-edit-cancel").addEventListener("click", function () {
-    c.navigate("expenditureList");
-  });
-
-  btnConfirmCancel.addEventListener("click", function () {
-    confirmDialog.hidden = true;
-  });
-
-  async function load() {
-    if (!selectedId) {
-      errorEl.textContent = "編集対象のデータがありません。";
-      return;
-    }
-
-    errorEl.textContent = "読み込み中...";
-
-    const [enumResult, expResult, stackedResult] = await Promise.all([
-      c.safeLoadSheetRows("enums"),
-      c.safeLoadSheetRows("expenditures"),
-      c.safeLoadSheetRows("stacked")
-    ]);
-
-    if (!enumResult.ok) {
-      errorEl.textContent = "Enum情報を取得できませんでした。";
-      return;
-    }
-    enumRows = enumResult.rows;
-
-    if (!expResult.ok) {
-      errorEl.textContent = "収支情報を取得できませんでした。";
-      return;
-    }
-
-    const raw = expResult.rows.find(function (r) {
-      return String(r["id"] || "").trim() === String(selectedId).trim();
+  function render() {
+    let total = 0;
+    let hasValue = false;
+    currentRows.forEach(function (r) {
+      const n = parseInt(String(r["残高"] == null ? "" : r["残高"]).replace(/[^0-9-]/g, ""), 10);
+      if (Number.isFinite(n)) { total += n; hasValue = true; }
     });
-    if (!raw) {
-      errorEl.textContent = "対象データが見つかりませんでした。";
+    totalAmountEl.textContent = hasValue
+      ? (total < 0 ? "-¥" : "¥") + Math.abs(total).toLocaleString("ja-JP")
+      : "-";
+
+    if (!currentRows.length) {
+      container.innerHTML = '<p class="stacked-empty">データがありません</p>';
       return;
     }
 
-    targetRecord = c.decryptExpenditureRecord(raw);
+    container.innerHTML = currentRows.map(function (r, i) {
+      const upBtn = i > 0
+        ? '<button class="sort-btn sort-up" data-index="' + i + '" aria-label="上へ">⬆️</button>'
+        : '<span class="sort-placeholder"></span>';
+      const downBtn = i < currentRows.length - 1
+        ? '<button class="sort-btn sort-down" data-index="' + i + '" aria-label="下へ">⬇️</button>'
+        : '<span class="sort-placeholder"></span>';
+      return '<div class="stacked-row">' +
+        '<div class="stacked-card">' +
+          '<a class="stacked-item-name" role="button" tabindex="0" data-id="' + c.escapeHtml(String(r.id || "")) + '">' + c.escapeHtml(r["項目"] || "") + '</a>' +
+          '<a class="stacked-amount stacked-amount-link" role="button" tabindex="0">' + c.escapeHtml(formatAmount(r["残高"])) + '</a>' +
+        '</div>' +
+        '<div class="stacked-sort-btns">' + upBtn + downBtn + '</div>' +
+      '</div>';
+    }).join("");
 
-    if (stackedResult.ok) {
-      stackedResult.rows
-        .filter(function (r) { return String(r["ユーザーID"] || "").trim() === loginUserId; })
-        .map(function (r) { return c.decryptStackedRecord(r); })
-        .sort(function (a, b) {
-          return parseInt(String(a["表示順"] || "0"), 10) - parseInt(String(b["表示順"] || "0"), 10);
-        })
-        .forEach(function (r) {
-          const v = String(r["項目"] || "").trim();
-          if (!v) return;
-          const opt = document.createElement("option");
-          opt.value = v;
-          opt.textContent = v;
-          selectTargetBalance.appendChild(opt);
-        });
-    }
-
-    const incomeExpenseVal = String(targetRecord["収支区分"] || "").trim();
-    form.querySelectorAll('input[name="収支区分"]').forEach(function (r) {
-      r.checked = (r.value === incomeExpenseVal);
-    });
-    selectTargetBalance.value = String(targetRecord["対象残高"] || "").trim();
-
-    populateSelect(selectCategory, "支出カテゴリ");
-
-    const cat = String(targetRecord["カテゴリ"] || "").trim();
-    const type = String(targetRecord["種別"] || "").trim();
-
-    document.getElementById("exp-date").value = String(targetRecord["日付"] || "").trim();
-    selectCategory.value = cat;
-
-    if (cat) {
-      selectType.disabled = false;
-      populateSelect(selectType, "支出[" + cat + "]");
-      selectType.value = type;
-    }
-
-    document.getElementById("exp-content").value = String(targetRecord["内容"] || "").trim();
-    document.getElementById("exp-amount").value = String(targetRecord["金額"] || "").replace(/[^0-9]/g, "");
-    document.getElementById("exp-note").value = String(targetRecord["備考"] || "").trim();
-
-    errorEl.textContent = "";
-  }
-
-  load();
-
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    if (!targetRecord) return;
-
-    errorEl.textContent = "";
-    confirmDialog.hidden = false;
-
-    btnConfirmOk.onclick = async function () {
-      confirmDialog.hidden = true;
-      btnConfirmOk.onclick = null;
-
-      const nowIso = new Date().toISOString().slice(0, 19).replace("T", " ");
-      const checkedRadio = form.querySelector('input[name="収支区分"]:checked');
-      const record = Object.assign({}, targetRecord, {
-        "収支区分": checkedRadio ? checkedRadio.value : "",
-        "対象残高": selectTargetBalance.value.trim(),
-        "日付": document.getElementById("exp-date").value.trim(),
-        "カテゴリ": selectCategory.value.trim(),
-        "種別": selectType.value.trim(),
-        "内容": document.getElementById("exp-content").value.trim(),
-        "金額": document.getElementById("exp-amount").value.trim(),
-        "備考": document.getElementById("exp-note").value.trim(),
-        "最終更新日時": nowIso
+    container.querySelectorAll(".stacked-item-name").forEach(function (a) {
+      a.addEventListener("click", function () {
+        c.setSelectedStackedItemId(a.dataset.id);
+        c.navigate("stackedEdit");
       });
+      a.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          a.click();
+        }
+      });
+    });
 
-      errorEl.textContent = "更新中...";
-      try {
-        await c.updateExpenditure(c.encryptExpenditureRecord(record));
-        c.setCompletionInfo({
-          title: "収支更新完了",
-          message: "収支データが更新されました。",
-          buttonLabel: "一覧に戻る",
-          backScreen: "expenditureList"
-        });
-        c.navigate("completion");
-      } catch (err) {
-        errorEl.textContent = err && err.message ? err.message : "更新に失敗しました。";
-      }
-    };
-  });
+    container.querySelectorAll(".stacked-amount-link").forEach(function (a) {
+      a.addEventListener("click", function () {
+        c.navigate("expenditureList");
+      });
+      a.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          a.click();
+        }
+      });
+    });
+
+    container.querySelectorAll(".sort-btn").forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        const idx = parseInt(btn.dataset.index, 10);
+        const isUp = btn.classList.contains("sort-up");
+        const otherIdx = isUp ? idx - 1 : idx + 1;
+
+        const a = currentRows[idx];
+        const b = currentRows[otherIdx];
+        const orderA = a["表示順"];
+        const orderB = b["表示順"];
+        a["表示順"] = orderB;
+        b["表示順"] = orderA;
+
+        container.querySelectorAll(".sort-btn").forEach(function (b2) { b2.disabled = true; });
+        statusEl.textContent = "更新中...";
+        try {
+          await c.updateStacked(c.encryptStackedRecord(a));
+          await c.updateStacked(c.encryptStackedRecord(b));
+          statusEl.textContent = "";
+          currentRows.sort(function (x, y) {
+            return parseInt(String(x["表示順"] || "0"), 10) - parseInt(String(y["表示順"] || "0"), 10);
+          });
+          render();
+        } catch (err) {
+          a["表示順"] = orderA;
+          b["表示順"] = orderB;
+          statusEl.textContent = err && err.message ? err.message : "更新に失敗しました。";
+          container.querySelectorAll(".sort-btn").forEach(function (b2) { b2.disabled = false; });
+        }
+      });
+    });
+  }
+
+  async function loadStacked() {
+    statusEl.textContent = "読み込み中...";
+    const result = await c.safeLoadSheetRows("stacked", { allowEmpty: true });
+    if (!result.ok) {
+      statusEl.textContent = result.message || "残高情報を取得できませんでした。";
+      return;
+    }
+    currentRows = result.rows
+      .filter(function (r) {
+        return !loginUserId || String(r["ユーザーID"] || "").trim() === loginUserId;
+      })
+      .map(function (r) { return c.decryptStackedRecord(r); })
+      .sort(function (a, b) {
+        const na = parseInt(String(a["表示順"] || "0"), 10);
+        const nb = parseInt(String(b["表示順"] || "0"), 10);
+        return na - nb;
+      });
+    statusEl.textContent = "";
+    render();
+  }
+
+  loadStacked();
 })();

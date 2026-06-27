@@ -379,7 +379,7 @@
   var PROJECT_ENCRYPT_FIELDS = ["日付", "時間", "場所", "場所URL", "内容", "説明", "男性参加費", "女性参加費"];
   var CASHFLOW_ENCRYPT_FIELDS = ["年月", "収支区分", "内訳", "金額", "備考"];
   var EVENT_ENCRYPT_FIELDS = ["日付", "時間", "項目", "場所", "イベント名", "参加費", "URL", "参加フラグ", "非表示フラグ"];
-  var EXPENDITURE_ENCRYPT_FIELDS = ["対象残高", "日付", "カテゴリ", "種別", "内容", "金額", "備考"];
+  var EXPENDITURE_ENCRYPT_FIELDS = ["収支区分", "対象残高", "日付", "カテゴリ", "種別", "内容", "金額", "備考"];
   var SHOP_ENCRYPT_FIELDS = ["店名", "場所", "カテゴリ", "URL", "営業時間", "訪問歴", "予約可否", "備考"];
   var STACKED_ENCRYPT_FIELDS = ["項目", "表示順", "残高"];
 
@@ -904,7 +904,6 @@
     cashflowCreate: "SCR-07-02.html",
     cashflowEdit: "SCR-07-03.html",
     expenditureList: "SCR-07-04.html",
-    expenditureEdit: "SCR-07-05.html",
     eventList: "SCR-08-01.html",
     eventDetail: "SCR-08-02.html",
     eventCreate: "SCR-08-03.html",
@@ -913,9 +912,9 @@
     shopDetail: "SCR-09-02.html",
     shopCreate: "SCR-09-03.html",
     shopEdit: "SCR-09-04.html",
-    stackedList: "SCR-07-06.html",
-    stackedCreate: "SCR-07-07.html",
-    stackedEdit: "SCR-07-08.html"
+    stackedList: "SCR-07-05.html",
+    stackedCreate: "SCR-07-06.html",
+    stackedEdit: "SCR-07-07.html"
   };
 
   function navigate(screen) {

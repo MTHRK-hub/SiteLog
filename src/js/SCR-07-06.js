@@ -4,128 +4,93 @@
 
   c.updateParentHeader({
     screenId: "SCR-07-06",
-    title: "残高一覧",
-    back: "cashflow-plan",
-    showUser: true,
-    extraId: "hdr-btn-stacked-create",
-    extraLabel: "新規作成",
-    extraScreen: "stackedCreate"
+    title: "残高項目登録",
+    showUser: true
   });
+
+  const form = document.getElementById("stacked-create-form");
+  const errorEl = document.getElementById("stacked-create-error");
+  const confirmDialog = document.getElementById("confirm-dialog");
+  const btnConfirmOk = document.getElementById("btn-confirm-ok");
+  const btnConfirmCancel = document.getElementById("btn-confirm-cancel");
 
   const loginUser = c.getCurrentUser();
   const loginUserId = loginUser ? String(loginUser.id || "").trim() : "";
-  const totalAmountEl = document.getElementById("stacked-total-amount");
-  const container = document.getElementById("stacked-list-container");
-  const statusEl = document.getElementById("stacked-list-status");
 
-  let currentRows = [];
+  btnConfirmCancel.addEventListener("click", function () {
+    confirmDialog.hidden = true;
+  });
 
-  function formatAmount(val) {
-    const s = String(val == null ? "" : val).trim();
-    if (s === "") return "-";
-    const n = parseInt(s.replace(/[^0-9-]/g, ""), 10);
-    if (!Number.isFinite(n)) return s;
-    return (n < 0 ? "-¥" : "¥") + Math.abs(n).toLocaleString("ja-JP");
-  }
+  document.getElementById("btn-create-cancel").addEventListener("click", function () {
+    c.navigate("stackedList");
+  });
 
-  function render() {
-    let total = 0;
-    let hasValue = false;
-    currentRows.forEach(function (r) {
-      const n = parseInt(String(r["残高"] == null ? "" : r["残高"]).replace(/[^0-9-]/g, ""), 10);
-      if (Number.isFinite(n)) { total += n; hasValue = true; }
-    });
-    totalAmountEl.textContent = hasValue
-      ? (total < 0 ? "-¥" : "¥") + Math.abs(total).toLocaleString("ja-JP")
-      : "-";
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    errorEl.textContent = "";
 
-    if (!currentRows.length) {
-      container.innerHTML = '<p class="stacked-empty">データがありません</p>';
+    const item = document.getElementById("stacked-item").value.trim();
+    const balanceRaw = document.getElementById("stacked-balance").value.trim();
+
+    if (!item) {
+      errorEl.textContent = "項目は必須です。";
+      return;
+    }
+    if (!balanceRaw) {
+      errorEl.textContent = "残高は必須です。";
       return;
     }
 
-    container.innerHTML = currentRows.map(function (r, i) {
-      const upBtn = i > 0
-        ? '<button class="sort-btn sort-up" data-index="' + i + '" aria-label="上へ">⬆️</button>'
-        : '<span class="sort-placeholder"></span>';
-      const downBtn = i < currentRows.length - 1
-        ? '<button class="sort-btn sort-down" data-index="' + i + '" aria-label="下へ">⬇️</button>'
-        : '<span class="sort-placeholder"></span>';
-      return '<div class="stacked-row">' +
-        '<div class="stacked-card">' +
-          '<a class="stacked-item-name" role="button" tabindex="0" data-id="' + c.escapeHtml(String(r.id || "")) + '">' + c.escapeHtml(r["項目"] || "") + '</a>' +
-          '<span class="stacked-amount">' + c.escapeHtml(formatAmount(r["残高"])) + '</span>' +
-        '</div>' +
-        '<div class="stacked-sort-btns">' + upBtn + downBtn + '</div>' +
-      '</div>';
-    }).join("");
-
-    container.querySelectorAll(".stacked-item-name").forEach(function (a) {
-      a.addEventListener("click", function () {
-        c.setSelectedStackedItemId(a.dataset.id);
-        c.navigate("stackedEdit");
-      });
-      a.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          a.click();
-        }
-      });
-    });
-
-    container.querySelectorAll(".sort-btn").forEach(function (btn) {
-      btn.addEventListener("click", async function () {
-        const idx = parseInt(btn.dataset.index, 10);
-        const isUp = btn.classList.contains("sort-up");
-        const otherIdx = isUp ? idx - 1 : idx + 1;
-
-        const a = currentRows[idx];
-        const b = currentRows[otherIdx];
-        const orderA = a["表示順"];
-        const orderB = b["表示順"];
-        a["表示順"] = orderB;
-        b["表示順"] = orderA;
-
-        container.querySelectorAll(".sort-btn").forEach(function (b2) { b2.disabled = true; });
-        statusEl.textContent = "更新中...";
-        try {
-          await c.updateStacked(c.encryptStackedRecord(a));
-          await c.updateStacked(c.encryptStackedRecord(b));
-          statusEl.textContent = "";
-          currentRows.sort(function (x, y) {
-            return parseInt(String(x["表示順"] || "0"), 10) - parseInt(String(y["表示順"] || "0"), 10);
-          });
-          render();
-        } catch (err) {
-          a["表示順"] = orderA;
-          b["表示順"] = orderB;
-          statusEl.textContent = err && err.message ? err.message : "更新に失敗しました。";
-          container.querySelectorAll(".sort-btn").forEach(function (b2) { b2.disabled = false; });
-        }
-      });
-    });
-  }
-
-  async function loadStacked() {
-    statusEl.textContent = "読み込み中...";
+    errorEl.textContent = "確認中...";
     const result = await c.safeLoadSheetRows("stacked", { allowEmpty: true });
     if (!result.ok) {
-      statusEl.textContent = result.message || "残高情報を取得できませんでした。";
+      errorEl.textContent = result.message || "残高情報を取得できませんでした。";
       return;
     }
-    currentRows = result.rows
+    errorEl.textContent = "";
+
+    const userRows = result.rows
       .filter(function (r) {
         return !loginUserId || String(r["ユーザーID"] || "").trim() === loginUserId;
       })
-      .map(function (r) { return c.decryptStackedRecord(r); })
-      .sort(function (a, b) {
-        const na = parseInt(String(a["表示順"] || "0"), 10);
-        const nb = parseInt(String(b["表示順"] || "0"), 10);
-        return na - nb;
-      });
-    statusEl.textContent = "";
-    render();
-  }
+      .map(function (r) { return c.decryptStackedRecord(r); });
 
-  loadStacked();
+    const maxOrder = userRows.reduce(function (max, r) {
+      const n = parseInt(String(r["表示順"] || "0"), 10);
+      return Number.isFinite(n) ? Math.max(max, n) : max;
+    }, 0);
+
+    const maxId = result.rows.reduce(function (max, row) {
+      const id = parseInt(String(row["id"] || ""), 10);
+      return Number.isFinite(id) ? Math.max(max, id) : max;
+    }, 0);
+
+    const record = {
+      id: String(maxId + 1),
+      "項目": item,
+      "表示順": String(maxOrder + 1),
+      "残高": balanceRaw,
+      "ユーザーID": loginUserId,
+      "最終更新日時": new Date().toISOString().slice(0, 19).replace("T", " ")
+    };
+
+    confirmDialog.hidden = false;
+    btnConfirmOk.onclick = async function () {
+      confirmDialog.hidden = true;
+      btnConfirmOk.onclick = null;
+      errorEl.textContent = "登録中...";
+      try {
+        await c.appendStacked(c.encryptStackedRecord(record));
+        c.setCompletionInfo({
+          title: "残高項目登録完了",
+          message: "残高項目が登録されました。",
+          buttonLabel: "一覧に戻る",
+          backScreen: "stackedList"
+        });
+        c.navigate("completion");
+      } catch (err) {
+        errorEl.textContent = err && err.message ? err.message : "登録に失敗しました。";
+      }
+    };
+  });
 })();

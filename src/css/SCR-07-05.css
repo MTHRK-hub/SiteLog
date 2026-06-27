@@ -1,75 +1,79 @@
-.expenditure-edit-page .form-grid {
-  display: grid;
-  gap: 12px;
+.stacked-list-page .stacked-total {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 20px;
 }
 
-.expenditure-edit-page label {
-  display: grid;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 0.9rem;
+.stacked-list-page .stacked-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
-.expenditure-edit-page input,
-.expenditure-edit-page select {
-  width: 100%;
-  min-height: var(--touch-min);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.stacked-list-page .stacked-card {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  background-color: #2e8b57;
   border-radius: var(--radius);
-  padding: 10px 12px;
-  font-size: 1rem;
-  background: var(--bg);
+  padding: 10px 14px;
+  min-height: 44px;
+  gap: 8px;
+}
+
+.stacked-list-page .stacked-item-name {
+  flex: 1;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.stacked-list-page .stacked-amount {
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.stacked-list-page .stacked-amount-link {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.stacked-list-page .stacked-sort-btns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 8px;
+  gap: 2px;
+  min-width: 28px;
+}
+
+.stacked-list-page .sort-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 2px 4px;
+  line-height: 1;
   color: var(--text);
 }
 
-.expenditure-edit-page input:focus,
-.expenditure-edit-page select:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-.expenditure-edit-page select {
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-.expenditure-edit-page select:disabled {
+.stacked-list-page .sort-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
-.exp-radio-fieldset {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius);
-  padding: 10px 12px;
-  background: var(--bg);
+.stacked-list-page .sort-placeholder {
+  display: inline-block;
+  width: 24px;
+  height: 20px;
 }
 
-.exp-radio-legend {
-  font-size: 0.9rem;
-  color: var(--muted);
-  padding: 0 4px;
-}
-
-.radio-group {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  padding-top: 6px;
-}
-
-.radio-group label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.95rem;
-  color: var(--text);
-  cursor: pointer;
-}
-
-.expenditure-edit-page .form-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 8px;
+.stacked-list-page .stacked-empty {
+  text-align: center;
+  padding: 24px 0;
 }

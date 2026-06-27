@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>現場記録簿 - 残高項目登録</title>
+  <title>現場記録簿 - 残高項目編集</title>
   <link rel="stylesheet" href="../css/common.css" />
   <link rel="stylesheet" href="../css/SCR-00-01.css" />
   <link rel="stylesheet" href="../css/SCR-07-07.css" />
@@ -11,21 +11,21 @@
 <body class="stacked-create-page">
   <div class="app">
     <div class="card">
-      <form id="stacked-create-form" class="form-grid" novalidate>
+      <form id="stacked-edit-form" class="form-grid" novalidate>
         <label>項目<input id="stacked-item" name="項目" type="text" /></label>
         <label>残高<input id="stacked-balance" name="残高" type="number" /></label>
 
-        <p id="stacked-create-error" class="error-msg" role="alert"></p>
+        <p id="stacked-edit-error" class="error-msg" role="alert"></p>
 
         <div class="form-actions">
-          <button type="submit" class="btn btn-primary">登録</button>
-          <button type="button" class="btn btn-secondary" id="btn-create-cancel">キャンセル</button>
+          <button type="submit" class="btn btn-primary">更新</button>
+          <button type="button" class="btn btn-secondary" id="btn-edit-cancel">キャンセル</button>
         </div>
       </form>
 
       <div id="confirm-dialog" class="dialog-overlay" hidden>
         <div class="dialog-box">
-          <p class="dialog-msg">登録しますか？</p>
+          <p class="dialog-msg">更新しますか？</p>
           <div class="dialog-actions">
             <button type="button" class="btn btn-primary" id="btn-confirm-ok">はい</button>
             <button type="button" class="btn btn-secondary" id="btn-confirm-cancel">キャンセル</button>
