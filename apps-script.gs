@@ -117,9 +117,9 @@ const CASHFLOW_HEADERS = [
 ];
 
 // ============================
-// 支出情報 設定
+// 収支情報 設定
 // ============================
-const EXPENDITURE_SHEET_NAME = "支出情報";
+const EXPENDITURE_SHEET_NAME = "収支情報";
 const EXPENDITURE_HEADERS = [
   "id",
   "ユーザーID",
