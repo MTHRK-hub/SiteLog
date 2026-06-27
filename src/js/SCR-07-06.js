@@ -46,10 +46,10 @@
 
     container.innerHTML = currentRows.map(function (r, i) {
       const upBtn = i > 0
-        ? '<button class="sort-btn sort-up" data-index="' + i + '" aria-label="上へ">🔺</button>'
+        ? '<button class="sort-btn sort-up" data-index="' + i + '" aria-label="上へ">⬆️</button>'
         : '<span class="sort-placeholder"></span>';
       const downBtn = i < currentRows.length - 1
-        ? '<button class="sort-btn sort-down" data-index="' + i + '" aria-label="下へ">🔻</button>'
+        ? '<button class="sort-btn sort-down" data-index="' + i + '" aria-label="下へ">⬇️</button>'
         : '<span class="sort-placeholder"></span>';
       return '<div class="stacked-row">' +
         '<div class="stacked-card">' +
