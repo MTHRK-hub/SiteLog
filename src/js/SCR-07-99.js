@@ -5,6 +5,7 @@
   const msgEl = document.getElementById("exp-message");
   const selectCategory = document.getElementById("exp-category");
   const selectType = document.getElementById("exp-type");
+  const selectTargetBalance = document.getElementById("exp-target-balance");
   const confirmDialog = document.getElementById("confirm-dialog");
   const btnConfirmOk = document.getElementById("btn-confirm-ok");
   const btnConfirmCancel = document.getElementById("btn-confirm-cancel");
@@ -34,7 +35,38 @@
     populateSelect(selectCategory, "支出カテゴリ");
   }
 
+  async function loadTargetBalanceOptions(userId) {
+    while (selectTargetBalance.options.length > 1) selectTargetBalance.remove(1);
+    if (!userId) return;
+
+    const result = await c.safeLoadSheetRows("stacked");
+    if (!result.ok) return;
+
+    result.rows
+      .filter(function (r) {
+        return String(r["ユーザーID"] || "").trim() === userId;
+      })
+      .map(function (r) { return c.decryptStackedRecord(r); })
+      .sort(function (a, b) {
+        const oa = parseInt(String(a["表示順"] || "0"), 10);
+        const ob = parseInt(String(b["表示順"] || "0"), 10);
+        return oa - ob;
+      })
+      .forEach(function (r) {
+        const v = String(r["項目"] || "").trim();
+        if (!v) return;
+        const opt = document.createElement("option");
+        opt.value = v;
+        opt.textContent = v;
+        selectTargetBalance.appendChild(opt);
+      });
+  }
+
   loadEnums();
+
+  document.getElementById("exp-user-id").addEventListener("change", function () {
+    loadTargetBalanceOptions(this.value.trim());
+  });
 
   selectCategory.addEventListener("change", function () {
     const cat = selectCategory.value.trim();
@@ -68,6 +100,9 @@
 
     const userId = document.getElementById("exp-user-id").value.trim();
     const date = document.getElementById("exp-date").value.trim();
+    const incomeExpenseRadio = document.querySelector("input[name='収支区分']:checked");
+    const incomeExpense = incomeExpenseRadio ? incomeExpenseRadio.value : "";
+    const targetBalance = selectTargetBalance.value.trim();
     const category = selectCategory.value.trim();
     const type = selectType.value.trim();
     const content = document.getElementById("exp-content").value.trim();
@@ -87,6 +122,8 @@
 
       const record = {
         "ユーザーID": userId,
+        "収支区分": incomeExpense,
+        "対象残高": targetBalance,
         "日付": date,
         "カテゴリ": category,
         "種別": type,
@@ -99,6 +136,7 @@
         await c.appendExpenditure(c.encryptExpenditureRecord(record));
         showSuccess("登録しました。");
         form.reset();
+        while (selectTargetBalance.options.length > 1) selectTargetBalance.remove(1);
         while (selectType.options.length > 1) selectType.remove(1);
         selectType.disabled = true;
       } catch (err) {

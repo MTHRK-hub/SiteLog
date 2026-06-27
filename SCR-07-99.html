@@ -22,6 +22,19 @@
           <input id="exp-date" name="日付" type="date" />
         </div>
         <div class="field">
+          <label>収支区分</label>
+          <div class="radio-group">
+            <label><input type="radio" name="収支区分" value="0" id="exp-type-income" /> 収入</label>
+            <label><input type="radio" name="収支区分" value="1" id="exp-type-expense" /> 支出</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="exp-target-balance">対象残高</label>
+          <select id="exp-target-balance" name="対象残高">
+            <option value=""></option>
+          </select>
+        </div>
+        <div class="field">
           <label for="exp-category">カテゴリ</label>
           <select id="exp-category" name="カテゴリ">
             <option value=""></option>
