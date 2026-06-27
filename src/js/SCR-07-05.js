@@ -54,7 +54,7 @@
       return '<div class="stacked-row">' +
         '<div class="stacked-card">' +
           '<a class="stacked-item-name" role="button" tabindex="0" data-id="' + c.escapeHtml(String(r.id || "")) + '">' + c.escapeHtml(r["項目"] || "") + '</a>' +
-          '<a class="stacked-amount stacked-amount-link" role="button" tabindex="0">' + c.escapeHtml(formatAmount(r["残高"])) + '</a>' +
+          '<a class="stacked-amount stacked-amount-link" role="button" tabindex="0" data-name="' + c.escapeHtml(r["項目"] || "") + '">' + c.escapeHtml(formatAmount(r["残高"])) + '</a>' +
         '</div>' +
         '<div class="stacked-sort-btns">' + upBtn + downBtn + '</div>' +
       '</div>';
@@ -75,6 +75,8 @@
 
     container.querySelectorAll(".stacked-amount-link").forEach(function (a) {
       a.addEventListener("click", function () {
+        c.setExpenditureListSource("stacked");
+        c.setExpenditureListStackedName(a.dataset.name || "");
         c.navigate("expenditureList");
       });
       a.addEventListener("keydown", function (e) {

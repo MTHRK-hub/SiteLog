@@ -53,3 +53,11 @@
   border-radius: 9px;
   font-size: 0.85rem;
 }
+
+.expenditure-list-page .row-income {
+  background-color: rgba(100, 160, 220, 0.18);
+}
+
+.expenditure-list-page .row-expense {
+  background-color: rgba(220, 80, 80, 0.15);
+}

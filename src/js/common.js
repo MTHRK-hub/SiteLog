@@ -40,7 +40,9 @@
     selectedExpenditureId: "siteLog-selected-expenditure-id",
     shops: "siteLog-shops-data",
     selectedShopId: "siteLog-selected-shop-id",
-    selectedStackedItemId: "siteLog-selected-stacked-item-id"
+    selectedStackedItemId: "siteLog-selected-stacked-item-id",
+    expenditureListSource: "siteLog-expenditure-list-source",
+    expenditureListStackedName: "siteLog-expenditure-list-stacked-name"
   };
 
   // =========================
@@ -690,6 +692,22 @@
     return raw == null ? "" : String(raw);
   }
 
+  function setExpenditureListSource(source) {
+    sessionStorage.setItem(STORAGE_KEYS.expenditureListSource, String(source || ""));
+  }
+
+  function getExpenditureListSource() {
+    return sessionStorage.getItem(STORAGE_KEYS.expenditureListSource) || "";
+  }
+
+  function setExpenditureListStackedName(name) {
+    sessionStorage.setItem(STORAGE_KEYS.expenditureListStackedName, String(name || ""));
+  }
+
+  function getExpenditureListStackedName() {
+    return sessionStorage.getItem(STORAGE_KEYS.expenditureListStackedName) || "";
+  }
+
   async function updateEventHideFlag(id) {
     await callWriteApi("updateEventHideFlag", { id: String(id || ""), flagValue: encrypt("1") });
   }
@@ -1307,6 +1325,10 @@
     updateStacked: updateStacked,
     deleteStacked: deleteStacked,
     setSelectedStackedItemId: setSelectedStackedItemId,
-    getSelectedStackedItemId: getSelectedStackedItemId
+    getSelectedStackedItemId: getSelectedStackedItemId,
+    setExpenditureListSource: setExpenditureListSource,
+    getExpenditureListSource: getExpenditureListSource,
+    setExpenditureListStackedName: setExpenditureListStackedName,
+    getExpenditureListStackedName: getExpenditureListStackedName
   };
 })();

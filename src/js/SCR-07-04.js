@@ -4,6 +4,12 @@
 
   const ym = c.getSelectedCashflowYm();
 
+  const listSource = c.getExpenditureListSource();
+  const stackedName = c.getExpenditureListStackedName();
+  const isStackedMode = listSource === "stacked";
+  c.setExpenditureListSource("");
+  c.setExpenditureListStackedName("");
+
   function ymToLabel(s) {
     const m = /^(\d{4})-(\d{2})$/.exec(s);
     if (!m) return s;
@@ -12,7 +18,7 @@
 
   c.updateParentHeader({
     screenId: "SCR-07-04",
-    title: "支出実績一覧",
+    title: isStackedMode ? "残高内訳" : "支出実績一覧",
     back: "cashflow-plan",
     showUser: true,
     extraId: "hdr-btn-new-expenditure",
@@ -32,6 +38,11 @@
   const btnDeleteCancel = document.getElementById("btn-delete-cancel");
   const categoryFilterEl = document.getElementById("exp-category-filter");
   const categoryTotalEl = document.getElementById("exp-category-total");
+  const categoryFilterRow = categoryFilterEl.closest(".category-filter-row");
+
+  if (isStackedMode) {
+    categoryFilterRow.hidden = true;
+  }
 
   let expenditures = [];
   let pendingDeleteId = null;
@@ -79,18 +90,21 @@
   }
 
   function render() {
-    const selectedCat = categoryFilterEl.value;
+    const selectedCat = isStackedMode ? "" : categoryFilterEl.value;
     const filtered = selectedCat
       ? expenditures.filter(function (r) { return String(r["カテゴリ"] || "").trim() === selectedCat; })
       : expenditures;
 
-    const monthTotal = calcTotal(expenditures);
-    titleEl.textContent = ymToLabel(ym) + " 合計支出 ¥" + monthTotal.toLocaleString("ja-JP");
-
-    if (selectedCat) {
-      categoryTotalEl.textContent = "¥" + calcTotal(filtered).toLocaleString("ja-JP");
+    if (isStackedMode) {
+      titleEl.textContent = stackedName + "_内訳";
     } else {
-      categoryTotalEl.textContent = "";
+      const monthTotal = calcTotal(expenditures);
+      titleEl.textContent = ymToLabel(ym) + " 合計支出 ¥" + monthTotal.toLocaleString("ja-JP");
+      if (selectedCat) {
+        categoryTotalEl.textContent = "¥" + calcTotal(filtered).toLocaleString("ja-JP");
+      } else {
+        categoryTotalEl.textContent = "";
+      }
     }
 
     if (!filtered.length) {
@@ -99,7 +113,9 @@
     }
 
     tbody.innerHTML = filtered.map(function (r) {
-      return "<tr>" +
+      const ie = String(r["収支区分"] || "").trim();
+      const rowClass = ie === "0" ? " class='row-income'" : ie === "1" ? " class='row-expense'" : "";
+      return "<tr" + rowClass + ">" +
         "<td><a class='date-link' role='button' tabindex='0' data-id='" + c.escapeHtml(String(r["id"] || "")) + "'>" + c.escapeHtml(formatDateMmDd(r["日付"] || "")) + "</a></td>" +
         "<td>" + c.escapeHtml(r["カテゴリ"] || "") + "</td>" +
         "<td>" + c.escapeHtml(r["種別"] || "") + "</td>" +
@@ -217,7 +233,11 @@
       })
       .map(function (r) { return c.decryptExpenditureRecord(r); })
       .filter(function (r) {
-        return String(r["日付"] || "").slice(0, 7) === ym;
+        if (String(r["日付"] || "").slice(0, 7) !== ym) return false;
+        if (isStackedMode) {
+          return String(r["対象残高"] || "").trim() === stackedName;
+        }
+        return String(r["収支区分"] || "").trim() === "1";
       })
       .sort(function (a, b) {
         return String(b["日付"] || "").localeCompare(String(a["日付"] || ""));
