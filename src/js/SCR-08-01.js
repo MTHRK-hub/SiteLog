@@ -19,7 +19,6 @@
   const monthFilter = document.getElementById("month-filter");
   const radioParticipation = document.getElementById("radio-participation");
   const radioCompleted = document.getElementById("radio-completed");
-  const filterGroup = document.getElementById("event-filter-group");
   const deleteRow = document.getElementById("event-delete-row");
   const deleteStatus = document.getElementById("event-delete-status");
   const deleteDialog = document.getElementById("delete-dialog");
@@ -106,28 +105,25 @@
       feeTotalRow.textContent = filterYm.replace(/^(\d{4})-0?(\d+)$/, "$1年$2月") +
         " 合計参加費 ￥" + totalFee.toLocaleString("ja-JP");
       feeTotalRow.hidden = false;
-      filterGroup.hidden = false;
     } else {
       feeTotalRow.textContent = "";
       feeTotalRow.hidden = true;
-      filterGroup.hidden = true;
-      filterGroup.querySelectorAll("input[type='radio']").forEach(function (r) {
-        r.checked = false;
-      });
     }
 
     const filterMode = getFilterMode();
     let displayRows;
     if (filterMode === "participation") {
-      displayRows = allEvents.filter(function (r) {
-        return getEventYm(r["日付"] || "") === filterYm &&
-          String(r["参加フラグ"] || "").trim() === "1";
+      displayRows = (filterYm ? allEvents.filter(function (r) {
+        return getEventYm(r["日付"] || "") === filterYm;
+      }) : allEvents).filter(function (r) {
+        return String(r["参加フラグ"] || "").trim() === "1";
       });
     } else if (filterMode === "completed") {
-      displayRows = allEventsIncludingHidden.filter(function (r) {
-        return getEventYm(r["日付"] || "") === filterYm &&
-          (String(r["非表示フラグ"] || "").trim() === "1" ||
-           String(r["非表示フラグ"] || "").trim().toUpperCase() === "TRUE");
+      displayRows = (filterYm ? allEventsIncludingHidden.filter(function (r) {
+        return getEventYm(r["日付"] || "") === filterYm;
+      }) : allEventsIncludingHidden).filter(function (r) {
+        return String(r["非表示フラグ"] || "").trim() === "1" ||
+          String(r["非表示フラグ"] || "").trim().toUpperCase() === "TRUE";
       });
     } else {
       displayRows = baseRows;
