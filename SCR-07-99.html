@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>現場記録簿 - 支出入力</title>
+  <title>現場記録簿 - 収支入力フォーム</title>
   <link rel="stylesheet" href="src/css/common.css" />
   <link rel="stylesheet" href="src/css/SCR-01-01.css" />
   <link rel="stylesheet" href="src/css/SCR-07-99.css" />
@@ -11,7 +11,7 @@
 <body class="login-page">
   <div class="app">
     <div class="card login-wrap">
-      <h2 class="exp-title">支出入力フォーム</h2>
+      <h2 class="exp-title">収支入力フォーム</h2>
       <form id="expenditure-form" novalidate>
         <div class="field">
           <label for="exp-user-id">ユーザーID</label>
@@ -21,13 +21,13 @@
           <label for="exp-date">日付</label>
           <input id="exp-date" name="日付" type="date" />
         </div>
-        <div class="field">
-          <label>収支区分</label>
+        <fieldset class="radio-fieldset">
+          <legend class="radio-legend">収支区分</legend>
           <div class="radio-group">
-            <label><input type="radio" name="収支区分" value="0" id="exp-type-income" /> 収入</label>
-            <label><input type="radio" name="収支区分" value="1" id="exp-type-expense" /> 支出</label>
+            <label class="radio-label"><input type="radio" name="収支区分" value="0" />収入</label>
+            <label class="radio-label"><input type="radio" name="収支区分" value="1" />支出</label>
           </div>
-        </div>
+        </fieldset>
         <div class="field">
           <label for="exp-target-balance">対象残高</label>
           <select id="exp-target-balance" name="対象残高">

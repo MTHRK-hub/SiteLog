@@ -10,6 +10,10 @@
   c.setExpenditureListSource("");
   c.setExpenditureListStackedName("");
 
+  if (!isStackedMode && ym) {
+    c.setCashflowPlanRestoreYm(ym);
+  }
+
   function ymToLabel(s) {
     const m = /^(\d{4})-(\d{2})$/.exec(s);
     if (!m) return s;
@@ -19,7 +23,7 @@
   c.updateParentHeader({
     screenId: "SCR-07-04",
     title: isStackedMode ? "残高内訳" : "支出実績一覧",
-    back: "cashflow-plan",
+    back: isStackedMode ? "stacked-list" : "cashflow-plan",
     showUser: true,
     extraId: "hdr-btn-new-expenditure",
     extraLabel: "新規作成",

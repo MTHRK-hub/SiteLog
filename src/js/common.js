@@ -42,7 +42,8 @@
     selectedShopId: "siteLog-selected-shop-id",
     selectedStackedItemId: "siteLog-selected-stacked-item-id",
     expenditureListSource: "siteLog-expenditure-list-source",
-    expenditureListStackedName: "siteLog-expenditure-list-stacked-name"
+    expenditureListStackedName: "siteLog-expenditure-list-stacked-name",
+    cashflowPlanRestoreYm: "siteLog-cashflow-plan-restore-ym"
   };
 
   // =========================
@@ -708,6 +709,14 @@
     return sessionStorage.getItem(STORAGE_KEYS.expenditureListStackedName) || "";
   }
 
+  function setCashflowPlanRestoreYm(ym) {
+    sessionStorage.setItem(STORAGE_KEYS.cashflowPlanRestoreYm, String(ym || ""));
+  }
+
+  function getCashflowPlanRestoreYm() {
+    return sessionStorage.getItem(STORAGE_KEYS.cashflowPlanRestoreYm) || "";
+  }
+
   async function updateEventHideFlag(id) {
     await callWriteApi("updateEventHideFlag", { id: String(id || ""), flagValue: encrypt("1") });
   }
@@ -1329,6 +1338,8 @@
     setExpenditureListSource: setExpenditureListSource,
     getExpenditureListSource: getExpenditureListSource,
     setExpenditureListStackedName: setExpenditureListStackedName,
-    getExpenditureListStackedName: getExpenditureListStackedName
+    getExpenditureListStackedName: getExpenditureListStackedName,
+    setCashflowPlanRestoreYm: setCashflowPlanRestoreYm,
+    getCashflowPlanRestoreYm: getCashflowPlanRestoreYm
   };
 })();

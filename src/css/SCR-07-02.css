@@ -64,3 +64,11 @@
   gap: 10px;
   margin-top: 20px;
 }
+
+#income-body tr {
+  background-color: rgba(100, 160, 220, 0.18);
+}
+
+#expense-body tr {
+  background-color: rgba(220, 80, 80, 0.15);
+}

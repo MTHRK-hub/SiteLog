@@ -97,3 +97,11 @@
   justify-content: center;
   margin-top: 12px;
 }
+
+#income-list-body tr {
+  background-color: rgba(100, 160, 220, 0.18);
+}
+
+#expense-list-body tr {
+  background-color: rgba(220, 80, 80, 0.15);
+}

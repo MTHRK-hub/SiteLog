@@ -212,6 +212,12 @@
     c.setCashflows(allCashflows);
     status.textContent = "";
     buildMonthOptions(allCashflows);
+    const restoreYm = c.getCashflowPlanRestoreYm();
+    c.setCashflowPlanRestoreYm("");
+    if (restoreYm && monthFilter.querySelector('option[value="' + restoreYm + '"]')) {
+      monthFilter.value = restoreYm;
+      document.getElementById("cashflow-delete-row").hidden = false;
+    }
     renderContent(monthFilter.value);
   }
 
