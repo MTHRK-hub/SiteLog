@@ -26,6 +26,10 @@
   color: var(--text);
 }
 
+.friend-form-page select {
+  background: #1b5262;
+}
+
 .friend-form-page textarea {
   min-height: 96px;
   resize: vertical;

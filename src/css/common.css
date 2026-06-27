@@ -438,6 +438,218 @@ thead th {
 }
 
 /* ==========
+   Purple button theme (SCR-04~現場記録, SCR-06~企画, SCR-08~イベント)
+   ========== */
+.site-list-page .btn-primary,
+.site-detail-page .btn-primary,
+.site-form-page .btn-primary,
+.project-plan-page .btn-primary,
+.project-detail-page .btn-primary,
+.project-form-page .btn-primary,
+.message-setting-page .btn-primary,
+.event-list-page .btn-primary,
+.event-detail-page .btn-primary,
+.event-form-page .btn-primary {
+  background: linear-gradient(
+    180deg,
+    #6a4898 0%,
+    #4a2876 40%,
+    #381060 70%,
+    #26084c 100%
+  );
+  border: 2px solid #b088d8;
+  border-bottom-color: #7a4898;
+  color: #f0e8ff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+  box-shadow:
+    0 3px 0 #5a3880,
+    0 5px 10px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.site-list-page .btn-primary:hover,
+.site-detail-page .btn-primary:hover,
+.site-form-page .btn-primary:hover,
+.project-plan-page .btn-primary:hover,
+.project-detail-page .btn-primary:hover,
+.project-form-page .btn-primary:hover,
+.message-setting-page .btn-primary:hover,
+.event-list-page .btn-primary:hover,
+.event-detail-page .btn-primary:hover,
+.event-form-page .btn-primary:hover {
+  background: linear-gradient(
+    180deg,
+    #7a58a8 0%,
+    #5a3886 40%,
+    #482070 70%,
+    #36185c 100%
+  );
+  border-color: #c098e8;
+  border-bottom-color: #8a58a8;
+}
+
+.site-list-page .btn-primary:active,
+.site-detail-page .btn-primary:active,
+.site-form-page .btn-primary:active,
+.project-plan-page .btn-primary:active,
+.project-detail-page .btn-primary:active,
+.project-form-page .btn-primary:active,
+.message-setting-page .btn-primary:active,
+.event-list-page .btn-primary:active,
+.event-detail-page .btn-primary:active,
+.event-form-page .btn-primary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #5a3880, 0 1px 3px rgba(0, 0, 0, 0.3);
+  border-bottom-color: #b088d8;
+}
+
+.site-list-page .btn-secondary,
+.site-detail-page .btn-secondary,
+.site-form-page .btn-secondary,
+.project-plan-page .btn-secondary,
+.project-detail-page .btn-secondary,
+.project-form-page .btn-secondary,
+.message-setting-page .btn-secondary,
+.event-list-page .btn-secondary,
+.event-detail-page .btn-secondary,
+.event-form-page .btn-secondary {
+  background: linear-gradient(
+    180deg,
+    #4e2a7c 0%,
+    #361a5a 40%,
+    #280e46 70%,
+    #1a0830 100%
+  );
+  border: 2px solid #8860b0;
+  border-bottom-color: #5a3880;
+  color: #d8b8f8;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+  box-shadow:
+    0 3px 0 #3a2060,
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.site-list-page .btn-secondary:hover,
+.site-detail-page .btn-secondary:hover,
+.site-form-page .btn-secondary:hover,
+.project-plan-page .btn-secondary:hover,
+.project-detail-page .btn-secondary:hover,
+.project-form-page .btn-secondary:hover,
+.message-setting-page .btn-secondary:hover,
+.event-list-page .btn-secondary:hover,
+.event-detail-page .btn-secondary:hover,
+.event-form-page .btn-secondary:hover {
+  background: linear-gradient(
+    180deg,
+    #5e3a8c 0%,
+    #462a6a 40%,
+    #381e56 70%,
+    #2a1240 100%
+  );
+  border-color: #9870c0;
+  border-bottom-color: #6a4890;
+}
+
+.site-list-page .btn-secondary:active,
+.site-detail-page .btn-secondary:active,
+.site-form-page .btn-secondary:active,
+.project-plan-page .btn-secondary:active,
+.project-detail-page .btn-secondary:active,
+.project-form-page .btn-secondary:active,
+.message-setting-page .btn-secondary:active,
+.event-list-page .btn-secondary:active,
+.event-detail-page .btn-secondary:active,
+.event-form-page .btn-secondary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #3a2060, 0 1px 3px rgba(0, 0, 0, 0.3);
+  border-bottom-color: #8860b0;
+}
+
+/* ==========
+   Gray-blue button theme (SCR-A1~パスワード変更, SCR-A2~ユーザー)
+   ========== */
+.password-change-page .btn-primary,
+.user-list-page .btn-primary,
+.user-register-page .btn-primary {
+  background: linear-gradient(
+    180deg,
+    #344a60 0%,
+    #253848 40%,
+    #1c2e3c 100%
+  );
+  border: 2px solid #8a9eb0;
+  border-bottom-color: #5a6e80;
+  color: #c8d8e8;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 3px 0 #2a3e50,
+    0 5px 10px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.password-change-page .btn-primary:hover,
+.user-list-page .btn-primary:hover,
+.user-register-page .btn-primary:hover {
+  background: linear-gradient(
+    180deg,
+    #445a70 0%,
+    #354858 40%,
+    #2c3e4c 100%
+  );
+  border-color: #9aaec0;
+  border-bottom-color: #6a7e90;
+}
+
+.password-change-page .btn-primary:active,
+.user-list-page .btn-primary:active,
+.user-register-page .btn-primary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #2a3e50, 0 1px 3px rgba(0, 0, 0, 0.3);
+  border-bottom-color: #8a9eb0;
+}
+
+.password-change-page .btn-secondary,
+.user-list-page .btn-secondary,
+.user-register-page .btn-secondary {
+  background: linear-gradient(
+    180deg,
+    #243a50 0%,
+    #172838 40%,
+    #101e2c 100%
+  );
+  border: 2px solid #6a7e90;
+  border-bottom-color: #3a4e60;
+  color: #a8c0d0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 3px 0 #1a2e40,
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.password-change-page .btn-secondary:hover,
+.user-list-page .btn-secondary:hover,
+.user-register-page .btn-secondary:hover {
+  background: linear-gradient(
+    180deg,
+    #344a60 0%,
+    #273848 40%,
+    #202e3c 100%
+  );
+  border-color: #7a8ea0;
+  border-bottom-color: #4a5e70;
+}
+
+.password-change-page .btn-secondary:active,
+.user-list-page .btn-secondary:active,
+.user-register-page .btn-secondary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #1a2e40, 0 1px 3px rgba(0, 0, 0, 0.3);
+  border-bottom-color: #6a7e90;
+}
+
+/* ==========
    Globe footer
    ========== */
 .globe-footer {

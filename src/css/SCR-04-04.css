@@ -23,6 +23,10 @@
   color: var(--text);
 }
 
+.site-form-page select {
+  background: #2e1848;
+}
+
 .site-form-page textarea {
   min-height: 96px;
   resize: vertical;

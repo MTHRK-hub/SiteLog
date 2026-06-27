@@ -55,6 +55,17 @@
   }
 
   // ===========================
+  // テーマ判定
+  // ===========================
+  function getThemeClass(screenId) {
+    if (!screenId) return "";
+    var pre = screenId.substring(0, 6);
+    if (pre === "SCR-04" || pre === "SCR-06" || pre === "SCR-08") return "hdr-theme-alt";
+    if (screenId.substring(0, 5) === "SCR-A") return "hdr-theme-admin";
+    return "";
+  }
+
+  // ===========================
   // レンダリング
   // ===========================
   function render() {
@@ -133,7 +144,8 @@
      *   └─────────┴───────────┴───────────┴──────────┘
      */
     var header = document.createElement("header");
-    header.className = "hdr-wrap";
+    var themeClass = getThemeClass(screenId);
+    header.className = "hdr-wrap" + (themeClass ? " " + themeClass : "");
     header.innerHTML =
       '<table class="header-table">' +
         '<colgroup>' +

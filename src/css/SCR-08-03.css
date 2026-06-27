@@ -22,6 +22,10 @@
   color: var(--text);
 }
 
+.event-form-page select {
+  background: #2e1848;
+}
+
 .event-form-page input:focus,
 .event-form-page select:focus {
   outline: none;

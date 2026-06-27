@@ -24,6 +24,10 @@
   font-family: inherit;
 }
 
+.shop-form-page select {
+  background: #1b5262;
+}
+
 .shop-form-page textarea {
   min-height: calc(var(--touch-min) * 2);
   resize: vertical;

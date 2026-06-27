@@ -16,7 +16,7 @@
   padding: 8px 10px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius);
-  background: var(--surface-alt);
+  background: #2e1848;
   color: var(--text);
   font-size: 0.95rem;
   min-height: var(--touch-min);
