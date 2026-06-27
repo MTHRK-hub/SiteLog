@@ -52,7 +52,25 @@
 
   itemFilter.addEventListener("change", applyFilter);
 
+  async function loadItemFilterOptions() {
+    const result = await c.safeLoadSheetRows("enums");
+    if (!result.ok) return;
+    const row = result.rows.find(function (r) {
+      return String(r["Enum名"] || "").trim() === "現場記録項目";
+    });
+    if (!row) return;
+    for (let i = 1; i <= 15; i++) {
+      const v = String(row["値" + i] || "").trim();
+      if (!v) continue;
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v;
+      itemFilter.appendChild(opt);
+    }
+  }
+
   (async function init() {
+    loadItemFilterOptions();
     status.textContent = "現場記録データを読み込み中...";
     const result = await c.safeLoadSheetRows("siteLogs");
     if (!result.ok) {

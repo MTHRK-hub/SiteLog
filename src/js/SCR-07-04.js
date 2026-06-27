@@ -12,7 +12,7 @@
 
   c.updateParentHeader({
     screenId: "SCR-07-04",
-    title: "支出実績一覧",
+    title: "収支実績一覧",
     back: "cashflow-plan",
     showUser: true,
     extraId: "hdr-btn-new-expenditure",
@@ -54,10 +54,12 @@
   }
 
   function calcTotal(rows) {
-    return rows.reduce(function (acc, r) {
-      const n = parseInt(String(r["金額"] || "").replace(/[^0-9\-]/g, ""), 10);
-      return acc + (Number.isNaN(n) ? 0 : Math.abs(n));
-    }, 0);
+    return rows
+      .filter(function (r) { return String(r["収支区分"] || "").trim() === "1"; })
+      .reduce(function (acc, r) {
+        const n = parseInt(String(r["金額"] || "").replace(/[^0-9\-]/g, ""), 10);
+        return acc + (Number.isNaN(n) ? 0 : Math.abs(n));
+      }, 0);
   }
 
   function populateCategoryFilter(enumRows) {
@@ -143,8 +145,8 @@
     try {
       await c.deleteExpenditure(id);
       c.setCompletionInfo({
-        title: "支出削除完了",
-        message: "支出データが削除されました。",
+        title: "収支削除完了",
+        message: "収支データが削除されました。",
         buttonLabel: "一覧に戻る",
         backScreen: "expenditureList"
       });

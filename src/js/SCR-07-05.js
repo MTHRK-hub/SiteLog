@@ -4,7 +4,7 @@
 
   c.updateParentHeader({
     screenId: "SCR-07-05",
-    title: "支出編集",
+    title: "収支編集",
     showUser: true
   });
 
@@ -12,9 +12,13 @@
   const errorEl = document.getElementById("exp-edit-error");
   const selectCategory = document.getElementById("exp-category");
   const selectType = document.getElementById("exp-type");
+  const selectTargetBalance = document.getElementById("exp-target-balance");
   const confirmDialog = document.getElementById("confirm-dialog");
   const btnConfirmOk = document.getElementById("btn-confirm-ok");
   const btnConfirmCancel = document.getElementById("btn-confirm-cancel");
+
+  const loginUser = c.getCurrentUser();
+  const loginUserId = loginUser ? String(loginUser.id || "").trim() : "";
 
   let enumRows = [];
   let targetRecord = null;
@@ -64,9 +68,10 @@
 
     errorEl.textContent = "読み込み中...";
 
-    const [enumResult, expResult] = await Promise.all([
+    const [enumResult, expResult, stackedResult] = await Promise.all([
       c.safeLoadSheetRows("enums"),
-      c.safeLoadSheetRows("expenditures")
+      c.safeLoadSheetRows("expenditures"),
+      c.safeLoadSheetRows("stacked")
     ]);
 
     if (!enumResult.ok) {
@@ -76,7 +81,7 @@
     enumRows = enumResult.rows;
 
     if (!expResult.ok) {
-      errorEl.textContent = "支出情報を取得できませんでした。";
+      errorEl.textContent = "収支情報を取得できませんでした。";
       return;
     }
 
@@ -89,6 +94,29 @@
     }
 
     targetRecord = c.decryptExpenditureRecord(raw);
+
+    if (stackedResult.ok) {
+      stackedResult.rows
+        .filter(function (r) { return String(r["ユーザーID"] || "").trim() === loginUserId; })
+        .map(function (r) { return c.decryptStackedRecord(r); })
+        .sort(function (a, b) {
+          return parseInt(String(a["表示順"] || "0"), 10) - parseInt(String(b["表示順"] || "0"), 10);
+        })
+        .forEach(function (r) {
+          const v = String(r["項目"] || "").trim();
+          if (!v) return;
+          const opt = document.createElement("option");
+          opt.value = v;
+          opt.textContent = v;
+          selectTargetBalance.appendChild(opt);
+        });
+    }
+
+    const incomeExpenseVal = String(targetRecord["収支区分"] || "").trim();
+    form.querySelectorAll('input[name="収支区分"]').forEach(function (r) {
+      r.checked = (r.value === incomeExpenseVal);
+    });
+    selectTargetBalance.value = String(targetRecord["対象残高"] || "").trim();
 
     populateSelect(selectCategory, "支出カテゴリ");
 
@@ -125,7 +153,10 @@
       btnConfirmOk.onclick = null;
 
       const nowIso = new Date().toISOString().slice(0, 19).replace("T", " ");
+      const checkedRadio = form.querySelector('input[name="収支区分"]:checked');
       const record = Object.assign({}, targetRecord, {
+        "収支区分": checkedRadio ? checkedRadio.value : "",
+        "対象残高": selectTargetBalance.value.trim(),
         "日付": document.getElementById("exp-date").value.trim(),
         "カテゴリ": selectCategory.value.trim(),
         "種別": selectType.value.trim(),
@@ -139,8 +170,8 @@
       try {
         await c.updateExpenditure(c.encryptExpenditureRecord(record));
         c.setCompletionInfo({
-          title: "支出更新完了",
-          message: "支出データが更新されました。",
+          title: "収支更新完了",
+          message: "収支データが更新されました。",
           buttonLabel: "一覧に戻る",
           backScreen: "expenditureList"
         });

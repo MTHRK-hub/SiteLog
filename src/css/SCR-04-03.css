@@ -40,3 +40,32 @@
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
+
+.site-item-fieldset {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  background: var(--bg);
+}
+
+.site-item-legend {
+  font-size: 0.9rem;
+  color: var(--muted);
+  padding: 0 4px;
+}
+
+.item-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 6px;
+}
+
+.item-radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  color: var(--text);
+  cursor: pointer;
+}

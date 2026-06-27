@@ -12,16 +12,40 @@
 
   const log = found ? c.decryptSiteLogRecord(found.row) : null;
 
+  async function loadItemOptions(selectedValue) {
+    const result = await c.safeLoadSheetRows("enums");
+    const container = document.getElementById("item-radio-group");
+    if (!result.ok) return;
+    const row = result.rows.find(function (r) {
+      return String(r["Enum名"] || "").trim() === "現場記録項目";
+    });
+    if (!row) return;
+    for (let i = 1; i <= 15; i++) {
+      const v = String(row["値" + i] || "").trim();
+      if (!v) continue;
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "項目";
+      input.value = v;
+      if (v === selectedValue) input.checked = true;
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(v));
+      container.appendChild(label);
+    }
+  }
+
   if (!log) {
     errorEl.textContent = "編集対象データがありません。";
     form.querySelectorAll("input, select, textarea, button").forEach(function (el) {
       if (el.id !== "btn-edit-cancel") el.disabled = true;
     });
+    loadItemOptions("");
   } else {
     form.elements["日付"].value = log["日付"] || "";
-    form.elements["項目"].value = log["項目"] || "";
     form.elements["記録"].value = log["記録"] || "";
     form.elements["ToDo"].value = log["ToDo"] || "";
+    loadItemOptions(log["項目"] || "");
 
     const confirmDialog = document.getElementById("confirm-dialog");
     const btnConfirmOk = document.getElementById("btn-confirm-ok");

@@ -123,9 +123,9 @@ const EXPENDITURE_SHEET_NAME = "支出情報";
 const EXPENDITURE_HEADERS = [
   "id",
   "ユーザーID",
+  "日付",
   "収支区分",
   "対象残高",
-  "日付",
   "カテゴリ",
   "種別",
   "内容",

@@ -13,6 +13,18 @@
     <div class="card">
       <form id="expenditure-edit-form" class="form-grid" novalidate>
         <label>日付<input id="exp-date" name="日付" type="date" /></label>
+        <fieldset class="exp-radio-fieldset">
+          <legend class="exp-radio-legend">収支区分</legend>
+          <div class="radio-group">
+            <label><input type="radio" name="収支区分" value="0" /> 収入</label>
+            <label><input type="radio" name="収支区分" value="1" /> 支出</label>
+          </div>
+        </fieldset>
+        <label>対象残高
+          <select id="exp-target-balance" name="対象残高">
+            <option value=""></option>
+          </select>
+        </label>
         <label>カテゴリ
           <select id="exp-category" name="カテゴリ">
             <option value=""></option>

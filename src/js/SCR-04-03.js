@@ -15,6 +15,30 @@
     return String(maxId + 1);
   }
 
+  async function loadItemOptions() {
+    const result = await c.safeLoadSheetRows("enums");
+    const container = document.getElementById("item-radio-group");
+    if (!result.ok) return;
+    const row = result.rows.find(function (r) {
+      return String(r["Enum名"] || "").trim() === "現場記録項目";
+    });
+    if (!row) return;
+    for (let i = 1; i <= 15; i++) {
+      const v = String(row["値" + i] || "").trim();
+      if (!v) continue;
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "項目";
+      input.value = v;
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(v));
+      container.appendChild(label);
+    }
+  }
+
+  loadItemOptions();
+
   const confirmDialog = document.getElementById("confirm-dialog");
   const btnConfirmOk = document.getElementById("btn-confirm-ok");
   const btnConfirmCancel = document.getElementById("btn-confirm-cancel");
