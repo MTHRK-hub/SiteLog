@@ -76,6 +76,10 @@
   margin-top: 24px;
 }
 
+#event-list-body tr:nth-child(odd) {
+  background-color: rgba(21, 111, 115, 0.55);
+}
+
 #event-list-body tr:nth-child(even) {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(21, 111, 115, 0.55);
 }

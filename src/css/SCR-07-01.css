@@ -59,6 +59,18 @@
   text-align: right;
 }
 
+#summary-income {
+  background-color: rgba(47, 42, 198, 0.35);
+}
+
+#summary-expense {
+  background-color: rgba(225, 55, 55, 0.30);
+}
+
+#summary-cashflow {
+  background-color: rgba(100, 200, 150, 0.35);
+}
+
 .summary-cashflow-row th,
 .summary-cashflow-row td {
   font-weight: 700;
@@ -99,9 +111,9 @@
 }
 
 #income-list-body tr {
-  background-color: rgba(100, 160, 220, 0.18);
+  background-color: rgba(47, 42, 198, 0.35);
 }
 
 #expense-list-body tr {
-  background-color: rgba(220, 80, 80, 0.15);
+  background-color: rgba(225, 55, 55, 0.35);
 }

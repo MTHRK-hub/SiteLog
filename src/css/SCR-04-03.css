@@ -10,7 +10,7 @@
   font-size: 0.9rem;
 }
 
-.site-form-page input,
+.site-form-page input:not([type="radio"]),
 .site-form-page select,
 .site-form-page textarea {
   width: 100%;
@@ -32,7 +32,7 @@
   resize: vertical;
 }
 
-.site-form-page input:focus,
+.site-form-page input:not([type="radio"]):focus,
 .site-form-page select:focus,
 .site-form-page textarea:focus {
   outline: none;

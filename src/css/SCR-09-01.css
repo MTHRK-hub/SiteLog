@@ -18,6 +18,10 @@
   border-color: var(--accent);
 }
 
+#shop-list-body tr:nth-child(odd) {
+  background-color: rgba(36, 127, 176, 0.645);
+}
+
 #shop-list-body tr:nth-child(even) {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.45);
 }

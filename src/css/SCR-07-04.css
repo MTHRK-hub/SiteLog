@@ -55,9 +55,9 @@
 }
 
 .expenditure-list-page .row-income {
-  background-color: rgba(100, 160, 220, 0.18);
+  background-color: rgba(100, 160, 220, 0.35);
 }
 
 .expenditure-list-page .row-expense {
-  background-color: rgba(220, 80, 80, 0.15);
+  background-color: rgba(227, 87, 87, 0.35);
 }
