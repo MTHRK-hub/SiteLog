@@ -18,6 +18,10 @@
   const filterSelect = document.getElementById("friend-filter");
   const filterSubRow = document.getElementById("filter-sub-row");
   const filterSubSelect = document.getElementById("friend-filter-sub");
+  const filterFuriganaRow = document.getElementById("filter-furigana-row");
+  const filterFuriganaText = document.getElementById("filter-furigana-text");
+  const btnFuriganaSearch = document.getElementById("btn-furigana-search");
+  let furiganaSearchValue = "";
 
   const loginUser = c.getCurrentUser();
 
@@ -76,6 +80,12 @@
       if (!subValue) return rows;
       return rows.filter(function (f) {
         return String(f["提案対象"] || "").split(",").map(function (s) { return s.trim(); }).indexOf(subValue) >= 0;
+      });
+    }
+    if (filterValue === "ふりがな検索") {
+      if (!furiganaSearchValue) return rows;
+      return rows.filter(function (f) {
+        return String(f["ふりがな"] || "").indexOf(furiganaSearchValue) >= 0;
       });
     }
     return rows;
@@ -155,13 +165,35 @@
         const options = await loadEnumOptions(val);
         populateSubFilter(options);
         filterSubRow.removeAttribute("hidden");
+        filterFuriganaRow.setAttribute("hidden", "");
+        furiganaSearchValue = "";
+        filterFuriganaText.value = "";
+      } else if (val === "ふりがな検索") {
+        filterSubRow.setAttribute("hidden", "");
+        filterSubSelect.innerHTML = '<option value=""></option>';
+        furiganaSearchValue = "";
+        filterFuriganaText.value = "";
+        filterFuriganaRow.removeAttribute("hidden");
       } else {
         filterSubRow.setAttribute("hidden", "");
         filterSubSelect.innerHTML = '<option value=""></option>';
+        filterFuriganaRow.setAttribute("hidden", "");
+        furiganaSearchValue = "";
+        filterFuriganaText.value = "";
       }
       refreshView();
     });
     filterSubSelect.addEventListener("change", refreshView);
+    btnFuriganaSearch.addEventListener("click", function () {
+      furiganaSearchValue = filterFuriganaText.value.trim();
+      refreshView();
+    });
+    filterFuriganaText.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        furiganaSearchValue = filterFuriganaText.value.trim();
+        refreshView();
+      }
+    });
     refreshView();
   })();
 })();

@@ -121,6 +121,7 @@
 
     // 基本フィールド初期値
     form.elements["名前"].value = friend["名前"] || "";
+    form.elements["ふりがな"].value = friend["ふりがな"] || "";
     form.elements["LINE名"].value = friend["LINE名"] || "";
     instagramNameInput.value = friend["Instagramアカウント名"] || "";
     form.elements["Instagram URL"].value = friend["Instagram URL"] || "";
@@ -207,6 +208,7 @@
       const updated = {
         id: c.getFriendId(friend, found.index),
         "名前": String(fd.get("名前") || "").trim(),
+        "ふりがな": String(fd.get("ふりがな") || "").trim(),
         "LINE名": String(fd.get("LINE名") || "").trim(),
         "Instagramアカウント名": String(fd.get("Instagramアカウント名") || "").trim(),
         "Instagram URL": String(fd.get("Instagram URL") || "").trim(),

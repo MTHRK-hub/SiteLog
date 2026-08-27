@@ -145,6 +145,7 @@
     const record = {
       id: nextId(rows),
       "名前": String(fd.get("名前") || "").trim(),
+      "ふりがな": String(fd.get("ふりがな") || "").trim(),
       "LINE名": String(fd.get("LINE名") || "").trim(),
       "Instagramアカウント名": String(fd.get("Instagramアカウント名") || "").trim(),
       "Instagram URL": String(fd.get("Instagram URL") || "").trim(),

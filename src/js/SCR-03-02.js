@@ -61,6 +61,7 @@
   refreshLoginUserIfNeeded().then(function () {
     content.innerHTML =
       "<div class='detail-row'><dt>名前</dt><dd>" + c.escapeHtml(friend["名前"]) + "</dd></div>" +
+      "<div class='detail-row'><dt>ふりがな</dt><dd>" + c.escapeHtml(friend["ふりがな"]) + "</dd></div>" +
       "<div class='detail-row'><dt>LINE名</dt><dd>" + c.escapeHtml(friend["LINE名"]) + "</dd></div>" +
       (function () {
         const name = friend["Instagramアカウント名"] || "";

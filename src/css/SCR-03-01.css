@@ -21,6 +21,22 @@
   border-color: var(--accent);
 }
 
+.friend-list-page .filter-row-furigana {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.friend-list-page .filter-row-furigana .filter-select {
+  flex: 1;
+}
+
+.friend-list-page .filter-row-furigana .btn-sm {
+  flex-shrink: 0;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+}
+
 /* テーブル行の色分け（ヘッダ行はそのまま） */
 .friend-list-page tbody tr:nth-child(odd) {
   background: rgb(68, 78, 28);  

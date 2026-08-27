@@ -18,12 +18,17 @@
           <option value="予定あり">予定あり</option>
           <option value="出会った場所">出会った場所</option>
           <option value="提案対象">提案対象</option>
+          <option value="ふりがな検索">ふりがな検索</option>
         </select>
       </div>
       <div class="filter-row" id="filter-sub-row" hidden>
         <select id="friend-filter-sub" class="filter-select">
           <option value=""></option>
         </select>
+      </div>
+      <div class="filter-row filter-row-furigana" id="filter-furigana-row" hidden>
+        <input type="text" id="filter-furigana-text" class="filter-select" placeholder="ふりがなを入力" />
+        <button type="button" class="btn btn-primary btn-sm" id="btn-furigana-search">検索</button>
       </div>
       <p class="info-text" id="friend-load-status"></p>
       <div class="table-wrap">

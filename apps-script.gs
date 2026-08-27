@@ -33,6 +33,7 @@ const FRIEND_SHEET_NAME = "友達情報";
 const FRIEND_HEADERS = [
   "id",
   "名前",
+  "ふりがな",
   "LINE名",
   "Instagramアカウント名",
   "Instagram URL",
