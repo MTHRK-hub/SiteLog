@@ -99,7 +99,7 @@
   function render(rows) {
     body.innerHTML = "";
     if (!rows.length) {
-      body.innerHTML = '<tr><td colspan="5" style="text-align:center">データがありません</td></tr>';
+      body.innerHTML = '<tr><td colspan="6" style="text-align:center">データがありません</td></tr>';
       return;
     }
     rows.forEach(function (f, index) {
@@ -109,7 +109,8 @@
         "<td>" + c.escapeHtml(c.calcAge(f, loginUser)) + "</td>" +
         "<td>" + c.escapeHtml(f["性別"]) + "</td>" +
         "<td>" + c.escapeHtml(f["職業"]) + "</td>" +
-        "<td>" + c.escapeHtml(c.formatDate(f["最新連絡日"])) + "</td>";
+        "<td>" + c.escapeHtml(c.formatDate(f["最新連絡日"])) + "</td>" +
+        "<td>" + c.escapeHtml(c.formatDate(f["相手からの反応"])) + "</td>";
       body.appendChild(tr);
     });
     body.querySelectorAll("[data-friend-index]").forEach(function (btn) {
