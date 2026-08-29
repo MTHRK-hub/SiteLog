@@ -168,6 +168,7 @@
       "家族構成": String(fd.get("家族構成") || "").trim(),
       "話したこと": String(fd.get("話したこと") || "").trim(),
       "提案対象": checkedPropose.join(","),
+      "最新連絡日": String(fd.get("最新連絡日") || "").trim(),
       "その他": String(fd.get("その他") || "").trim(),
       "今後の予定": futurePlanValue,
       "ユーザーID": currentUser ? String(currentUser.id || "") : "",

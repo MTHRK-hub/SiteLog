@@ -82,6 +82,11 @@
         return String(f["提案対象"] || "").split(",").map(function (s) { return s.trim(); }).indexOf(subValue) >= 0;
       });
     }
+    if (filterValue === "最新連絡日") {
+      return rows.slice().sort(function (a, b) {
+        return String(b["最新連絡日"] || "").localeCompare(String(a["最新連絡日"] || ""));
+      });
+    }
     if (filterValue === "ふりがな検索") {
       if (!furiganaSearchValue) return rows;
       return rows.filter(function (f) {
@@ -94,7 +99,7 @@
   function render(rows) {
     body.innerHTML = "";
     if (!rows.length) {
-      body.innerHTML = '<tr><td colspan="4" style="text-align:center">データがありません</td></tr>';
+      body.innerHTML = '<tr><td colspan="5" style="text-align:center">データがありません</td></tr>';
       return;
     }
     rows.forEach(function (f, index) {
@@ -103,7 +108,8 @@
         "<td><button type='button' class='name-link' data-friend-index='" + index + "'>" + c.escapeHtml(f["名前"]) + "</button></td>" +
         "<td>" + c.escapeHtml(c.calcAge(f, loginUser)) + "</td>" +
         "<td>" + c.escapeHtml(f["性別"]) + "</td>" +
-        "<td>" + c.escapeHtml(f["職業"]) + "</td>";
+        "<td>" + c.escapeHtml(f["職業"]) + "</td>" +
+        "<td>" + c.escapeHtml(c.formatDate(f["最新連絡日"])) + "</td>";
       body.appendChild(tr);
     });
     body.querySelectorAll("[data-friend-index]").forEach(function (btn) {
