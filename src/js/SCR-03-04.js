@@ -158,6 +158,7 @@
     form.elements["家族構成"].value = friend["家族構成"] || "";
     form.elements["話したこと"].value = friend["話したこと"] || "";
     form.elements["最新連絡日"].value = friend["最新連絡日"] || "";
+    form.elements["相手からの反応"].value = friend["相手からの反応"] || "";
     form.elements["その他"].value = friend["その他"] || "";
 
     // 今後の予定: "あり:content" または "なし:" 形式を解析
@@ -233,6 +234,7 @@
         "話したこと": String(fd.get("話したこと") || "").trim(),
         "提案対象": checkedPropose.join(","),
         "最新連絡日": String(fd.get("最新連絡日") || "").trim(),
+        "相手からの反応": String(fd.get("相手からの反応") || "").trim(),
         "その他": String(fd.get("その他") || "").trim(),
         "今後の予定": futurePlanValue,
         "ユーザーID": currentUser ? String(currentUser.id || "") : "",

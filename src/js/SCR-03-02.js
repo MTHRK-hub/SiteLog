@@ -88,6 +88,7 @@
       "<div class='detail-row'><dt>話したこと</dt><dd>" + c.escapeHtml(friend["話したこと"]) + "</dd></div>" +
       "<div class='detail-row'><dt>提案対象</dt><dd>" + c.escapeHtml(friend["提案対象"]) + "</dd></div>" +
       "<div class='detail-row'><dt>最新連絡日</dt><dd>" + c.escapeHtml(c.formatDate(friend["最新連絡日"])) + "</dd></div>" +
+      "<div class='detail-row'><dt>相手からの反応</dt><dd>" + c.escapeHtml(c.formatDate(friend["相手からの反応"])) + "</dd></div>" +
       "<div class='detail-row'><dt>その他</dt><dd>" + c.escapeHtml(friend["その他"]) + "</dd></div>" +
       "<div class='detail-row'><dt>今後の予定</dt><dd>" + c.escapeHtml(friend["今後の予定"]) + "</dd></div>";
 
