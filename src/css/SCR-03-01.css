@@ -57,9 +57,31 @@
 
 /* テーブル行の色分け（ヘッダ行はそのまま） */
 .friend-list-page tbody tr:nth-child(odd) {
-  background: rgb(68, 78, 28);  
+  background: rgb(68, 78, 28);
 }
 
 .friend-list-page tbody tr:nth-child(even) {
-  background: rgb(49, 56, 20);  
+  background: rgb(49, 56, 20);
+}
+
+/* 横スクロール時、名前/LINE名（先頭列）を左端に固定 */
+.friend-list-page th:first-child,
+.friend-list-page td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  border-right: 2px solid rgb(44, 42, 176);
+}
+
+.friend-list-page thead th:first-child {
+  z-index: 2;
+  background: var(--bg);
+}
+
+.friend-list-page tbody tr:nth-child(odd) td:first-child {
+  background: rgb(68, 78, 28);
+}
+
+.friend-list-page tbody tr:nth-child(even) td:first-child {
+  background: rgb(49, 56, 20);
 }
