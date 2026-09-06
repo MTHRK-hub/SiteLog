@@ -21,6 +21,8 @@
   const filterFuriganaRow = document.getElementById("filter-furigana-row");
   const filterFuriganaText = document.getElementById("filter-furigana-text");
   const btnFuriganaSearch = document.getElementById("btn-furigana-search");
+  const toggleLineName = document.getElementById("toggle-line-name");
+  const thName = document.getElementById("th-name");
   let furiganaSearchValue = "";
 
   const loginUser = c.getCurrentUser();
@@ -97,6 +99,8 @@
   }
 
   function render(rows) {
+    const showLineName = toggleLineName.checked;
+    thName.textContent = showLineName ? "LINE名" : "名前";
     body.innerHTML = "";
     if (!rows.length) {
       body.innerHTML = '<tr><td colspan="6" style="text-align:center">データがありません</td></tr>';
@@ -104,8 +108,9 @@
     }
     rows.forEach(function (f, index) {
       const tr = document.createElement("tr");
+      const nameLabel = showLineName ? f["LINE名"] : f["名前"];
       tr.innerHTML =
-        "<td><button type='button' class='name-link' data-friend-index='" + index + "'>" + c.escapeHtml(f["名前"]) + "</button></td>" +
+        "<td><button type='button' class='name-link' data-friend-index='" + index + "'>" + c.escapeHtml(nameLabel) + "</button></td>" +
         "<td>" + c.escapeHtml(c.calcAge(f, loginUser)) + "</td>" +
         "<td>" + c.escapeHtml(f["性別"]) + "</td>" +
         "<td>" + c.escapeHtml(f["職業"]) + "</td>" +
@@ -191,6 +196,7 @@
       refreshView();
     });
     filterSubSelect.addEventListener("change", refreshView);
+    toggleLineName.addEventListener("change", refreshView);
     btnFuriganaSearch.addEventListener("click", function () {
       furiganaSearchValue = filterFuriganaText.value.trim();
       refreshView();
