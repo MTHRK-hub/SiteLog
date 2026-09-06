@@ -11,7 +11,7 @@
 <body class="friend-list-page">
   <div class="app">
     <div class="card">
-      <div class="filter-row">
+      <div class="filter-row filter-row-main">
         <select id="friend-filter" class="filter-select">
           <option value="">全件表示</option>
           <option value="20代">20代</option>
@@ -21,6 +21,7 @@
           <option value="最新連絡日">最新連絡日</option>
           <option value="ふりがな検索">ふりがな検索</option>
         </select>
+        <button type="button" class="btn btn-primary btn-sm" id="toggle-line-name">LINE名表示</button>
       </div>
       <div class="filter-row" id="filter-sub-row" hidden>
         <select id="friend-filter-sub" class="filter-select">
@@ -30,9 +31,6 @@
       <div class="filter-row filter-row-furigana" id="filter-furigana-row" hidden>
         <input type="text" id="filter-furigana-text" class="filter-select" placeholder="ふりがなを入力" />
         <button type="button" class="btn btn-primary btn-sm" id="btn-furigana-search">検索</button>
-      </div>
-      <div class="filter-row filter-row-toggle">
-        <button type="button" class="btn btn-primary btn-sm" id="toggle-line-name">LINE名表示</button>
       </div>
       <p class="info-text" id="friend-load-status"></p>
       <div class="table-wrap">
