@@ -24,6 +24,7 @@
   const toggleLineName = document.getElementById("toggle-line-name");
   const thName = document.getElementById("th-name");
   let furiganaSearchValue = "";
+  let lineNameMode = false;
 
   const loginUser = c.getCurrentUser();
 
@@ -99,7 +100,7 @@
   }
 
   function render(rows) {
-    const showLineName = toggleLineName.checked;
+    const showLineName = lineNameMode;
     thName.textContent = showLineName ? "LINE名" : "名前";
     body.innerHTML = "";
     if (!rows.length) {
@@ -166,7 +167,12 @@
     });
 
     function refreshView() {
-      const applied = applyFilter(filtered, filterSelect.value);
+      let applied = applyFilter(filtered, filterSelect.value);
+      if (lineNameMode) {
+        applied = applied.slice().sort(function (a, b) {
+          return String(a["LINE名"] || "").localeCompare(String(b["LINE名"] || ""), "ja");
+        });
+      }
       status.textContent = "友達データ " + applied.length + "件を表示中";
       render(applied);
     }
@@ -196,7 +202,11 @@
       refreshView();
     });
     filterSubSelect.addEventListener("change", refreshView);
-    toggleLineName.addEventListener("change", refreshView);
+    toggleLineName.addEventListener("click", function () {
+      lineNameMode = !lineNameMode;
+      toggleLineName.textContent = lineNameMode ? "名前表示" : "LINE名表示";
+      refreshView();
+    });
     btnFuriganaSearch.addEventListener("click", function () {
       furiganaSearchValue = filterFuriganaText.value.trim();
       refreshView();
