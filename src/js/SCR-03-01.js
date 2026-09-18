@@ -57,6 +57,17 @@
     });
   }
 
+  // LINE名並び替え用：アルファベット→ひらがな→カタカナ→漢字等の順でグループ分け
+  function nameTypeRank(str) {
+    const s = String(str || "");
+    if (!s) return 4;
+    const ch = s.charAt(0);
+    if (/[A-Za-z]/.test(ch)) return 0;
+    if (/[぀-ゟ]/.test(ch)) return 1;
+    if (/[゠-ヿ]/.test(ch)) return 2;
+    return 3;
+  }
+
   function applyFilter(rows, filterValue) {
     if (!filterValue) return rows;
     if (filterValue === "20代") {
@@ -170,7 +181,12 @@
       let applied = applyFilter(filtered, filterSelect.value);
       if (lineNameMode) {
         applied = applied.slice().sort(function (a, b) {
-          return String(a["LINE名"] || "").localeCompare(String(b["LINE名"] || ""), "ja");
+          const nameA = String(a["LINE名"] || "");
+          const nameB = String(b["LINE名"] || "");
+          const rankA = nameTypeRank(nameA);
+          const rankB = nameTypeRank(nameB);
+          if (rankA !== rankB) return rankA - rankB;
+          return nameA.localeCompare(nameB, "ja");
         });
       }
       status.textContent = "友達データ " + applied.length + "件を表示中";
