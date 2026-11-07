@@ -1,0 +1,1099 @@
+<title>現場記録簿 操作マニュアル</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: 左に目次（デスクトップで追従）、右に本文。各機能は「スマホ画面の図」＋「番号付き手順」の2段組 */
+:root {
+  --paper: #f4f6fa;
+  --sheet: #ffffff;
+  --ink: #17213a;
+  --ink-soft: #4c5872;
+  --line: #d9dfeb;
+  --navy: #0e3583;
+  --navy-soft: #e5ecf9;
+  --gold: #b07d1f;
+  --gold-soft: #fbf1dc;
+  --warn: #b4232f;
+  --warn-soft: #fbe7e9;
+  --ok: #1d7a55;
+  --in: #2b62c9;
+  --in-soft: #e3edff;
+  --out: #c0392b;
+  --out-soft: #fde8e4;
+  /* アプリ画面（図）は常に夜空の配色 */
+  --app-bg: #0b2459;
+  --app-bg2: #123a7a;
+  --app-card: rgba(20, 52, 92, .92);
+  --app-text: #f2f6ff;
+  --app-muted: #a9bbdb;
+  --app-teal: #286878;
+  --app-teal2: #114050;
+  --app-gold: #c49030;
+  --app-red: #a3283a;
+  --pin: #ff9a1f;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f1524; --sheet: #161e31; --ink: #e6ebf5; --ink-soft: #a5b0c7; --line: #2a3550;
+    --navy: #8fb0f2; --navy-soft: #1d2a48; --gold: #e2b35a; --gold-soft: #2e2615;
+    --warn: #ff8a93; --warn-soft: #3a1c22; --ok: #5fd1a1; --in: #8cb4ff; --in-soft: #1b2a4a;
+    --out: #ff9a8a; --out-soft: #3a211d; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f1524; --sheet: #161e31; --ink: #e6ebf5; --ink-soft: #a5b0c7; --line: #2a3550;
+  --navy: #8fb0f2; --navy-soft: #1d2a48; --gold: #e2b35a; --gold-soft: #2e2615;
+  --warn: #ff8a93; --warn-soft: #3a1c22; --ok: #5fd1a1; --in: #8cb4ff; --in-soft: #1b2a4a;
+  --out: #ff9a8a; --out-soft: #3a211d; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.8;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3, h4 { text-wrap: balance; line-height: 1.35; margin: 0; }
+p { margin: 0; }
+a { color: var(--navy); }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+code, .mono { font-family: var(--font-mono); font-size: .86em; }
+.sid { font-family: var(--font-mono); font-size: .78em; color: var(--ink-soft); background: var(--navy-soft); padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 40px; padding-block: 32px 80px; }
+@media (max-width: 900px) { .wrap { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-block: 20px 60px; } }
+
+/* ===== 目次 ===== */
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start; font-size: 13.5px; }
+.toc-title { font-size: 11px; letter-spacing: .14em; color: var(--ink-soft); font-weight: 700; margin-bottom: 8px; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; counter-reset: t; }
+.toc li { counter-increment: t; }
+.toc a { display: flex; gap: 8px; text-decoration: none; color: var(--ink); padding: 5px 8px; border-radius: 6px; }
+.toc a::before { content: counter(t, decimal-leading-zero); font-family: var(--font-mono); font-size: 11px; color: var(--gold); padding-top: 3px; }
+.toc a:hover { background: var(--navy-soft); }
+@media (max-width: 900px) {
+  .toc { position: static; background: var(--sheet); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; }
+  .toc ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ===== 表紙 ===== */
+.cover { border-bottom: 3px double var(--line); padding-bottom: 28px; margin-bottom: 8px; display: grid; gap: 14px; }
+.cover .eyebrow { font-size: 12px; letter-spacing: .16em; color: var(--gold); font-weight: 700; }
+.cover h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 900; letter-spacing: .02em; }
+.cover h1 small { display: block; font-size: .42em; font-weight: 500; color: var(--ink-soft); letter-spacing: .08em; margin-top: 4px; }
+.cover .lead { max-width: 62ch; color: var(--ink-soft); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13px; color: var(--ink-soft); }
+.meta b { color: var(--ink); font-weight: 700; margin-right: 6px; }
+
+/* ===== 章 ===== */
+main { min-width: 0; display: grid; gap: 56px; }
+section { scroll-margin-top: 20px; display: grid; gap: 20px; }
+.ch-head { display: grid; gap: 6px; border-left: 4px solid var(--navy); padding-left: 14px; }
+.ch-head .no { font-family: var(--font-mono); font-size: 12px; color: var(--gold); letter-spacing: .1em; }
+.ch-head h2 { font-size: 24px; font-weight: 900; }
+.ch-head p { color: var(--ink-soft); max-width: 65ch; }
+h3 { font-size: 18px; font-weight: 700; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
+h4 { font-size: 15px; font-weight: 700; }
+
+.block { background: var(--sheet); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; display: grid; gap: 16px; }
+@media (max-width: 520px) { .block { padding: 16px; } }
+
+/* 図＋手順の2段組 */
+.pair { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 760px) { .pair { grid-template-columns: minmax(0, 1fr); } .pair .phone { margin: 0 auto; } }
+.pair > div { min-width: 0; display: grid; gap: 14px; }
+
+/* 手順 */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: s; }
+.steps > li { counter-increment: s; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; }
+.steps > li::before { content: counter(s); width: 26px; height: 26px; border-radius: 50%; background: var(--navy); color: var(--sheet); font-weight: 700; font-size: 13px; display: grid; place-items: center; margin-top: 2px; }
+.keys { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.keys li { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 10px; }
+.keys .pin { margin-top: 3px; }
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+
+/* 注記 */
+.note { border-radius: 8px; padding: 12px 14px; font-size: 14px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; }
+.note .tag { font-size: 11px; font-weight: 700; letter-spacing: .08em; padding: 2px 8px; border-radius: 4px; height: fit-content; margin-top: 2px; white-space: nowrap; }
+.note.tip { background: var(--gold-soft); } .note.tip .tag { background: var(--gold); color: var(--sheet); }
+.note.warn { background: var(--warn-soft); } .note.warn .tag { background: var(--warn); color: var(--sheet); }
+.note.info { background: var(--navy-soft); } .note.info .tag { background: var(--navy); color: var(--sheet); }
+
+/* 表 */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+.tbl table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 460px; }
+.tbl th, .tbl td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl th { background: var(--navy-soft); font-weight: 700; font-size: 13px; white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl td:first-child { white-space: nowrap; font-weight: 500; }
+
+/* 番号ピン（図と説明で共通） */
+.pin { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--pin); color: #2a1600; font-size: 11.5px; font-weight: 900; font-family: var(--font-body); line-height: 1; flex: none; box-shadow: 0 0 0 2px rgba(255,255,255,.85); }
+
+/* ===== スマホ画面の図 ===== */
+.phone {
+  width: 300px; max-width: 100%; border-radius: 34px; padding: 10px;
+  background: #1b1f29; box-shadow: 0 18px 40px rgba(10, 20, 45, .28), inset 0 0 0 1.5px #3a4050;
+  font-family: var(--font-body); font-size: 12px; line-height: 1.45; color: var(--app-text);
+}
+.screen {
+  border-radius: 26px; overflow: hidden; min-height: 420px;
+  background: radial-gradient(120% 70% at 70% 20%, var(--app-bg2), var(--app-bg) 70%);
+  border: 6px solid transparent;
+  border-image: linear-gradient(135deg, #b89a5e, #3d4b6b 30%, #3d4b6b 70%, #b89a5e) 1;
+  border-radius: 26px;
+  display: flex; flex-direction: column;
+}
+.screen.short { min-height: 0; }
+.hdr { display: grid; grid-template-columns: 1fr auto 1fr; grid-template-areas: "u id lo" "t t t" "b . n"; align-items: center; gap: 2px 4px; padding: 8px 8px 6px; border-bottom: 1px solid rgba(255,255,255,.1); }
+.hdr .u { grid-area: u; font-size: 10.5px; color: var(--app-muted); display: flex; align-items: center; gap: 3px; }
+.hdr .id { grid-area: id; font-family: var(--font-mono); font-size: 9px; color: var(--app-muted); display: flex; align-items: center; gap: 3px; }
+.hdr .lo { grid-area: lo; justify-self: end; display: flex; align-items: center; gap: 3px; }
+.hdr .t { grid-area: t; text-align: center; font-size: 15px; font-weight: 700; letter-spacing: .04em; display: flex; justify-content: center; align-items: center; gap: 4px; }
+.hdr .b { grid-area: b; display: flex; align-items: center; gap: 3px; }
+.hdr .n { grid-area: n; justify-self: end; display: flex; align-items: center; gap: 3px; }
+.hdr .pin { width: 16px; height: 16px; font-size: 9.5px; }
+.abtn { display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 4px 9px; border-radius: 7px; font-size: 10.5px; font-weight: 700; color: #e8f5f8; background: linear-gradient(180deg, #3d8a9a, var(--app-teal) 45%, var(--app-teal2)); border: 1.5px solid var(--app-gold); box-shadow: 0 2px 0 #7a5010; white-space: nowrap; }
+.abtn.red { background: linear-gradient(180deg, #d04a5c, var(--app-red) 55%, #6e1422); border-color: #e07080; box-shadow: 0 2px 0 #5a0c18; }
+.abtn.gray { background: linear-gradient(180deg, #6f8296, #4a5c70); border-color: #9aaec0; box-shadow: 0 2px 0 #34404e; }
+.abtn.purple { background: linear-gradient(180deg, #8f63b8, #5f3c88); border-color: #c098e8; box-shadow: 0 2px 0 #3d2260; }
+.abtn.lg { padding: 9px 12px; font-size: 12.5px; border-radius: 10px; width: 100%; }
+.abtn.dim { opacity: .45; }
+.body { padding: 10px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.card { background: var(--app-card); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 7px; }
+.row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.row.between { justify-content: space-between; }
+.sel { flex: 1; min-width: 80px; background: #0a1c40; border: 1px solid #5a77b0; border-radius: 6px; padding: 4px 8px; font-size: 11px; display: flex; justify-content: space-between; }
+.sel::after { content: "▾"; color: var(--app-muted); }
+.inp { background: #0a1c40; border: 1px solid #47639a; border-radius: 6px; padding: 4px 8px; font-size: 11px; color: var(--app-muted); min-height: 24px; flex: 1; }
+.inp.tall { min-height: 42px; }
+.lbl { font-size: 10px; color: var(--app-muted); }
+.fld { display: flex; flex-direction: column; gap: 2px; }
+.radio { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; margin-right: 8px; }
+.radio i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--app-muted); display: inline-block; }
+.radio.on i { background: radial-gradient(circle, #8fd3ff 40%, transparent 45%); border-color: #8fd3ff; }
+.chk i { border-radius: 2px; }
+.chk.on i { background: #8fd3ff; }
+.at { width: 100%; border-collapse: collapse; font-size: 10.5px; }
+.at th { background: rgba(14, 53, 131, .9); color: #fff; font-weight: 700; padding: 4px 5px; text-align: left; }
+.at td { padding: 4px 5px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.at tr:nth-child(even) td { background: rgba(255,255,255,.04); }
+.at .lk { color: #8fd3ff; text-decoration: underline; }
+.at tr.inc td { background: rgba(90, 150, 255, .22); }
+.at tr.exp td { background: rgba(255, 110, 110, .2); }
+.cap { text-align: center; font-size: 10px; color: var(--app-muted); }
+.ttl { text-align: center; font-weight: 700; font-size: 12.5px; }
+.money { font-family: var(--font-mono); font-size: 11px; }
+.dialog { margin: 4px 6px; background: #241018; border: 1.5px solid #e07080; border-radius: 10px; padding: 10px; text-align: center; display: grid; gap: 8px; }
+.bal { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 6px; align-items: center; background: rgba(255,255,255,.06); border: 1px solid rgba(196,144,48,.45); border-radius: 9px; padding: 7px 8px; }
+.bal .nm { color: #8fd3ff; text-decoration: underline; font-weight: 700; }
+.bal .v { color: #8fd3ff; text-decoration: underline; font-family: var(--font-mono); font-size: 11px; }
+.arrows { display: flex; flex-direction: column; gap: 2px; font-size: 10px; }
+.menu-btn { position: relative; padding: 7px 34px 7px 10px; border-radius: 9px; text-align: center; font-weight: 700; font-size: 12px; background: linear-gradient(180deg, #3d8a9a, var(--app-teal) 40%, #1b5262 70%, var(--app-teal2)); border: 1.5px solid var(--app-gold); box-shadow: 0 3px 0 #7a5010; }
+.menu-btn .ic { position: absolute; right: 7px; top: 50%; transform: translateY(-50%); font-size: 12px; }
+.menu-btn.adm { background: linear-gradient(180deg, #8f63b8, #5f3c88); border-color: #c098e8; box-shadow: 0 3px 0 #3d2260; }
+.menu-btn.hide { outline: 1.5px dashed var(--pin); outline-offset: 2px; }
+.popup { background: #f7f9ff; color: #1b2a48; border-radius: 9px; padding: 9px 10px; font-size: 10.5px; white-space: pre-line; line-height: 1.55; box-shadow: 0 6px 18px rgba(0,0,0,.4); }
+.fig-cap { font-size: 12.5px; color: var(--ink-soft); text-align: center; margin-top: 8px; }
+figure { margin: 0; }
+
+/* ===== SVG 図 ===== */
+.diagram { overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 620px; height: auto; font-family: var(--font-body); }
+.d-box { fill: var(--sheet); stroke: var(--navy); stroke-width: 1.5; }
+.d-box.alt { fill: var(--navy-soft); }
+.d-box.done { fill: var(--gold-soft); stroke: var(--gold); }
+.d-box.warn { fill: var(--warn-soft); stroke: var(--warn); }
+.d-t { fill: var(--ink); font-size: 14px; font-weight: 700; }
+.d-s { fill: var(--ink-soft); font-size: 11px; }
+.d-id { fill: var(--gold); font-size: 10.5px; font-family: var(--font-mono); }
+.d-line { stroke: var(--navy); stroke-width: 1.6; fill: none; }
+.d-line.back { stroke: var(--ink-soft); stroke-dasharray: 5 4; }
+.d-lbl { fill: var(--navy); font-size: 11px; font-weight: 700; }
+.d-lbl.soft { fill: var(--ink-soft); font-weight: 500; }
+.d-head { fill: var(--navy); }
+.d-head.soft { fill: var(--ink-soft); }
+.d-in { fill: var(--in-soft); stroke: var(--in); stroke-width: 1.5; }
+.d-out { fill: var(--out-soft); stroke: var(--out); stroke-width: 1.5; }
+.d-in-t { fill: var(--in); font-weight: 700; font-size: 13px; }
+.d-out-t { fill: var(--out); font-weight: 700; font-size: 13px; }
+
+/* 画面マップ */
+.map { display: grid; gap: 14px; }
+.map-root { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13.5px; }
+.map-root span.n { background: var(--navy); color: var(--sheet); padding: 4px 12px; border-radius: 6px; font-weight: 700; }
+.map-root span.a { color: var(--ink-soft); }
+.map-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.map-card { border: 1px solid var(--line); border-top: 3px solid var(--navy); border-radius: 8px; padding: 12px 14px; background: var(--sheet); display: grid; gap: 6px; align-content: start; }
+.map-card.adm { border-top-color: var(--gold); }
+.map-card h4 a { text-decoration: none; color: var(--ink); }
+.map-card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; font-size: 13px; }
+.map-card li { display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 6px; }
+.map-card li .sid { justify-self: start; }
+
+/* FAQ */
+details { border: 1px solid var(--line); border-radius: 8px; background: var(--sheet); }
+details + details { margin-top: 8px; }
+summary { cursor: pointer; padding: 12px 16px; font-weight: 700; list-style: none; display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "Q"; font-family: var(--font-mono); color: var(--gold); }
+details[open] summary { border-bottom: 1px solid var(--line); }
+details .ans { padding: 12px 16px 14px 46px; color: var(--ink-soft); display: grid; gap: 6px; }
+
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 760px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+.foot { color: var(--ink-soft); font-size: 12.5px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+  <nav class="toc" aria-label="目次">
+    <div class="toc-title">目次</div>
+    <ol>
+      <li><a href="#start">はじめに</a></li>
+      <li><a href="#header">画面の見方</a></li>
+      <li><a href="#pattern">共通の操作</a></li>
+      <li><a href="#login">ログイン・ログアウト</a></li>
+      <li><a href="#menu">メニュー</a></li>
+      <li><a href="#friend">友達</a></li>
+      <li><a href="#site">現場記録</a></li>
+      <li><a href="#memo">メモ</a></li>
+      <li><a href="#plan">自主企画計画</a></li>
+      <li><a href="#cf">キャッシュフロー</a></li>
+      <li><a href="#event">イベント</a></li>
+      <li><a href="#shop">お店</a></li>
+      <li><a href="#pw">パスワード変更</a></li>
+      <li><a href="#admin">ユーザー管理</a></li>
+      <li><a href="#map">画面一覧マップ</a></li>
+      <li><a href="#faq">困ったとき</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="cover">
+      <div class="eyebrow">OPERATION MANUAL</div>
+      <h1>現場記録簿 操作マニュアル<small>スマートフォン版 ・ 利用者向け</small></h1>
+      <p class="lead">友達、現場記録、メモ、企画、お金、イベント、お店の情報をスマートフォンからまとめて管理するアプリの使い方です。画面の図に付いた<span class="pin" style="margin:0 3px">1</span>のような番号は、すぐ横の説明の番号と対応しています。</p>
+      <div class="meta">
+        <span><b>対象</b>現場記録簿を使うすべての方（第14章は管理者向け）</span>
+        <span><b>元資料</b>現場記録簿 設計書</span>
+        <span><b>作成</b>2026年11月7日</span>
+      </div>
+    </header>
+
+    <!-- ===================== 1 ===================== -->
+    <section id="start">
+      <div class="ch-head"><span class="no">CHAPTER 01</span><h2>はじめに</h2>
+        <p>アプリの起動方法と、データがどこに保存されるかを説明します。</p></div>
+      <div class="block">
+        <h3>アプリを起動する</h3>
+        <ol class="steps">
+          <li><div>プロジェクトフォルダにある <code>index.html</code> を開きます。</div></li>
+          <li><div>専用のウィンドウが開き、<b>ログイン画面</b>が表示されます。ポップアップがブロックされた場合は、同じタブのままログイン画面に切り替わります。</div></li>
+          <li><div>ユーザーIDとパスワードでログインすると、<b>メニュー画面</b>から各機能を使えます。</div></li>
+        </ol>
+        <div class="note info"><span class="tag">データ</span><p>入力した内容はGoogleスプレッドシートに保存されます。一覧には<b>ログインした本人が登録したデータだけ</b>が表示され、他の利用者のデータは見えません。保存する値は暗号化されます。</p></div>
+        <div class="note tip"><span class="tag">収支入力</span><p>お金の出入りを記録する「収支入力フォーム」だけは、フォルダ直下の <code>SCR-07-99.html</code> を直接開いて単独で使うこともできます（<a href="#cf-form">10-6</a>）。</p></div>
+      </div>
+    </section>
+
+    <!-- ===================== 2 ===================== -->
+    <section id="header">
+      <div class="ch-head"><span class="no">CHAPTER 02</span><h2>画面の見方</h2>
+        <p>どの画面も、上部に共通のヘッダが付きます。ボタンの位置は全画面で同じなので、一度覚えれば迷いません。</p></div>
+      <div class="block pair">
+        <figure>
+          <div class="phone"><div class="screen short">
+            <div class="hdr">
+              <span class="u"><span class="pin">1</span>山田 太郎</span>
+              <span class="id">SCR-03-01<span class="pin">3</span></span>
+              <span class="lo"><span class="abtn red">ログアウト</span><span class="pin">5</span></span>
+              <span class="t"><span class="pin">4</span>友達一覧</span>
+              <span class="b"><span class="pin">2</span><span class="abtn gray">メニューに戻る</span></span>
+              <span class="n"><span class="abtn">新規登録</span><span class="pin">6</span></span>
+            </div>
+            <div class="body"><div class="card"><div class="cap">ここに各画面の内容が表示されます</div></div></div>
+          </div></div>
+          <figcaption class="fig-cap">図2-1 共通ヘッダ（友達一覧画面の例）</figcaption>
+        </figure>
+        <div>
+          <ul class="keys">
+            <li><span class="pin">1</span><div><b>ログインユーザー名</b>：今ログインしている人の名前です。</div></li>
+            <li><span class="pin">2</span><div><b>戻るボタン</b>：一覧画面では「メニューに戻る」、詳細画面では「一覧に戻る」になります。企画とキャッシュフローの一部では「計画画面に戻る」と表示されます。</div></li>
+            <li><span class="pin">3</span><div><b>画面ID</b>：画面ごとの番号です。問い合わせの際に伝えると話が早くなります。</div></li>
+            <li><span class="pin">4</span><div><b>画面名</b>：今いる画面の名前です。</div></li>
+            <li><span class="pin">5</span><div><b>ログアウト</b>：押すと「ログアウトしますか？」と確認され、「はい」でログイン画面に戻ります。</div></li>
+            <li><span class="pin">6</span><div><b>新規登録・新規作成／編集</b>：一覧画面では新しいデータを作るボタン、詳細画面では表示中のデータを直すボタンになります。</div></li>
+          </ul>
+          <div class="note info"><span class="tag">補足</span><p>ログイン画面では <span class="pin" style="vertical-align:-4px">3</span><span class="pin" style="vertical-align:-4px">4</span> だけが表示されます。登録・編集の入力画面では <span class="pin" style="vertical-align:-4px">2</span><span class="pin" style="vertical-align:-4px">6</span> が出ず、画面下部の「キャンセル」で戻ります。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 3 ===================== -->
+    <section id="pattern">
+      <div class="ch-head"><span class="no">CHAPTER 03</span><h2>共通の操作の流れ</h2>
+        <p>友達・現場記録・メモ・企画・イベント・お店は、すべて同じ流れで操作します。この型を覚えておくと、どの機能もすぐに使えます。</p></div>
+      <div class="block">
+        <div class="diagram" role="img" aria-label="一覧から詳細、編集、完了画面へ進む操作の流れ図">
+          <svg viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-head"/></marker>
+              <marker id="ahs" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-head soft"/></marker>
+            </defs>
+            <!-- menu -->
+            <rect x="10" y="118" width="110" height="64" rx="10" class="d-box alt"/>
+            <text x="65" y="146" text-anchor="middle" class="d-t">メニュー</text>
+            <text x="65" y="166" text-anchor="middle" class="d-s">機能を選ぶ</text>
+            <!-- list -->
+            <rect x="170" y="118" width="140" height="64" rx="10" class="d-box"/>
+            <text x="240" y="146" text-anchor="middle" class="d-t">一覧画面</text>
+            <text x="240" y="166" text-anchor="middle" class="d-s">絞り込み・並び替え</text>
+            <!-- detail -->
+            <rect x="380" y="30" width="140" height="64" rx="10" class="d-box"/>
+            <text x="450" y="58" text-anchor="middle" class="d-t">詳細画面</text>
+            <text x="450" y="78" text-anchor="middle" class="d-s">全項目を確認・削除</text>
+            <!-- register -->
+            <rect x="380" y="206" width="140" height="64" rx="10" class="d-box"/>
+            <text x="450" y="234" text-anchor="middle" class="d-t">登録画面</text>
+            <text x="450" y="254" text-anchor="middle" class="d-s">新しく入力</text>
+            <!-- edit -->
+            <rect x="580" y="30" width="120" height="64" rx="10" class="d-box"/>
+            <text x="640" y="58" text-anchor="middle" class="d-t">編集画面</text>
+            <text x="640" y="78" text-anchor="middle" class="d-s">内容を直す</text>
+            <!-- done -->
+            <rect x="740" y="118" width="110" height="64" rx="10" class="d-box done"/>
+            <text x="795" y="146" text-anchor="middle" class="d-t">完了画面</text>
+            <text x="795" y="166" text-anchor="middle" class="d-s">戻るボタンで復帰</text>
+
+            <path d="M120 150 H166" class="d-line" marker-end="url(#ah)"/>
+            <path d="M310 140 C 345 140, 345 62, 376 62" class="d-line" marker-end="url(#ah)"/>
+            <text x="312" y="92" class="d-lbl">名前などを押す</text>
+            <path d="M310 160 C 345 160, 345 238, 376 238" class="d-line" marker-end="url(#ah)"/>
+            <text x="300" y="222" class="d-lbl">新規登録</text>
+            <path d="M520 62 H576" class="d-line" marker-end="url(#ah)"/>
+            <text x="548" y="54" text-anchor="middle" class="d-lbl">編集</text>
+            <path d="M700 62 C 730 62, 760 80, 785 114" class="d-line" marker-end="url(#ah)"/>
+            <text x="730" y="52" class="d-lbl">更新→はい</text>
+            <path d="M520 238 C 640 238, 760 230, 790 186" class="d-line" marker-end="url(#ah)"/>
+            <text x="600" y="228" class="d-lbl">登録→はい</text>
+            <path d="M470 94 C 520 140, 640 150, 736 150" class="d-line" marker-end="url(#ah)"/>
+            <text x="560" y="140" class="d-lbl">削除→はい</text>
+            <!-- back paths -->
+            <path d="M795 186 C 795 292, 240 300, 240 186" class="d-line back" marker-end="url(#ahs)"/>
+            <text x="560" y="290" class="d-lbl soft">「一覧に戻る」「詳細に戻る」</text>
+          </svg>
+        </div>
+        <p class="fig-cap">図3-1 基本の流れ。点線は完了画面から戻る道すじです。</p>
+        <div class="grid2">
+          <div class="note info"><span class="tag">確認</span><p>登録・更新・削除の前には必ず「登録しますか？」などの確認が出ます。<b>「はい」</b>で実行、<b>「キャンセル」</b>で中止します。</p></div>
+          <div class="note info"><span class="tag">完了</span><p>実行すると完了画面に「〜が登録されました。」と表示されます。登録・削除のあとは一覧へ、編集のあとは詳細へ戻ります。</p></div>
+          <div class="note tip"><span class="tag">0件</span><p>条件に合うデータがないときは、表に「データがありません」と表示されます。故障ではありません。</p></div>
+          <div class="note warn"><span class="tag">注意</span><p>入力画面の「キャンセル」は入力内容を保存せずに戻ります。削除したデータは元に戻せません。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 4 ===================== -->
+    <section id="login">
+      <div class="ch-head"><span class="no">CHAPTER 04</span><h2>ログイン・ログアウト</h2></div>
+      <div class="block pair">
+        <figure>
+          <div class="phone"><div class="screen">
+            <div class="hdr"><span class="u"></span><span class="id">SCR-01-01</span><span class="lo"></span><span class="t">ログイン</span></div>
+            <div class="body" style="justify-content:center">
+              <div class="card" style="gap:10px">
+                <div class="fld"><span class="lbl">ユーザーID</span><div class="row"><span class="pin">1</span><div class="inp">yamada</div></div></div>
+                <div class="fld"><span class="lbl">パスワード</span><div class="row"><span class="pin">2</span><div class="inp">••••••••</div></div></div>
+                <div class="row"><span class="pin">3</span><span class="abtn lg" style="flex:1;width:auto">ログイン</span></div>
+                <div class="row"><span class="pin">4</span><span class="abtn gray lg" style="flex:1;width:auto">閉じる</span></div>
+              </div>
+            </div>
+          </div></div>
+          <figcaption class="fig-cap">図4-1 ログイン画面 <span class="sid">SCR-01-01</span></figcaption>
+        </figure>
+        <div>
+          <h3>ログインする</h3>
+          <ol class="steps">
+            <li><div><span class="pin">1</span> にユーザーIDを入力します。</div></li>
+            <li><div><span class="pin">2</span> にパスワードを入力します（入力した文字は●で隠れます）。</div></li>
+            <li><div><span class="pin">3</span>「ログイン」を押すと、メニュー画面に進みます。IDかパスワードが違うと、エラーが表示されて画面は進みません。</div></li>
+          </ol>
+          <p><span class="pin">4</span>「閉じる」を押すと、アプリのウィンドウごと閉じます。</p>
+          <h3>ログアウトする</h3>
+          <p>どの画面でも、右上の「ログアウト」→「はい」でログイン画面に戻ります。</p>
+          <div class="note tip"><span class="tag">初回</span><p>管理者に登録してもらった直後や、パスワードを初期化してもらった直後は、管理者から伝えられた初期パスワードでログインし、すぐに<a href="#pw">パスワード変更</a>をしてください。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 5 ===================== -->
+    <section id="menu">
+      <div class="ch-head"><span class="no">CHAPTER 05</span><h2>メニュー</h2>
+        <p>ログインすると最初に表示される画面です。使いたい機能のボタンを押します。</p></div>
+      <div class="block pair">
+        <figure>
+          <div class="phone"><div class="screen">
+            <div class="hdr"><span class="u">山田 太郎</span><span class="id">SCR-02-01</span><span class="lo"><span class="abtn red">ログアウト</span></span><span class="t">メニュー</span></div>
+            <div class="body"><div class="card" style="gap:9px">
+              <div class="menu-btn">友達一覧<span class="ic">👥</span></div>
+              <div class="menu-btn">現場記録一覧<span class="ic">📋</span></div>
+              <div class="menu-btn">メモ一覧<span class="ic">📝</span></div>
+              <div class="menu-btn">自主企画計画<span class="ic">⚙️</span></div>
+              <div class="menu-btn">キャッシュフロー計画<span class="ic">📊</span></div>
+              <div class="menu-btn">イベント一覧<span class="ic">🎫</span></div>
+              <div class="menu-btn">お店一覧<span class="ic">🏪</span></div>
+              <div class="menu-btn adm">パスワード変更<span class="ic">🔑</span></div>
+              <div class="menu-btn adm hide">ユーザー一覧<span class="ic">👤</span></div>
+            </div></div>
+          </div></div>
+          <figcaption class="fig-cap">図5-1 メニュー画面 <span class="sid">SCR-02-01</span>（点線は管理者だけに表示）</figcaption>
+        </figure>
+        <div>
+          <div class="tbl"><table>
+            <thead><tr><th>ボタン</th><th>できること</th><th>章</th></tr></thead>
+            <tbody>
+              <tr><td>友達一覧</td><td>知り合いのプロフィールや連絡状況を記録</td><td><a href="#friend">6</a></td></tr>
+              <tr><td>現場記録一覧</td><td>日付ごとの記録とToDoを残す</td><td><a href="#site">7</a></td></tr>
+              <tr><td>メモ一覧</td><td>見出し付きのメモを残す</td><td><a href="#memo">8</a></td></tr>
+              <tr><td>自主企画計画</td><td>企画を登録し、案内メッセージを作る</td><td><a href="#plan">9</a></td></tr>
+              <tr><td>キャッシュフロー計画</td><td>月ごとの収支計画・実績・残高を管理</td><td><a href="#cf">10</a></td></tr>
+              <tr><td>イベント一覧</td><td>参加予定のイベントと参加費を管理</td><td><a href="#event">11</a></td></tr>
+              <tr><td>お店一覧</td><td>気になるお店を場所・カテゴリで整理</td><td><a href="#shop">12</a></td></tr>
+              <tr><td>パスワード変更</td><td>自分のパスワードを変える</td><td><a href="#pw">13</a></td></tr>
+              <tr><td>ユーザー一覧</td><td>利用者の追加・初期化・削除（管理者のみ）</td><td><a href="#admin">14</a></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 6 友達 ===================== -->
+    <section id="friend">
+      <div class="ch-head"><span class="no">CHAPTER 06</span><h2>友達</h2>
+        <p>知り合いの名前・連絡先・出会った場所・話したことなどを記録します。年齢は自動で計算されます。</p></div>
+
+      <div class="block pair">
+        <figure>
+          <div class="phone"><div class="screen">
+            <div class="hdr"><span class="u">山田 太郎</span><span class="id">SCR-03-01</span><span class="lo"><span class="abtn red">ログアウト</span></span><span class="t">友達一覧</span><span class="b"><span class="abtn gray">メニューに戻る</span></span><span class="n"><span class="abtn">新規登録</span></span></div>
+            <div class="body"><div class="card">
+              <div class="row"><span class="pin">1</span><span class="sel">出会った場所</span><span class="abtn">LINE名表示</span><span class="pin">2</span></div>
+              <div class="row"><span style="width:20px"></span><span class="sel">交流会A</span></div>
+              <div class="cap">友達データ 3件を表示中</div>
+              <div class="row" style="align-items:flex-start"><span class="pin">3</span>
+              <table class="at" style="flex:1"><thead><tr><th>名前</th><th>年齢</th><th>性別</th><th>最新連絡日</th></tr></thead>
+                <tbody>
+                  <tr><td class="lk">佐藤 花</td><td>27</td><td>女</td><td>11/02</td></tr>
+                  <tr><td class="lk">鈴木 健</td><td>31</td><td>男</td><td>10/28</td></tr>
+                  <tr><td class="lk">高橋 葵</td><td>24</td><td>女</td><td>10/15</td></tr>
+                </tbody></table></div>
+            </div></div>
+          </div></div>
+          <figcaption class="fig-cap">図6-1 友達一覧画面 <span class="sid">SCR-03-01</span>（データは例）</figcaption>
+        </figure>
+        <div>
+          <h3>一覧で探す <span class="sid">SCR-03-01</span></h3>
+          <ul class="keys">
+            <li><span class="pin">1</span><div><b>絞り込み</b>：プルダウンで表示する友達を選びます。</div></li>
+            <li><span class="pin">2</span><div><b>LINE名表示</b>：押すと「名前」列がLINE名に変わり、LINE名順に並びます。ボタン名が「名前表示」に変わるので、もう一度押すと元に戻ります。</div></li>
+            <li><span class="pin">3</span><div><b>一覧</b>：名前を押すと詳細画面へ進みます。表を横にずらしても、名前の列は左端に残ります。</div></li>
+          </ul>
+          <div class="tbl"><table>
+            <thead><tr><th>絞り込みの選択肢</th><th>表示される友達</th></tr></thead>
+            <tbody>
+              <tr><td>全件表示</td><td>すべて（名前順）</td></tr>
+              <tr><td>20代</td><td>年齢が20〜29歳の人</td></tr>
+              <tr><td>予定あり</td><td>「今後の予定」が「あり」の人</td></tr>
+              <tr><td>出会った場所</td><td>下に出る2つ目のプルダウンで選んだ場所の人</td></tr>
+              <tr><td>提案対象</td><td>下に出る2つ目のプルダウンで選んだ項目に当てはまる人</td></tr>
+              <tr><td>最新連絡日</td><td>すべて。最近連絡した順に並びます</td></tr>
+              <tr><td>ふりがな検索</td><td>下に出る入力欄に入れたふりがなを含む人（「検索」を押す）</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>友達を登録する <span class="sid">SCR-03-03</span></h3>
+        <p>一覧の右上「新規登録」から入力します。入力内容によって、表示される欄が自動で切り替わります。</p>
+        <div class="tbl"><table>
+          <thead><tr><th>入力欄</th><th>入力のしかた</th></tr></thead>
+          <tbody>
+            <tr><td>Instagram URL</td><td>Instagramアカウント名を入れると表示されます。</td></tr>
+            <tr><td>性別</td><td>男・女・その他から選びます。</td></tr>
+            <tr><td>生年月日／年齢差</td><td>生年月日がわかれば生年月日を入れます（年齢差の欄は消えます）。わからなければ「年齢差」に自分との差を入れます。相手が年上ならプラス、年下ならマイナスです。</td></tr>
+            <tr><td>出会った場所</td><td>文字の入力欄と、右のプルダウン（登録済みの場所）を組み合わせられます。両方入れると「入力した文字：選んだ場所」の形で保存されます。</td></tr>
+            <tr><td>居住形態・更新月</td><td>居住形態で「一人暮らし」を選ぶと、賃貸の「更新月」（年月）を入力できます。</td></tr>
+            <tr><td>提案対象</td><td>当てはまる項目にチェックを入れます（複数選べます）。</td></tr>
+            <tr><td>最新連絡日・相手からの反応</td><td>カレンダーから日付を選びます。</td></tr>
+            <tr><td>今後の予定</td><td>「あり」を選ぶと記入欄が出ます。「あり」にしておくと、一覧の「予定あり」で探せます。</td></tr>
+          </tbody>
+        </table></div>
+        <p>入力したら「登録」→「はい」で保存します。</p>
+      </div>
+
+      <div class="block grid2">
+        <div style="display:grid;gap:10px">
+          <h3>詳細を見る・削除する <span class="sid">SCR-03-02</span></h3>
+          <ul class="plain">
+            <li>年齢は、生年月日 → 年齢差 の順で計算して表示します。どちらも空なら空欄です。</li>
+            <li>Instagram URLを登録していれば、アカウント名を押すと別タブで開きます。</li>
+            <li>「更新月」は居住形態が一人暮らしのときだけ表示されます。</li>
+            <li>画面下の「削除」→「（名前）さんのデータを削除しますか？」→「はい」で削除します。</li>
+          </ul>
+        </div>
+        <div style="display:grid;gap:10px">
+          <h3>内容を直す <span class="sid">SCR-03-04</span></h3>
+          <p>詳細画面の右上「編集」を押すと、今の内容が入った状態の入力画面が開きます。入力欄の使い方は登録と同じです。「更新」→「はい」で保存、「キャンセル」で詳細に戻ります。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 7 現場記録 ===================== -->
+    <section id="site">
+      <div class="ch-head"><span class="no">CHAPTER 07</span><h2>現場記録</h2>
+        <p>日付ごとに、その日の記録と今後のToDoを残します。</p></div>
+      <div class="block pair">
+        <figure>
+          <div class="phone"><div class="screen short">
+            <div class="hdr"><span class="u">山田 太郎</span><span class="id">SCR-04-01</span><span class="lo"><span class="abtn red">ログアウト</span></span><span class="t">現場記録一覧</span><span class="b"><span class="abtn gray">メニューに戻る</span></span><span class="n"><span class="abtn">新規登録</span></span></div>
+            <div class="body"><div class="card">
+              <div class="row"><span class="pin">1</span><span class="sel">全件表示</span></div>
+              <div class="row" style="align-items:flex-start"><span class="pin">2</span>
+              <table class="at" style="flex:1"><thead><tr><th>日付</th><th>項目</th><th>詳細</th></tr></thead>
+              <tbody>
+                <tr><td>2026/11/05</td><td>交流会</td><td><span class="abtn">詳細</span></td></tr>
+                <tr><td>2026/11/01</td><td>打ち合わせ</td><td><span class="abtn">詳細</span></td></tr>
+                <tr><td>2026/10/27</td><td>交流会</td><td><span class="abtn">詳細</span></td></tr>
+              </tbody></table></div>
+            </div></div>
+          </div></div>
+          <figcaption class="fig-cap">図7-1 現場記録一覧画面 <span class="sid">SCR-04-01</span></figcaption>
+        </figure>
+        <div>
+          <ul class="keys">
+            <li><span class="pin">1</span><div><b>項目で絞り込み</b>：「全件表示」か、登録済みの項目（例：交流会）を選びます。</div></li>
+            <li><span class="pin">2</span><div><b>一覧</b>：新しい日付が上に並びます。「詳細」で記録とToDoを確認できます。</div></li>
+          </ul>
+          <h4>登録・編集の入力欄 <span class="sid">SCR-04-03</span> <span class="sid">SCR-04-04</span></h4>
+          <div class="tbl"><table><tbody>
+            <tr><td>日付</td><td>記録する日</td></tr>
+            <tr><td>項目</td><td>ボタンから1つ選ぶ（選択肢は管理者が設定）</td></tr>
+            <tr><td>記録</td><td>その日にあったこと</td></tr>
+            <tr><td>ToDo</td><td>次にやること</td></tr>
+          </tbody></table></div>
+          <p>詳細画面 <span class="sid">SCR-04-02</span> の「削除」→「この記録を削除しますか？」→「はい」で削除できます。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 8 メモ ===================== -->
+    <section id="memo">
+      <div class="ch-head"><span class="no">CHAPTER 08</span><h2>メモ</h2>
+        <p>タイトルの頭に【小見出し】を付けて保存し、小見出しごとに絞り込めるメモ帳です。</p></div>
+      <div class="block pair">
+        <figure>
+          <div class="phone"><div class="screen short">
+            <div class="hdr"><span class="u">山田 太郎</span><span class="id">SCR-05-03</span><span class="lo"><span class="abtn red">ログアウト</span></span><span class="t">メモ登録</span></div>
+            <div class="body"><div class="card">
+              <div class="row"><span class="pin">1</span>
+                <div class="fld" style="flex:1"><span class="lbl">小見出し</span><div class="inp">会場</div></div>
+                <div class="fld" style="flex:2"><span class="lbl">大見出し</span><div class="inp">候補リスト</div></div></div>
+              <div class="cap">→ 保存されるタイトル：【会場】候補リスト</div>
+              <div class="fld"><span class="lbl">メモ</span><div class="row"><span class="pin">2</span><div class="inp tall">駅前ホール 30名まで…</div></div></div>
+              <div class="row"><span class="abtn" style="flex:1">登録</span><span class="abtn gray" style="flex:1">キャンセル</span></div>
+            </div></div>
+          </div></div>
+          <figcaption class="fig-cap">図8-1 メモ登録画面 <span class="sid">SCR-05-03</span></figcaption>
+        </figure>
+        <div>
+          <ol class="steps">
+            <li><div>メモ一覧 <span class="sid">SCR-05-01</span> の右上「新規作成」を押します。</div></li>
+            <li><div><span class="pin">1</span> 小見出しと大見出しを横に並べて入力します。保存すると「【小見出し】大見出し」が1つのタイトルになります。</div></li>
+            <li><div><span class="pin">2</span> 本文を入力し、「登録」→「はい」で保存します。</div></li>
+          </ol>
+          <div class="note tip"><span class="tag">探す</span><p>一覧のプルダウンには、登録済みの【小見出し】が並びます。選ぶと、その小見出しのメモだけが表示されます。一覧はタイトル順です。</p></div>
+          <p>タイトルを押すと詳細 <span class="sid">SCR-05-02</span> が開き、「編集」や「削除」ができます。編集画面では、今のタイトルが小見出しと大見出しに分かれた状態で表示されます。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 9 自主企画 ===================== -->
+    <section id="plan">
+      <div class="ch-head"><span class="no">CHAPTER 09</span><h2>自主企画計画</h2>
+        <p>自分で開く企画を登録し、参加者に送る案内文をワンタップで作ります。</p></div>
+      <div class="block pair">
+        <figure>
+          <div class="phone"><div class="screen">
+            <div class="hdr"><span class="u">山田 太郎</span><span class="id">SCR-06-01</span><span class="lo"><span class="abtn red">ログアウト</span></span><span class="t">自主企画計画</span><span class="b"><span class="abtn gray">メニューに戻る</span></span><span class="n"><span class="abtn">新規作成</span></span></div>
+            <div class="body"><div class="card">
+              <div class="row"><span class="pin">1</span><span class="sel">2026年11月</span></div>
+              <div class="row"><span class="pin">2</span><span class="abtn purple" style="flex:1">メッセージ設定</span><span class="abtn" style="flex:1">提案メッセージ表示</span><span class="pin">3</span></div>
+              <div class="ttl">企画一覧</div>
+              <div class="cap">企画データ 2件を表示中</div>
+              <table class="at"><thead><tr><th>日付</th><th>時間</th><th>内容</th></tr></thead>
+                <tbody><tr><td>11/15</td><td>19:00～21:00</td><td class="lk">ボードゲーム会</td></tr>
+                <tr><td>11/29</td><td>13:00～16:00</td><td class="lk">秋の散策会</td></tr></tbody></table>
+              <div class="popup"><b>提案メッセージ</b>
+〇〇さん、こんばんは🌙
+（メッセージ設定の文章）
+----------------------
+11/15(日) 19:00～21:00
+ボードゲーム会
+----------------------
+11/29(日) 13:00～16:00
+秋の散策会
+----------------------</div>
+            </div></div>
+          </div></div>
+          <figcaption class="fig-cap">図9-1 自主企画計画画面と提案メッセージ <span class="sid">SCR-06-01</span></figcaption>
+        </figure>
+        <div>
+          <ul class="keys">
+            <li><span class="pin">1</span><div><b>年月</b>：今月の前後2か月から選ぶと、その月の企画だけが表示されます。空にするとすべて表示します。</div></li>
+            <li><span class="pin">2</span><div><b>メッセージ設定</b>：案内文に毎回入れたい文章を登録します（<span class="sid">SCR-06-05</span>）。</div></li>
+            <li><span class="pin">3</span><div><b>提案メッセージ表示</b>：選んだ月の企画をまとめた案内文がポップアップで表示されます。</div></li>
+          </ul>
+          <h4>提案メッセージが出ないとき</h4>
+          <div class="tbl"><table>
+            <thead><tr><th>表示される文</th><th>理由と対処</th></tr></thead>
+            <tbody>
+              <tr><td>対象年月を選択してください。</td><td><span class="pin">1</span> で年月を選んでください。</td></tr>
+              <tr><td>6:00以降に実行してください。</td><td>0:00〜5:59は使えません。</td></tr>
+              <tr><td>企画データが存在しません。</td><td>その月に企画が登録されていません。</td></tr>
+            </tbody>
+          </table></div>
+          <div class="note info"><span class="tag">あいさつ</span><p>冒頭のあいさつは時刻で変わります。6:00〜10:59「おはようございます☀️」、11:00〜16:59「こんにちは🌤️」、17:00〜23:59「こんばんは🌙」。</p></div>
+        </div>
+      </div>
+      <div class="block grid2">
+        <div style="display:grid;gap:10px">
+          <h3>企画を登録する <span class="sid">SCR-06-03</span></h3>
+          <ul class="plain">
+            <li><b>時間</b>：開始と終了を横並びで入れます。「19:00～21:00」の形で保存されます。</li>
+            <li><b>場所</b>：改行して複数行で書けます。</li>
+            <li><b>場所URL</b>：地図などのURL。詳細画面で場所がリンクになります。</li>
+            <li><b>男性参加費・女性参加費</b>：金額を数字で入れます。</li>
+          </ul>
+        </div>
+        <div style="display:grid;gap:10px">
+          <h3>1件分の案内文を作る <span class="sid">SCR-06-02</span></h3>
+          <p>一覧で内容を押して詳細を開き、「詳細メッセージ表示」を押すと、内容・説明・【日時】・【場所】・【参加費】を整えた案内文が表示されます。1つの企画だけを案内したいときに使います。</p>
+          <p>右上「編集」で内容を直し、「削除」で企画を消せます。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 10 キャッシュフロー ===================== -->
+    <section id="cf">
+      <div class="ch-head"><span class="no">CHAPTER 10</span><h2>キャッシュフロー</h2>
+        <p>月ごとの「計画」、実際に使ったお金の「実績」、口座や財布ごとの「残高」の3つを管理します。</p></div>
+
+      <div class="block">
+        <h3>3つの画面のつながり</h3>
+        <div class="diagram" role="img" aria-label="キャッシュフロー計画、支出実績、残高、収支入力フォームのつながり">
+          <svg viewBox="0 0 860 250" xmlns="http://www.w3.org/2000/svg">
+            <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-head"/></marker></defs>
+            <rect x="20" y="20" width="220" height="86" rx="10" class="d-box alt"/>
+            <text x="130" y="44" text-anchor="middle" class="d-id">SCR-07-01</text>
+            <text x="130" y="66" text-anchor="middle" class="d-t">キャッシュフロー計画</text>
+            <text x="130" y="88" text-anchor="middle" class="d-s">月の収入・支出の予定</text>
+
+            <rect x="320" y="20" width="220" height="86" rx="10" class="d-box"/>
+            <text x="430" y="44" text-anchor="middle" class="d-id">SCR-07-04</text>
+            <text x="430" y="66" text-anchor="middle" class="d-t">支出実績一覧／残高内訳</text>
+            <text x="430" y="88" text-anchor="middle" class="d-s">実際の出入りの記録</text>
+
+            <rect x="320" y="150" width="220" height="86" rx="10" class="d-box"/>
+            <text x="430" y="174" text-anchor="middle" class="d-id">SCR-07-05</text>
+            <text x="430" y="196" text-anchor="middle" class="d-t">残高一覧</text>
+            <text x="430" y="218" text-anchor="middle" class="d-s">口座・財布ごとの残高</text>
+
+            <rect x="620" y="20" width="220" height="86" rx="10" class="d-box done"/>
+            <text x="730" y="44" text-anchor="middle" class="d-id">SCR-07-99</text>
+            <text x="730" y="66" text-anchor="middle" class="d-t">収支入力フォーム</text>
+            <text x="730" y="88" text-anchor="middle" class="d-s">別タブで1件ずつ入力</text>
+
+            <path d="M240 50 H316" class="d-line" marker-end="url(#ah2)"/>
+            <text x="278" y="42" text-anchor="middle" class="d-lbl">支出実績</text>
+            <path d="M130 106 V193 H316" class="d-line" marker-end="url(#ah2)"/>
+            <text x="140" y="185" class="d-lbl">残高管理</text>
+            <path d="M440 150 V110" class="d-line" marker-end="url(#ah2)"/>
+            <text x="448" y="135" class="d-lbl">残高の金額を押す</text>
+            <path d="M540 50 H616" class="d-line" marker-end="url(#ah2)"/>
+            <text x="578" y="42" text-anchor="middle" class="d-lbl">新規作成</text>
+            <path d="M730 106 V193 H544" class="d-line" marker-end="url(#ah2)"/>
+            <text x="738" y="150" class="d-lbl">登録すると残高が</text>
+            <text x="738" y="166" class="d-lbl">自動で増減</text>
+          </svg>
+        </div>
+        <p class="fig-cap">図10-1 キャッシュフロー機能の全体像</p>
+      </div>
+
+      <div class="block pair" id="cf-plan">
+        <figure>
+          <div class="phone"><div class="screen">
+            <div class="hdr"><span class="u">山田 太郎</span><span class="id">SCR-07-01</span><span class="lo"><span class="abtn red">ログアウト</span></span><span class="t">キャッシュフロー計画</span><span class="b"><span class="abtn gray">メニューに戻る</span></span><span class="n"><span class="abtn">新規作成</span></span></div>
+            <div class="body"><div class="card">
+              <div class="row"><span class="pin">1</span><span class="sel">2026年11月</span><span class="abtn">編集</span><span class="pin">2</span></div>
+              <div class="ttl">2026年11月 キャッシュフロー</div>
+              <div class="row" style="align-items:flex-start"><span class="pin">3</span>
+              <table class="at" style="flex:1"><tbody>
+                <tr><td>収入</td><td class="money">¥280,000</td></tr>
+                <tr><td>支出</td><td class="money">¥214,500</td></tr>
+                <tr><td><b>キャッシュフロー</b></td><td class="money"><b>¥65,500</b></td></tr>
+              </tbody></table></div>
+              <div class="row" style="align-items:flex-start"><span class="pin">4</span>
+              <table class="at" style="flex:1"><thead><tr><th>支出 内訳</th><th>金額</th><th>備考</th></tr></thead><tbody>
+                <tr><td>家賃</td><td class="money">¥82,000</td><td>固定</td></tr>
+                <tr><td>食費</td><td class="money">¥45,000</td><td>変動</td></tr>
+              </tbody></table></div>
+              <div class="row"><span class="pin">5</span><span class="abtn" style="flex:1">支出実績</span><span class="abtn red" style="flex:1">削除</span></div>
+              <div class="row" style="justify-content:center"><span class="abtn purple">残高管理</span><span class="pin">6</span></div>
+            </div></div>
+          </div></div>
+          <figcaption class="fig-cap">図10-2 キャッシュフロー計画画面 <span class="sid">SCR-07-01</span>（金額は例）</figcaption>
+        </figure>
+        <div>
+          <h3>月の計画を見る</h3>
+          <ul class="keys">
+            <li><span class="pin">1</span><div><b>年月</b>：登録済みの月から選びます。選ぶまで <span class="pin" style="vertical-align:-4px">3</span>〜<span class="pin" style="vertical-align:-4px">5</span> は表示されません。</div></li>
+            <li><span class="pin">2</span><div><b>編集</b>：選んだ月の計画を直します。</div></li>
+            <li><span class="pin">3</span><div><b>収支サマリー</b>：収入の合計、支出の合計、その差（キャッシュフロー）です。</div></li>
+            <li><span class="pin">4</span><div><b>収入一覧・支出一覧</b>：内訳・金額・備考を備考順に並べます（図は支出のみ表示）。</div></li>
+            <li><span class="pin">5</span><div><b>支出実績</b>で実際の支出を確認。<b>削除</b>はその月の計画をまとめて消します。</div></li>
+            <li><span class="pin">6</span><div><b>残高管理</b>：残高一覧へ進みます。年月を選んでいなくても押せます。</div></li>
+          </ul>
+          <h3>月の計画を作る・直す <span class="sid">SCR-07-02</span> <span class="sid">SCR-07-03</span></h3>
+          <ol class="steps">
+            <li><div>右上「新規作成」を押し、対象の年月を入力します。</div></li>
+            <li><div>収入表・支出表に内訳・金額・備考を入れます。行が足りなければ各表の「追加」で1行増やします（最後の行が空のままだと増えません）。</div></li>
+            <li><div>「登録」→「はい」で保存します。同じ月がすでにあると「対象年月のデータがすでに存在します」と表示されるので、その場合は「編集」から直してください。</div></li>
+          </ol>
+          <p>編集画面では年月は変えられません。各行の「削除」で行を取り除き、「更新」を押した時点でまとめて反映されます。</p>
+        </div>
+      </div>
+
+      <div class="block pair" id="cf-actual">
+        <figure>
+          <div class="phone"><div class="screen short">
+            <div class="hdr"><span class="u">山田 太郎</span><span class="id">SCR-07-04</span><span class="lo"><span class="abtn red">ログアウト</span></span><span class="t">支出実績一覧</span><span class="b"><span class="abtn gray">計画画面に戻る</span></span><span class="n"><span class="abtn">新規作成</span><span class="pin">3</span></span></div>
+            <div class="body"><div class="card">
+              <div class="ttl">2026年11月 合計支出 ¥58,320</div>
+              <div class="row"><span class="pin">1</span><span class="sel">食費</span><span class="money">¥12,480</span></div>
+              <div class="row" style="align-items:flex-start"><span class="pin">2</span>
+              <table class="at" style="flex:1"><thead><tr><th>日付</th><th>種別</th><th>金額</th><th></th></tr></thead><tbody>
+                <tr class="exp"><td>11/06(金)</td><td>外食</td><td class="money">3,200</td><td><span class="abtn red">削除</span></td></tr>
+                <tr class="exp"><td>11/03(火)</td><td>食材</td><td class="money">5,880</td><td><span class="abtn red">削除</span></td></tr>
+                <tr class="exp"><td>11/01(日)</td><td>食材</td><td class="money">3,400</td><td><span class="abtn red">削除</span></td></tr>
+              </tbody></table></div>
+            </div></div>
+          </div></div>
+          <figcaption class="fig-cap">図10-3 支出実績一覧画面 <span class="sid">SCR-07-04</span></figcaption>
+        </figure>
+        <div>
+          <h3>実績を確認する</h3>
+          <p>計画画面の「支出実績」から開くと、選んでいた月の<b>支出</b>が新しい順に並びます。</p>
+          <ul class="keys">
+            <li><span class="pin">1</span><div><b>カテゴリ別</b>：カテゴリを選ぶと、その分だけを表示し、合計金額を横に出します。</div></li>
+            <li><span class="pin">2</span><div><b>一覧</b>：支出の行は薄い赤、収入の行は薄い青で表示されます。「削除」で1件ずつ消せます。</div></li>
+            <li><span class="pin">3</span><div><b>新規作成</b>：収支入力フォームが別タブで開きます。</div></li>
+          </ul>
+          <div class="note warn"><span class="tag">残高</span><p>実績を削除すると、記録した時に増減した残高が元に戻ります（支出を消すと残高が増え、収入を消すと減ります）。</p></div>
+          <div class="note info"><span class="tag">残高内訳</span><p>残高一覧で金額を押して開いた場合は、画面名が「残高内訳」になり、その口座に関わる出入りだけを表示します。左上は「一覧に戻る」になります。</p></div>
+        </div>
+      </div>
+
+      <div class="block pair" id="cf-balance">
+        <figure>
+          <div class="phone"><div class="screen short">
+            <div class="hdr"><span class="u">山田 太郎</span><span class="id">SCR-07-05</span><span class="lo"><span class="abtn red">ログアウト</span></span><span class="t">残高一覧</span><span class="b"><span class="abtn gray">計画画面に戻る</span></span><span class="n"><span class="abtn">新規作成</span></span></div>
+            <div class="body"><div class="card">
+              <div class="row" style="justify-content:center"><span class="pin">1</span><span class="ttl">合計残高 <span class="money">¥1,026,400</span></span></div>
+              <div class="bal"><span class="nm"><span class="pin" style="margin-right:4px">2</span>メイン銀行</span><span class="v">¥812,000<span class="pin" style="margin-left:4px">3</span></span><span class="arrows"><span>⬇️</span></span></div>
+              <div class="bal"><span class="nm">ネット銀行</span><span class="v">¥190,600</span><span class="arrows"><span>⬆️</span><span>⬇️</span></span></div>
+              <div class="bal"><span class="nm">財布</span><span class="v">¥23,800</span><span class="arrows"><span>⬆️</span></span><span class="pin" style="position:relative;left:-2px">4</span></div>
+            </div></div>
+          </div></div>
+          <figcaption class="fig-cap">図10-4 残高一覧画面 <span class="sid">SCR-07-05</span></figcaption>
+        </figure>
+        <div>
+          <h3>残高を管理する</h3>
+          <ul class="keys">
+            <li><span class="pin">1</span><div><b>合計残高</b>：すべての残高の合計です。</div></li>
+            <li><span class="pin">2</span><div><b>項目名</b>を押すと、名前や残高を直す編集画面 <span class="sid">SCR-07-07</span> が開きます。</div></li>
+            <li><span class="pin">3</span><div><b>金額</b>を押すと、その口座の出入りの一覧（残高内訳）が開きます。</div></li>
+            <li><span class="pin">4</span><div><b>⬆️⬇️</b>で並び順を入れ替えます。押した時点で保存されます。</div></li>
+          </ul>
+          <p>新しい口座や財布は、右上「新規作成」<span class="sid">SCR-07-06</span> で項目名と今の残高を入れて登録します。新しい項目は一番下に追加されます。</p>
+        </div>
+      </div>
+
+      <div class="block pair" id="cf-form">
+        <figure>
+          <div class="phone"><div class="screen">
+            <div class="hdr"><span class="u"></span><span class="id">SCR-07-99</span><span class="lo"></span><span class="t">収支入力フォーム</span></div>
+            <div class="body"><div class="card" style="gap:8px">
+              <div class="fld"><span class="lbl">ユーザーID</span><div class="inp">yamada</div></div>
+              <div class="fld"><span class="lbl">日付</span><div class="inp">2026/11/07</div></div>
+              <div class="fld"><span class="lbl">処理区分</span><div class="row"><span class="pin">1</span><span class="radio"><i></i>収入</span><span class="radio on"><i></i>支出</span><span class="radio"><i></i>振替</span></div></div>
+              <div class="fld"><span class="lbl">対象残高</span><div class="row"><span class="pin">2</span><span class="sel">財布</span></div></div>
+              <div class="row"><div class="fld" style="flex:1"><span class="lbl">カテゴリ</span><span class="sel">食費</span></div><div class="fld" style="flex:1"><span class="lbl">種別</span><span class="sel">外食</span></div><span class="pin" style="align-self:flex-end">3</span></div>
+              <div class="fld"><span class="lbl">内容</span><div class="inp">ランチ</div></div>
+              <div class="fld"><span class="lbl">金額</span><div class="inp">1,200</div></div>
+              <div class="fld"><span class="lbl">備考</span><div class="inp"></div></div>
+              <span class="abtn lg">登録</span>
+              <span class="abtn gray lg">閉じる</span>
+            </div></div>
+          </div></div>
+          <figcaption class="fig-cap">図10-5 収支入力フォーム <span class="sid">SCR-07-99</span></figcaption>
+        </figure>
+        <div>
+          <h3>お金の出入りを記録する</h3>
+          <p>支出実績一覧の「新規作成」から開くか、フォルダ直下の <code>SCR-07-99.html</code> を直接開きます。ログインは不要ですが、最初にユーザーIDを入力します。</p>
+          <ul class="keys">
+            <li><span class="pin">1</span><div><b>処理区分</b>：収入・支出・振替から選びます。振替を選ぶと、入力欄が「出金元」「入金先」「金額」だけになります。</div></li>
+            <li><span class="pin">2</span><div><b>対象残高</b>：どの口座・財布のお金かを選びます。選んだ残高が自動で増減します。</div></li>
+            <li><span class="pin">3</span><div><b>カテゴリ・種別</b>：カテゴリを選ぶと、それに合った種別が選べるようになります。</div></li>
+          </ul>
+          <p>「登録」→「はい」で保存します。続けて入力でき、終わったら「閉じる」でタブを閉じます。</p>
+          <div class="diagram" role="img" aria-label="処理区分ごとの残高の増え方と減り方">
+            <svg viewBox="0 0 620 210" xmlns="http://www.w3.org/2000/svg" style="min-width:520px">
+              <defs><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="d-head"/></marker></defs>
+              <text x="10" y="26" class="d-t">収入</text>
+              <rect x="90" y="8" width="110" height="30" rx="6" class="d-in"/><text x="145" y="28" text-anchor="middle" class="d-in-t">+1,200</text>
+              <path d="M204 23 H276" class="d-line" marker-end="url(#ah3)"/>
+              <rect x="280" y="8" width="150" height="30" rx="6" class="d-box"/><text x="355" y="28" text-anchor="middle" class="d-s" style="font-size:12.5px">対象残高が増える</text>
+
+              <text x="10" y="86" class="d-t">支出</text>
+              <rect x="90" y="68" width="110" height="30" rx="6" class="d-out"/><text x="145" y="88" text-anchor="middle" class="d-out-t">−1,200</text>
+              <path d="M204 83 H276" class="d-line" marker-end="url(#ah3)"/>
+              <rect x="280" y="68" width="150" height="30" rx="6" class="d-box"/><text x="355" y="88" text-anchor="middle" class="d-s" style="font-size:12.5px">対象残高が減る</text>
+
+              <text x="10" y="160" class="d-t">振替</text>
+              <rect x="90" y="132" width="150" height="56" rx="8" class="d-box"/><text x="165" y="154" text-anchor="middle" class="d-s">出金元</text><text x="165" y="176" text-anchor="middle" class="d-out-t">メイン銀行 −30,000</text>
+              <path d="M244 160 H330" class="d-line" marker-end="url(#ah3)"/>
+              <text x="287" y="152" text-anchor="middle" class="d-lbl">移す</text>
+              <rect x="334" y="132" width="150" height="56" rx="8" class="d-box"/><text x="409" y="154" text-anchor="middle" class="d-s">入金先</text><text x="409" y="176" text-anchor="middle" class="d-in-t">財布 +30,000</text>
+              <text x="500" y="164" class="d-s">合計は変わらない</text>
+            </svg>
+          </div>
+          <p class="fig-cap">図10-6 処理区分と残高の動き</p>
+          <div class="note tip"><span class="tag">ヒント</span><p>対象残高を空のまま登録すると、記録だけ残り、残高は変わりません。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 11 イベント ===================== -->
+    <section id="event">
+      <div class="ch-head"><span class="no">CHAPTER 11</span><h2>イベント</h2>
+        <p>気になるイベントを登録し、参加するものと参加費の合計を管理します。</p></div>
+      <div class="block pair">
+        <figure>
+          <div class="phone"><div class="screen short">
+            <div class="hdr"><span class="u">山田 太郎</span><span class="id">SCR-08-01</span><span class="lo"><span class="abtn red">ログアウト</span></span><span class="t">イベント一覧</span><span class="b"><span class="abtn gray">メニューに戻る</span></span><span class="n"><span class="abtn">新規作成</span></span></div>
+            <div class="body"><div class="card">
+              <div class="row"><span class="pin">1</span><span class="sel">2026年11月</span></div>
+              <div class="row"><span class="pin">2</span><span class="radio on"><i></i>参加予定</span><span class="radio"><i></i>参加済み</span></div>
+              <div class="row"><span class="pin">3</span><span>合計参加費 <span class="money">¥8,500</span></span></div>
+              <table class="at"><thead><tr><th>日付</th><th>時間</th><th>イベント名</th></tr></thead><tbody>
+                <tr><td>11/14</td><td>18:30～</td><td class="lk">写真散歩の会</td></tr>
+                <tr><td>11/22</td><td>14:00～17:00</td><td class="lk">クラフトマーケット</td></tr>
+              </tbody></table>
+              <div class="row"><span class="pin">4</span><span class="abtn red" style="flex:1">過去データ削除</span></div>
+            </div></div>
+          </div></div>
+          <figcaption class="fig-cap">図11-1 イベント一覧画面 <span class="sid">SCR-08-01</span></figcaption>
+        </figure>
+        <div>
+          <ul class="keys">
+            <li><span class="pin">1</span><div><b>年月</b>：今月から2か月先までを選びます。選ぶと一覧と合計参加費が表示されます。</div></li>
+            <li><span class="pin">2</span><div><b>参加予定／参加済み</b>：何も選ばなければその月のすべて、「参加予定」は参加にしたこれからのイベント、「参加済み」は過去に参加したイベントを表示します。</div></li>
+            <li><span class="pin">3</span><div><b>合計参加費</b>：その月の「参加」にしたイベントの参加費の合計です。</div></li>
+            <li><span class="pin">4</span><div><b>過去データ削除</b>：日時が過ぎたイベントを片付けます（下の図）。</div></li>
+          </ul>
+          <div class="diagram" role="img" aria-label="過去データ削除の結果">
+            <svg viewBox="0 0 560 150" xmlns="http://www.w3.org/2000/svg" style="min-width:480px">
+              <defs><marker id="ah4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="d-head"/></marker></defs>
+              <rect x="6" y="45" width="150" height="60" rx="8" class="d-box alt"/>
+              <text x="81" y="70" text-anchor="middle" class="d-t">過ぎたイベント</text>
+              <text x="81" y="90" text-anchor="middle" class="d-s">過去データ削除→はい</text>
+              <path d="M156 65 C 200 65, 200 30, 240 30" class="d-line" marker-end="url(#ah4)"/>
+              <path d="M156 85 C 200 85, 200 120, 240 120" class="d-line" marker-end="url(#ah4)"/>
+              <text x="170" y="22" class="d-lbl">参加にしていた</text>
+              <text x="170" y="146" class="d-lbl">不参加のまま</text>
+              <rect x="244" y="8" width="300" height="44" rx="8" class="d-box done"/>
+              <text x="394" y="27" text-anchor="middle" class="d-t">残る（「参加済み」で見られる）</text>
+              <text x="394" y="44" text-anchor="middle" class="d-s">一覧の通常表示からは消える</text>
+              <rect x="244" y="98" width="300" height="44" rx="8" class="d-box warn"/>
+              <text x="394" y="117" text-anchor="middle" class="d-t">完全に削除される</text>
+              <text x="394" y="134" text-anchor="middle" class="d-s">元に戻せません</text>
+            </svg>
+          </div>
+          <p class="fig-cap">図11-2 過去データ削除で起きること</p>
+        </div>
+      </div>
+      <div class="block grid2">
+        <div style="display:grid;gap:10px">
+          <h3>イベントを登録する <span class="sid">SCR-08-03</span></h3>
+          <ul class="plain">
+            <li><b>時間</b>：開始と終了を横並びで入れます。</li>
+            <li><b>項目</b>：プルダウンからイベントの種類を選びます。</li>
+            <li><b>URL</b>：告知ページなど。詳細画面でイベント名がリンクになります。</li>
+            <li><b>参加／不参加</b>：参加にすると合計参加費に入ります。</li>
+          </ul>
+        </div>
+        <div style="display:grid;gap:10px">
+          <h3>詳細・編集・削除 <span class="sid">SCR-08-02</span></h3>
+          <p>一覧でイベント名を押すと詳細が開き、参加か不参加かも表示されます。予定が決まったら「編集」で参加に切り替えましょう。「削除」で1件だけ消すこともできます。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 12 お店 ===================== -->
+    <section id="shop">
+      <div class="ch-head"><span class="no">CHAPTER 12</span><h2>お店</h2>
+        <p>行きたいお店・使えるお店を、場所とカテゴリで整理します。</p></div>
+      <div class="block pair">
+        <figure>
+          <div class="phone"><div class="screen short">
+            <div class="hdr"><span class="u">山田 太郎</span><span class="id">SCR-09-01</span><span class="lo"><span class="abtn red">ログアウト</span></span><span class="t">お店一覧</span><span class="b"><span class="abtn gray">メニューに戻る</span></span><span class="n"><span class="abtn">新規作成</span></span></div>
+            <div class="body"><div class="card">
+              <div class="row"><span class="pin">1</span><span class="sel">渋谷</span></div>
+              <div class="row"><span class="pin">2</span><span class="sel">カフェ</span></div>
+              <table class="at"><thead><tr><th>店名</th><th>場所</th><th>カテゴリ</th></tr></thead><tbody>
+                <tr><td class="lk">喫茶あおば</td><td>渋谷</td><td>カフェ</td></tr>
+                <tr><td class="lk">珈琲ふくろう</td><td>渋谷</td><td>カフェ</td></tr>
+              </tbody></table>
+            </div></div>
+          </div></div>
+          <figcaption class="fig-cap">図12-1 お店一覧画面 <span class="sid">SCR-09-01</span></figcaption>
+        </figure>
+        <div>
+          <ul class="keys">
+            <li><span class="pin">1</span><div><b>場所</b>：登録済みの場所から選びます。「全件表示」ですべてのお店を表示します。</div></li>
+            <li><span class="pin">2</span><div><b>カテゴリ</b>：場所を選ぶと表示されます。場所とカテゴリの両方に合うお店に絞り込めます。</div></li>
+          </ul>
+          <h4>登録・編集の入力欄 <span class="sid">SCR-09-03</span> <span class="sid">SCR-09-04</span></h4>
+          <div class="tbl"><table><tbody>
+            <tr><td>店名・場所・カテゴリ</td><td>一覧に出る基本情報</td></tr>
+            <tr><td>URL</td><td>お店のページ。詳細画面で店名がリンクになります</td></tr>
+            <tr><td>営業時間</td><td>自由に入力</td></tr>
+            <tr><td>訪問歴</td><td>あり・なし</td></tr>
+            <tr><td>予約可否</td><td>⚪︎・×</td></tr>
+            <tr><td>備考</td><td>メモ</td></tr>
+          </tbody></table></div>
+          <p>店名を押すと詳細 <span class="sid">SCR-09-02</span> が開き、「編集」「削除」ができます。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 13 パスワード ===================== -->
+    <section id="pw">
+      <div class="ch-head"><span class="no">CHAPTER 13</span><h2>パスワード変更</h2></div>
+      <div class="block pair">
+        <figure>
+          <div class="phone"><div class="screen short">
+            <div class="hdr"><span class="u">山田 太郎</span><span class="id">SCR-A1-01</span><span class="lo"><span class="abtn red">ログアウト</span></span><span class="t">パスワード変更</span><span class="b"><span class="abtn gray">メニューに戻る</span></span></div>
+            <div class="body"><div class="card" style="gap:9px">
+              <div class="fld"><span class="lbl">現在のパスワード</span><div class="row"><span class="pin">1</span><div class="inp">••••••</div><span class="abtn">送信</span></div></div>
+              <div style="border-top:1px dashed rgba(255,255,255,.25);padding-top:8px;display:grid;gap:8px">
+                <div class="fld"><span class="lbl">新しいパスワード</span><div class="row"><span class="pin">2</span><div class="inp">••••••••</div></div></div>
+                <div class="fld"><span class="lbl">新しいパスワード（確認用）</span><div class="row"><span style="width:20px"></span><div class="inp">••••••••</div></div></div>
+                <div class="row"><span class="pin">3</span><span class="abtn" style="flex:1">変更</span></div>
+              </div>
+            </div></div>
+          </div></div>
+          <figcaption class="fig-cap">図13-1 パスワード変更画面 <span class="sid">SCR-A1-01</span></figcaption>
+        </figure>
+        <div>
+          <ol class="steps">
+            <li><div><span class="pin">1</span> 今のパスワードを入れて「送信」を押します。正しければ、点線から下の欄が表示されます。</div></li>
+            <li><div><span class="pin">2</span> 新しいパスワードを、確認用も含めて2回入力します。</div></li>
+            <li><div><span class="pin">3</span>「変更」→「パスワードを変更しますか？」→「はい」で完了です。次回から新しいパスワードでログインします。</div></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 14 管理者 ===================== -->
+    <section id="admin">
+      <div class="ch-head"><span class="no">CHAPTER 14</span><h2>ユーザー管理（管理者のみ）</h2>
+        <p>管理者権限のあるユーザーだけ、メニューに「ユーザー一覧」が表示されます。</p></div>
+      <div class="block pair">
+        <figure>
+          <div class="phone"><div class="screen short">
+            <div class="hdr"><span class="u">管理 花子</span><span class="id">SCR-A2-01</span><span class="lo"><span class="abtn red">ログアウト</span></span><span class="t">ユーザー一覧</span><span class="b"><span class="abtn gray">メニューに戻る</span></span><span class="n"><span class="abtn">新規登録</span><span class="pin">1</span></span></div>
+            <div class="body"><div class="card">
+              <table class="at"><thead><tr><th>ID</th><th>名前</th><th>管理</th><th>初期化 <span class="pin" style="width:15px;height:15px;font-size:9px">2</span></th><th>削除 <span class="pin" style="width:15px;height:15px;font-size:9px">3</span></th></tr></thead><tbody>
+                <tr><td>admin</td><td>管理 花子</td><td>あり</td><td><span class="abtn purple">初期化</span></td><td><span class="abtn red">削除</span></td></tr>
+                <tr><td>yamada</td><td>山田 太郎</td><td>なし</td><td><span class="abtn purple">初期化</span></td><td><span class="abtn red">削除</span></td></tr>
+              </tbody></table>
+            </div></div>
+          </div></div>
+          <figcaption class="fig-cap">図14-1 ユーザー一覧画面 <span class="sid">SCR-A2-01</span></figcaption>
+        </figure>
+        <div>
+          <ul class="keys">
+            <li><span class="pin">1</span><div><b>新規登録</b> <span class="sid">SCR-A2-02</span>：ユーザーID・ユーザー名（必須）、生年月日、管理者権限（なし／あり）を入れて登録します。初期パスワードが自動で設定されるので、本人に伝えてください。</div></li>
+            <li><span class="pin">2</span><div><b>初期化</b>：パスワードを忘れた人のパスワードを初期値に戻します。本人には、ログイン後すぐに変更してもらいます。</div></li>
+            <li><span class="pin">3</span><div><b>削除</b>：ユーザーを削除します。</div></li>
+          </ul>
+          <div class="note warn"><span class="tag">重要</span><p>ユーザーを削除すると、その人が登録した友達・現場記録・メモ・企画・キャッシュフロー・イベントのデータもすべて削除されます。元に戻せません。</p></div>
+          <div class="note info"><span class="tag">生年月日</span><p>ユーザーの生年月日は、友達の年齢を「年齢差」から計算するときに使われます。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 15 マップ ===================== -->
+    <section id="map">
+      <div class="ch-head"><span class="no">CHAPTER 15</span><h2>画面一覧マップ</h2>
+        <p>すべての画面とその入口です。画面IDはヘッダ中央の小さな番号と同じです。</p></div>
+      <div class="block map">
+        <div class="map-root"><span class="n">index.html</span><span class="a">→</span><span class="n">ログイン <span class="mono">01-01</span></span><span class="a">→</span><span class="n">メニュー <span class="mono">02-01</span></span><span class="a">→ 各機能 → 登録・編集・削除のあとは</span><span class="n" style="background:var(--gold)">完了 <span class="mono">99-01</span></span></div>
+        <div class="map-grid">
+          <div class="map-card"><h4><a href="#friend">友達</a></h4><ul>
+            <li><span class="sid">SCR-03-01</span><span>友達一覧</span></li><li><span class="sid">SCR-03-02</span><span>友達詳細</span></li><li><span class="sid">SCR-03-03</span><span>友達登録</span></li><li><span class="sid">SCR-03-04</span><span>友達編集</span></li></ul></div>
+          <div class="map-card"><h4><a href="#site">現場記録</a></h4><ul>
+            <li><span class="sid">SCR-04-01</span><span>現場記録一覧</span></li><li><span class="sid">SCR-04-02</span><span>現場記録詳細</span></li><li><span class="sid">SCR-04-03</span><span>現場記録登録</span></li><li><span class="sid">SCR-04-04</span><span>現場記録編集</span></li></ul></div>
+          <div class="map-card"><h4><a href="#memo">メモ</a></h4><ul>
+            <li><span class="sid">SCR-05-01</span><span>メモ一覧</span></li><li><span class="sid">SCR-05-02</span><span>メモ詳細</span></li><li><span class="sid">SCR-05-03</span><span>メモ登録</span></li><li><span class="sid">SCR-05-04</span><span>メモ編集</span></li></ul></div>
+          <div class="map-card"><h4><a href="#plan">自主企画計画</a></h4><ul>
+            <li><span class="sid">SCR-06-01</span><span>自主企画計画</span></li><li><span class="sid">SCR-06-02</span><span>企画詳細</span></li><li><span class="sid">SCR-06-03</span><span>企画登録</span></li><li><span class="sid">SCR-06-04</span><span>企画編集</span></li><li><span class="sid">SCR-06-05</span><span>メッセージ設定</span></li></ul></div>
+          <div class="map-card"><h4><a href="#cf">キャッシュフロー</a></h4><ul>
+            <li><span class="sid">SCR-07-01</span><span>キャッシュフロー計画</span></li><li><span class="sid">SCR-07-02</span><span>キャッシュフロー登録</span></li><li><span class="sid">SCR-07-03</span><span>キャッシュフロー編集</span></li><li><span class="sid">SCR-07-04</span><span>支出実績一覧／残高内訳</span></li><li><span class="sid">SCR-07-05</span><span>残高一覧</span></li><li><span class="sid">SCR-07-06</span><span>残高項目登録</span></li><li><span class="sid">SCR-07-07</span><span>残高項目編集</span></li><li><span class="sid">SCR-07-99</span><span>収支入力フォーム（単独）</span></li></ul></div>
+          <div class="map-card"><h4><a href="#event">イベント</a></h4><ul>
+            <li><span class="sid">SCR-08-01</span><span>イベント一覧</span></li><li><span class="sid">SCR-08-02</span><span>イベント詳細</span></li><li><span class="sid">SCR-08-03</span><span>イベント登録</span></li><li><span class="sid">SCR-08-04</span><span>イベント編集</span></li></ul></div>
+          <div class="map-card"><h4><a href="#shop">お店</a></h4><ul>
+            <li><span class="sid">SCR-09-01</span><span>お店一覧</span></li><li><span class="sid">SCR-09-02</span><span>お店詳細</span></li><li><span class="sid">SCR-09-03</span><span>お店登録</span></li><li><span class="sid">SCR-09-04</span><span>お店編集</span></li></ul></div>
+          <div class="map-card adm"><h4><a href="#pw">アカウント</a></h4><ul>
+            <li><span class="sid">SCR-A1-01</span><span>パスワード変更</span></li><li><span class="sid">SCR-A2-01</span><span>ユーザー一覧（管理者）</span></li><li><span class="sid">SCR-A2-02</span><span>ユーザー登録（管理者）</span></li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 16 FAQ ===================== -->
+    <section id="faq">
+      <div class="ch-head"><span class="no">CHAPTER 16</span><h2>困ったとき</h2></div>
+      <div>
+        <details><summary>ログインできません</summary><div class="ans"><p>ユーザーIDとパスワードの大文字・小文字や、余分な空白を確認してください。パスワードを忘れた場合は、管理者に「初期化」を依頼し、初期パスワードでログインしてから変更します。</p></div></details>
+        <details><summary>一覧に「データがありません」と表示されます</summary><div class="ans"><p>絞り込みの条件に合うデータがありません。プルダウンを「全件表示」や空に戻してみてください。一覧には自分が登録したデータだけが表示されます。</p></div></details>
+        <details><summary>キャッシュフロー計画の表が表示されません</summary><div class="ans"><p>年月のプルダウンを選ぶまで、サマリーや表は表示されません。その月の計画がまだなければ、右上「新規作成」で作成してください。</p></div></details>
+        <details><summary>友達の年齢が空欄になります</summary><div class="ans"><p>生年月日と年齢差のどちらも入っていない場合は表示されません。年齢差で計算する場合は、自分の生年月日がユーザー情報に登録されている必要があります（管理者に確認してください）。</p></div></details>
+        <details><summary>残高の金額が実際と合いません</summary><div class="ans"><p>収支入力で「対象残高」を空のまま登録した記録は、残高に反映されていません。残高一覧で項目名を押し、編集画面で正しい金額に直してください。</p></div></details>
+        <details><summary>提案メッセージを押しても案内文が出ません</summary><div class="ans"><p>年月が未選択、0:00〜5:59の実行、その月の企画がない、のいずれかです。表示された文に従ってください（<a href="#plan">第9章</a>）。</p></div></details>
+        <details><summary>プルダウンに選びたい項目がありません</summary><div class="ans"><p>現場記録の項目、出会った場所、提案対象、支出カテゴリ、イベント項目、お店カテゴリなどの選択肢は、スプレッドシートの設定（Enum情報）から読み込んでいます。追加したい場合は管理者に依頼してください。</p></div></details>
+      </div>
+    </section>
+
+    <p class="foot">このマニュアルは「現場記録簿 設計書」の内容をもとに作成しています。画面の図は説明用のイメージで、表示されている人名・金額・店名はすべて例です。</p>
+  </main>
+</div>
