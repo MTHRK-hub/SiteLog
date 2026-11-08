@@ -680,14 +680,14 @@ thead th {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 0 0 20px;
+  padding: 0 0 16px; /* 地球儀を0.8倍（旧: 20px） */
   opacity: 0.8;
   pointer-events: none;
 }
 
 .globe-stage {
-  width: 90px;
-  height: 60px;
+  width: 72px;  /* 0.8倍（旧: 90px） */
+  height: 48px; /* 0.8倍（旧: 60px） */
   position: relative;
   display: grid;
   place-items: center;
@@ -741,14 +741,14 @@ thead th {
 }
 
 .globe-canvas-wrap {
-  width: 54px;
-  height: 54px;
+  width: 43px;  /* 0.8倍（旧: 54px） */
+  height: 43px;
   position: relative;
 }
 
 .globe-canvas {
-  width: 54px;
-  height: 54px;
+  width: 43px;
+  height: 43px;
   display: block;
   border-radius: 50%;
 }
