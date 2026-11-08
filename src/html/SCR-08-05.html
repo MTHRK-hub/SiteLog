@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>現場記録簿 - イベント検索</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/SCR-00-01.css" />
+  <link rel="stylesheet" href="../css/SCR-08-05.css" />
+</head>
+
+<body class="event-search-page">
+  <!-- イベント検索手帳の写し（~/.claude/event-notebook/sync-sitelog.sh が定期更新のたびに上書きする） -->
+  <iframe id="event-search-frame" class="event-search-frame" src="../notebook/tokyo-machi-calendar.html" title="イベント検索手帳"></iframe>
+
+  <script>
+    window.SITELOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzslsgfnlEFzyDA6W4ysgPJYz8w2PDOG_bCZh5qCy7lQvnfyYa9rR-kkLZGGXENb81D/exec";
+  </script>
+  <script src="../js/common.js"></script>
+  <script src="../js/SCR-08-05.js"></script>
+</body>
+
+</html>

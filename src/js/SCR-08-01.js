@@ -174,6 +174,10 @@
     deleteDialog.hidden = true;
   });
 
+  document.getElementById("btn-event-search").addEventListener("click", function () {
+    c.navigate("eventSearch");
+  });
+
   document.getElementById("btn-delete-old").addEventListener("click", function () {
     deleteDialogMsg.textContent = "過去のデータを削除しますか？";
     deleteDialog.hidden = false;

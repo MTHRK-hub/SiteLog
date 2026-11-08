@@ -935,6 +935,7 @@
     eventDetail: "SCR-08-02.html",
     eventCreate: "SCR-08-03.html",
     eventEdit: "SCR-08-04.html",
+    eventSearch: "SCR-08-05.html",
     shopList: "SCR-09-01.html",
     shopDetail: "SCR-09-02.html",
     shopCreate: "SCR-09-03.html",
