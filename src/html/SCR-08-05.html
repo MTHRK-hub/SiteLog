@@ -12,7 +12,11 @@
 
 <body class="event-search-page">
   <!-- イベント検索手帳の写し（~/.claude/event-notebook/sync-sitelog.sh が定期更新のたびに上書きする） -->
-  <iframe id="event-search-frame" class="event-search-frame" src="../notebook/tokyo-machi-calendar.html" title="イベント検索手帳"></iframe>
+  <div class="app">
+    <div class="card">
+      <iframe id="event-search-frame" class="event-search-frame" src="../notebook/tokyo-machi-calendar.html" title="イベント検索手帳"></iframe>
+    </div>
+  </div>
 
   <script>
     window.SITELOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzslsgfnlEFzyDA6W4ysgPJYz8w2PDOG_bCZh5qCy7lQvnfyYa9rR-kkLZGGXENb81D/exec";
