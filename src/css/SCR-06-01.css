@@ -53,9 +53,9 @@
 
 /* テーブル行の色分け（ヘッダ行はそのまま） */
 .project-plan-page tbody tr:nth-child(odd) {
-  background: rgb(30, 40, 55);
+  background: rgb(72, 48, 77);
 }
 
 .project-plan-page tbody tr:nth-child(even) {
-  background: rgb(22, 30, 42);
+  background: rgb(56, 20, 51);
 }

@@ -69,17 +69,19 @@
   border-radius: var(--radius);
 }
 
-/* 過去データ削除ボタン行 */
+/* イベント検索・過去データ削除ボタン行（左：イベント検索、右：過去データ削除） */
 .event-delete-row {
   display: flex;
   justify-content: center;
+  gap: 12px;
   margin-top: 24px;
 }
 
+/* テーブル行の色分け（SCR-04-01と同様、ヘッダ行はそのまま） */
 #event-list-body tr:nth-child(odd) {
-  background-color: rgba(21, 111, 115, 0.55);
+  background-color: rgb(72, 48, 77);
 }
 
 #event-list-body tr:nth-child(even) {
-  background-color: rgba(21, 111, 115, 0.55);
+  background-color: rgb(56, 20, 51);
 }

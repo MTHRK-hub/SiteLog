@@ -50,7 +50,6 @@
 }
 
 .summary-table th {
-  background: var(--surface-alt);
   width: 45%;
   font-weight: 600;
 }
@@ -59,16 +58,17 @@
   text-align: right;
 }
 
-#summary-income {
-  background-color: rgba(47, 42, 198, 0.35);
+/* テーブル行の色分け（SCR-03-01と同様） */
+.summary-table tbody tr:nth-child(odd),
+#income-list-body tr:nth-child(odd),
+#expense-list-body tr:nth-child(odd) {
+  background-color: rgb(68, 78, 28);
 }
 
-#summary-expense {
-  background-color: rgba(225, 55, 55, 0.30);
-}
-
-#summary-cashflow {
-  background-color: rgba(100, 200, 150, 0.35);
+.summary-table tbody tr:nth-child(even),
+#income-list-body tr:nth-child(even),
+#expense-list-body tr:nth-child(even) {
+  background-color: rgb(49, 56, 20);
 }
 
 .summary-cashflow-row th,
@@ -108,12 +108,4 @@
   display: flex;
   justify-content: center;
   margin-top: 12px;
-}
-
-#income-list-body tr {
-  background-color: rgba(47, 42, 198, 0.35);
-}
-
-#expense-list-body tr {
-  background-color: rgba(225, 55, 55, 0.35);
 }
