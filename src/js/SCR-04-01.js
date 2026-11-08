@@ -15,9 +15,16 @@
 
   const status = document.getElementById("site-load-status");
   const body = document.getElementById("site-list-body");
+  c.enableTablePaging(body); // 先頭50件のみ表示（共通仕様）
   const itemFilter = document.getElementById("item-filter");
 
   let allFiltered = [];
+
+  // 概要：「日付」＋半角スペース＋「記録」の文字列の先頭25文字（改行は空白に置き換える）
+  function buildSummary(log) {
+    const text = c.formatDate(log["日付"]) + " " + String(log["記録"] || "").replace(/\r?\n/g, " ");
+    return Array.from(text).slice(0, 25).join("");
+  }
 
   function render(rows) {
     body.innerHTML = "";
@@ -29,9 +36,9 @@
       const allIdx = allFiltered.indexOf(log);
       const tr = document.createElement("tr");
       tr.innerHTML =
-        "<td>" + c.escapeHtml(c.formatDate(log["日付"])) + "</td>" +
+        "<td><button type='button' class='btn btn-secondary'>詳細</button></td>" +
         "<td>" + c.escapeHtml(log["項目"]) + "</td>" +
-        "<td><button type='button' class='btn btn-secondary'>詳細</button></td>";
+        "<td>" + c.escapeHtml(buildSummary(log)) + "</td>";
       tr.querySelector(".btn-secondary").addEventListener("click", function () {
         c.setSelectedSiteLogIndex(allIdx);
         c.setSelectedSiteLogId(c.getSiteLogId(log, allIdx));

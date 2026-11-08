@@ -655,5 +655,21 @@ details.more[open] .arrow{transform:rotate(180deg)}
 })();
 </script>
 
+<script>
+(function () {
+  if (window.parent === window) return;
+  var last = 0;
+  function send() {
+    var b = document.body, cs = getComputedStyle(b);
+    var h = Math.ceil(b.getBoundingClientRect().height + parseFloat(cs.marginTop) + parseFloat(cs.marginBottom));
+    if (h === last) return;
+    last = h;
+    window.parent.postMessage({ type: "sitelog-notebook-height", height: h }, "*");
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
 </body>
 </html>

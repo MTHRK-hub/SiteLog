@@ -15,6 +15,7 @@
 
   const status = document.getElementById("friend-load-status");
   const body = document.getElementById("friend-list-body");
+  c.enableTablePaging(body); // 先頭50件のみ表示（共通仕様）
   const filterSelect = document.getElementById("friend-filter");
   const filterSubRow = document.getElementById("filter-sub-row");
   const filterSubSelect = document.getElementById("friend-filter-sub");

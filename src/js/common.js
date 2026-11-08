@@ -945,6 +945,75 @@
     stackedEdit: "SCR-07-07.html"
   };
 
+  // =========================
+  // 一覧テーブルの表示件数（共通仕様：先頭50件のみ表示し、
+  // 「▶️次データを表示」「◀️前データを表示」リンクで50件ずつ切り替える（ページ切り替え））
+  // =========================
+  const TABLE_PAGE_SIZE = 50;
+
+  // tbody の中身が描き直されるたびに、先頭50件の表示に戻す。
+  // 各画面は描画処理を変えずに、初期化時にこの関数を1回呼ぶだけでよい。
+  function enableTablePaging(tbody, pageSize) {
+    if (!tbody || tbody._paging) return;
+    const size = pageSize || TABLE_PAGE_SIZE;
+    const table = tbody.closest("table");
+    const anchor = (table && table.closest(".table-wrap")) || table || tbody;
+
+    // テーブルの左下に配置（左：前データ、右：次データ）
+    const nav = document.createElement("div");
+    nav.className = "table-more";
+    nav.hidden = true;
+    function makeLink(label) {
+      const a = document.createElement("a");
+      a.href = "#";
+      a.className = "table-more-link";
+      a.textContent = label;
+      nav.appendChild(a);
+      return a;
+    }
+    const prevLink = makeLink("◀️前データを表示");
+    const nextLink = makeLink("▶️次データを表示");
+    anchor.insertAdjacentElement("afterend", nav);
+
+    const state = { start: 0 };
+    tbody._paging = state;
+
+    // start 件目から size 件だけ表示し、それ以外は隠す
+    function showPage(start) {
+      const rows = Array.from(tbody.rows);
+      const end = Math.min(rows.length, start + size);
+      rows.forEach(function (tr, i) { tr.hidden = i < start || i >= end; });
+      state.start = start;
+      prevLink.hidden = start <= 0;
+      nextLink.hidden = end >= rows.length;
+      nav.hidden = prevLink.hidden && nextLink.hidden;
+    }
+
+    function reset() {
+      showPage(0);
+    }
+
+    function go(start) {
+      showPage(start);
+      // リンクはテーブルの下にあるため、切り替え後はテーブルの先頭が見える位置へ移動する
+      anchor.scrollIntoView({ block: "start" });
+    }
+
+    prevLink.addEventListener("click", function (e) {
+      e.preventDefault();
+      go(Math.max(0, state.start - size));
+    });
+
+    nextLink.addEventListener("click", function (e) {
+      e.preventDefault();
+      go(state.start + size);
+    });
+
+    // 行の追加・入れ替え（絞り込み・並び替え・再読込）を検知して先頭50件に戻す
+    new MutationObserver(reset).observe(tbody, { childList: true });
+    reset();
+  }
+
   function navigate(screen) {
     const path = SCREEN_PATHS[screen] || "SCR-01-01.html";
     window.location.href = "./" + path;
@@ -1250,6 +1319,7 @@
     bindLogoutButtons: bindLogoutButtons,
     bindNavButton: bindNavButton,
     navigate: navigate,
+    enableTablePaging: enableTablePaging,
     setFriends: setFriends,
     getFriends: getFriends,
     setSiteLogs: setSiteLogs,

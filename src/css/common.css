@@ -283,6 +283,26 @@ body {
   font-size: 0.88rem;
 }
 
+/* 一覧テーブルの「◀️前データを表示」「▶️次データを表示」リンク（テーブルの左下、左：前／右：次） */
+.table-more {
+  display: flex;
+  justify-content: flex-start;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.table-more[hidden],
+.table-more-link[hidden] {
+  display: none;
+}
+
+.table-more-link {
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
 .table-wrap {
   overflow-x: auto;
   border: 2px solid rgb(11, 19, 108);

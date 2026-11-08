@@ -16,6 +16,7 @@
   const content = document.getElementById("event-content");
   const feeTotalRow = document.getElementById("event-fee-total-row");
   const listBody = document.getElementById("event-list-body");
+  c.enableTablePaging(listBody); // 先頭50件のみ表示（共通仕様）
   const monthFilter = document.getElementById("month-filter");
   const radioParticipation = document.getElementById("radio-participation");
   const radioCompleted = document.getElementById("radio-completed");

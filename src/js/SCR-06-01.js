@@ -15,6 +15,7 @@
 
   const status = document.getElementById("project-load-status");
   const tbody = document.getElementById("project-list-body");
+  c.enableTablePaging(tbody); // 先頭50件のみ表示（共通仕様）
   let allProjects = [];
   const loginUser = c.getCurrentUser();
   const loginUserId = loginUser ? String(loginUser.id || "").trim() : "";

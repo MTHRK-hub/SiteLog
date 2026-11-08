@@ -14,6 +14,7 @@
 
   const status = document.getElementById("manuscript-load-status");
   const body = document.getElementById("manuscript-list-body");
+  c.enableTablePaging(body); // 先頭50件のみ表示（共通仕様）
   const categoryFilter = document.getElementById("category-filter");
 
   let allFiltered = [];

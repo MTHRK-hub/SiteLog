@@ -21,6 +21,9 @@
   const summaryCashflow = document.getElementById("summary-cashflow");
   const incomeBody = document.getElementById("income-list-body");
   const expenseBody = document.getElementById("expense-list-body");
+  // 収入・支出それぞれ先頭50件のみ表示（共通仕様）
+  c.enableTablePaging(incomeBody);
+  c.enableTablePaging(expenseBody);
   const monthFilter = document.getElementById("month-filter");
 
   let allCashflows = [];

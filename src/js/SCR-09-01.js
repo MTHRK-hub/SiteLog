@@ -14,6 +14,7 @@
 
   const status = document.getElementById("shop-load-status");
   const listBody = document.getElementById("shop-list-body");
+  c.enableTablePaging(listBody); // 先頭50件のみ表示（共通仕様）
   const locationFilter = document.getElementById("location-filter");
   const categoryFilterRow = document.getElementById("category-filter-row");
   const categoryFilter = document.getElementById("category-filter");
