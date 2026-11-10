@@ -9,20 +9,9 @@
     showUser: true
   });
 
-  // 手帳（iframe）は画面の高さに収め、スクロールは手帳の中で行う。
-  // こうすると手帳の日付バーが上部に固定されたまま残る（Artifact 版と同じ動き）
+  // 手帳（iframe）の高さは CSS で画面に合わせる（SCR-08-05.css）。
+  // スクロールは手帳の中で行うので、手帳の日付バーが上部に固定されたまま残る
   const frame = document.getElementById("event-search-frame");
-  function fitFrame() {
-    const card = frame.parentElement;
-    const cs = getComputedStyle(card);
-    const bs = getComputedStyle(document.body);
-    const below = parseFloat(cs.paddingBottom) + parseFloat(cs.borderBottomWidth) + parseFloat(bs.paddingBottom);
-    const h = Math.floor(window.innerHeight - frame.getBoundingClientRect().top - window.scrollY - below);
-    frame.style.height = Math.max(240, h) + "px";
-  }
-  fitFrame();
-  window.addEventListener("resize", fitFrame);
-  window.addEventListener("load", fitFrame);
 
   // 右下の「先頭へ」ボタン：手帳の中を最上部までスクロールする
   document.getElementById("to-top").addEventListener("click", function () {
