@@ -20,4 +20,12 @@
     } catch (e) { /* 手帳が読めないときは何もしない */ }
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
+
+  // 右下の「最下部へ」ボタン：手帳の中を最下部までスクロールする
+  document.getElementById("to-bottom").addEventListener("click", function () {
+    try {
+      const w = frame.contentWindow;
+      w.scrollTo({ top: w.document.documentElement.scrollHeight, behavior: "smooth" });
+    } catch (e) { /* 手帳が読めないときは何もしない */ }
+  });
 })();

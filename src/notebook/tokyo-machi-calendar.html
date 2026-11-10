@@ -197,7 +197,8 @@ body::before{background:#0b1e3d}
 .tally,details.more{box-shadow:0 2px 10px rgba(10,32,72,.35)}
 .morebtn{box-shadow:0 2px 10px rgba(10,32,72,.35)}
 /* 右下に固定する「先頭へ」ボタン */
-.totop{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:8;width:48px;height:48px;border-radius:50%;border:1px solid rgba(169,203,246,.6);background:rgba(10,32,72,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 4px 14px rgba(0,0,0,.35);font-size:1.4rem;line-height:1;display:grid;place-items:center;cursor:pointer}
+.fabs{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:8;display:flex;gap:10px}
+.totop{width:48px;height:48px;border-radius:50%;border:1px solid rgba(169,203,246,.6);background:rgba(10,32,72,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 4px 14px rgba(0,0,0,.35);font-size:1.4rem;line-height:1;display:grid;place-items:center;cursor:pointer}
 .totop:hover{background:var(--accent)}
 .totop:focus-visible{outline:3px solid #a9cbf6;outline-offset:2px}
 /* とても狭い幅（SiteLog に埋め込んだスマートフォン表示など）でも集計を1行に収める */
@@ -314,7 +315,10 @@ body::before{background:#0b1e3d}
 
   <div class="list" id="list"></div>
 
-  <button type="button" class="totop" id="totop" aria-label="ページの先頭へ" title="ページの先頭へ">🔼</button>
+  <div class="fabs">
+    <button type="button" class="totop" id="totop" aria-label="ページの先頭へ" title="ページの先頭へ">🔼</button>
+    <button type="button" class="totop" id="tobottom" aria-label="ページの最下部へ" title="ページの最下部へ">🔽</button>
+  </div>
   <div class="foot">
     <p style="margin:0">申し込みは各ページからご自身で。「気になる・申込済・行った・見送り」の印、出会った人数、メモはこのブラウザの中だけに保存され、他の人には見えません。</p>
     <p style="margin:0">収集元：<a href="https://www.kokuchpro.com/" target="_blank" rel="noopener">こくちーずプロ</a>・<a href="https://connpass.com/" target="_blank" rel="noopener">connpass</a>・<a href="https://www.walkerplus.com/event_list/ar0313/" target="_blank" rel="noopener">ウォーカープラス</a>・<a href="https://fmfm.jp/area/tokyo" target="_blank" rel="noopener">fmfm.jp</a>・<a href="https://doomo.jp/event" target="_blank" rel="noopener">Doomo</a>・<a href="https://www.meetup.com/ja-JP/find/jp--tokyo/" target="_blank" rel="noopener">Meetup</a>・<a href="https://www.doorkeeper.jp/" target="_blank" rel="noopener">Doorkeeper</a>・<a href="https://techplay.jp/event" target="_blank" rel="noopener">TECH PLAY</a>・<a href="https://www.timeout.jp/tokyo/ja/things-to-do" target="_blank" rel="noopener">Time Out Tokyo</a>・<a href="https://gardenplace.jp/event/" target="_blank" rel="noopener">恵比寿ガーデンプレイス</a>・<a href="https://matcha-jp.com/jp/27816" target="_blank" rel="noopener">MATCHA</a>・<a href="https://peatix.com/" target="_blank" rel="noopener">Peatix</a>・<a href="https://designfesta.com/" target="_blank" rel="noopener">デザインフェスタ公式</a>・<a href="https://gladmarche.jp/tif.html" target="_blank" rel="noopener">GladMarche公式</a>・<a href="https://www.java-users.jp/" target="_blank" rel="noopener">JJUG公式</a></p>
@@ -673,6 +677,8 @@ body::before{background:#0b1e3d}
   document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !gMenu.hidden){ gOpen(false); gBtn.focus(); } });
   /* 先頭へ。SiteLog に埋め込まれているときは外側の画面も手帳の先頭まで戻す */
   $("totop").onclick=()=>{ window.scrollTo({top:0,behavior:"smooth"}); try{ if(window.frameElement) window.frameElement.scrollIntoView({block:"start",behavior:"smooth"}); }catch(e){} };
+  /* 最下部へ。SiteLog に埋め込まれているときは外側の画面も手帳の最下部まで送る */
+  $("tobottom").onclick=()=>{ window.scrollTo({top:document.documentElement.scrollHeight,behavior:"smooth"}); try{ if(window.frameElement) window.frameElement.scrollIntoView({block:"end",behavior:"smooth"}); }catch(e){} };
   $("all-days").onclick=()=>{ state.day="all"; render(); };
   /* ジャンル：「すべて」以外は複数選択。全部外したら「すべて」に戻る */
   document.querySelectorAll("[data-t]").forEach(b=>b.addEventListener("click",()=>{
@@ -692,6 +698,6 @@ body::before{background:#0b1e3d}
 })();
 </script>
 
-<style>.totop{display:none}</style>
+<style>.fabs{display:none}</style>
 </body>
 </html>
