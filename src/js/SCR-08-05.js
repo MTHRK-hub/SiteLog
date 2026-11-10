@@ -18,4 +18,9 @@
     const h = Number(data.height);
     if (h > 0) frame.style.height = h + "px";
   });
+
+  // 右下の「先頭へ」ボタン：この画面（コンテンツ領域）を最上部までスクロールする
+  document.getElementById("to-top").addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
 })();
