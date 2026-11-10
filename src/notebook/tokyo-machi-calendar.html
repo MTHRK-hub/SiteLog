@@ -131,7 +131,7 @@ details.more[open] .arrow{transform:rotate(180deg)}
 .result b{font-family:var(--f-num);color:var(--ink)}
 
 .list{display:flex;flex-direction:column}
-.day{display:grid;grid-template-columns:68px minmax(0,1fr);gap:14px;padding-block:16px;border-bottom:1px solid var(--line);scroll-margin-top:120px}
+.day{display:block;padding-block:16px;border-bottom:1px solid var(--line);scroll-margin-top:120px}
 .date{position:sticky;top:calc(env(safe-area-inset-top,0px) + 112px);align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;text-align:center;line-height:1.1}
 .date .m{background:var(--accent);color:var(--accent-ink);font-family:var(--f-num);font-size:.68rem;padding:3px 0;letter-spacing:.08em}
 .date .dd{font-family:var(--f-num);font-size:1.55rem;font-weight:700;padding-top:4px}
@@ -177,7 +177,7 @@ details.more[open] .arrow{transform:rotate(180deg)}
 @media (max-width:640px){.fg{grid-template-columns:1fr}.fl{padding-top:0}
   .tally button{flex-wrap:nowrap;white-space:nowrap;padding:4px 4px;gap:4px}
   .tally .k{font-size:.66rem;letter-spacing:0}.tally .v{font-size:1rem}.tally .v small{font-size:.66rem;margin-left:1px}}
-@media (max-width:520px){.day{grid-template-columns:52px minmax(0,1fr);gap:10px}.date .dd{font-size:1.2rem}h1{font-size:1.6rem}.group .gl{min-width:0;width:100%}}
+@media (max-width:520px){h1{font-size:1.6rem}.group .gl{min-width:0;width:100%}}
 </style>
 
 <div class="wrap">
@@ -598,10 +598,8 @@ details.more[open] .arrow{transform:rotate(180deg)}
         if(d!==curD){
           curD=d; const dt=dateOf(d);
           const day=el("section","day"); day.id="d-"+d;
-          const dc=el("div","date");
-          dc.append(el("div","m",(dt.getMonth()+1)+"月"), el("div","dd",String(dt.getDate())), el("div","dw "+wcls(dt),WD[dt.getDay()]+"曜"));
-          const n=daysTo(d); if(n===0) dc.append(el("span","rel","今日")); else if(n===1) dc.append(el("span","rel","明日")); else if(n>1 && n<=6) dc.append(el("span","rel",n+"日後"));
-          evs=el("div","evs"); day.append(dc,evs); root.insertBefore(day, more);
+          day.setAttribute("aria-label", md(d)); /* 日付の札は出さず、読み上げ用に日付だけ持たせる */
+          evs=el("div","evs"); day.append(evs); root.insertBefore(day, more);
         }
         evs.append(card(e));
       });
