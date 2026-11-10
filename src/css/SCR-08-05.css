@@ -23,14 +23,14 @@ body.event-search-page {
   flex-direction: column;
 }
 
-/* 外枠の左右の余白を他画面より狭くする（上下は他画面と同じ） */
+/* 外枠と手帳の間の余白はなくし、手帳を外枠いっぱいに広げる */
 .event-search-page .card {
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding: 0;
+  overflow: hidden; /* 手帳の角を外枠の角丸に合わせて切り取る */
 }
 
 .event-search-frame {
@@ -39,7 +39,6 @@ body.event-search-page {
   min-height: 240px;
   width: 100%;
   border: none;
-  border-radius: var(--radius);
 }
 
 /* 右下に固定する「先頭へ」「最下部へ」ボタン。画面の縁取り（幅25px）の内側に置く */
